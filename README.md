@@ -28,8 +28,8 @@ cmake --build . -j32
 - Future Work: ......
 
 ### Reference
-- [learnopengl](https://learnopengl.com/)
-- [learnopengl cn](https://learnopengl-cn.github.io/)
+- [Learnopengl](https://learnopengl.com/)
+- [Learnopengl CN](https://learnopengl-cn.github.io/)
 - [RendererGL](https://github.com/MorcilloSanz/RendererGL)
 - [CarbonRender](https://github.com/carbonsunsu/CarbonRender)
 - [ForkerRenderer](https://github.com/forkercat/ForkerRenderer)
@@ -37,3 +37,5 @@ cmake --build . -j32
 - https://ogldev.org/www/tutorial49/tutorial49.html
 - https://www.alexandre-pestana.com/volumetric-lights/
 - https://lettier.github.io/3d-game-shaders-for-beginners/screen-space-reflection.html
+- [Linearly Transformed Cosines](https://eheitzresearch.wordpress.com/415-2/)
+- https://sugulee.wordpress.com/2021/01/19/screen-space-reflections-implementation-and-optimization-part-2-hi-z-tracing-method/
