@@ -1,0 +1,30 @@
+set(TARGET_NAME Test)
+message("Generate Test File Enabled")
+project(${TARGET_NAME})
+
+include_directories(${ROOT_DIR})
+include_directories(${CMAKE_CURRENT_SOURCE_DIR})
+file(GLOB SRC ${CMAKE_CURRENT_SOURCE_DIR}/*.cpp)
+link_libraries(Third Engine)
+
+if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+    if(MSVC_VERSION LESS 1910)
+        link_directories(${ROOT_DIR}/Third/glfw/lib-vc2019)
+    else()
+        link_directories(${ROOT_DIR}/Third/glfw/lib-vc2022)
+    endif()
+
+    link_libraries(opengl32 glfw3_mt glfw3 glfw3dll)
+else()
+    link_directories(${ROOT_DIR}/Third/glfw/lib-mingw-64)
+    link_libraries(opengl32 glfw3 glfw3dll)
+endif()
+
+set(EXECUTABLE_OUTPUT_PATH ${OUTPUT_DIR})
+
+foreach(_var ${SRC})
+    get_filename_component(app_name ${_var} NAME_WE)
+    add_executable(${app_name} ${_var})
+    add_dependencies(${app_name} Third Engine)
+    message("Test ${app_name} Generated!")
+endforeach()
