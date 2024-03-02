@@ -17,7 +17,7 @@ int main()
         {
             test_window->PollEvents();
             {
-                ImGui::ShowDemoWindow();
+                // ImGui::ShowDemoWindow();
             }
             test_window->SwapBuffers();
         }
