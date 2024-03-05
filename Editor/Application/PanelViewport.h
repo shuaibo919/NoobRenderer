@@ -46,10 +46,10 @@ namespace NoobRenderer
             NoobGizmo::Mode gizmo_mode{NoobGizmo::Mode::TRANSITION};
 
         public:
-            inline bool IsFocused() const { return m_focused; }
-            inline bool IsShow() { return m_show; }
-            inline void SetShow(bool show) { m_show = show; }
-            inline bool GetReadyToRendering() { return render_size.width != 0 && render_size.height != 0; }
+            bool IsFocused() const { return m_focused; }
+            bool IsShow() { return m_show; }
+            void SetShow(bool show) { m_show = show; }
+            bool GetReadyToRendering() { return render_size.width != 0 && render_size.height != 0; }
         };
     }
 }

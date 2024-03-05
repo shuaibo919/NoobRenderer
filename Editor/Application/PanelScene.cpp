@@ -224,3 +224,40 @@ void ScenePanel::Show()
         ImGui::End();
     }
 }
+
+/* Beta */
+void ScenePanel::RayCasting(int mouse_x, int mouse_y, int view_width, int view_height)
+{
+    auto scene = SceneManager::Instance().GetCurrentScene();
+    if (scene == nullptr)
+        return;
+    auto &camera = scene->GetCurrentCameraComponent();
+    auto registry = scene->GetRegistry();
+    auto view = registry->view<component::MeshData>();
+    // 计算Mouse_Ray
+    glm::vec3 ray_ndc = EngineUtility::GetNormalisedDeviceCoordinates(static_cast<float>(mouse_x), static_cast<float>(mouse_y), view_width, view_height);
+    // we want our ray's z to point forwards - this is usually the negative z direction in OpenGL style
+    glm::vec4 ray_clip = glm::vec4(ray_ndc.x, ray_ndc.y, -1.0, 1.0);
+    glm::vec4 ray_eye = EngineUtility::ToEyeCoords(ray_clip, camera.GetProjectionMatrix());
+    glm::vec3 ray_world = EngineUtility::ToWorldCoords(ray_eye, camera.GetViewMatrix());
+
+    auto _record = EngineUtility::RayCastingRecord();
+    auto _viewpos = camera.GetPositionVector();
+    Scene::Node::Ptr _hitted_node = nullptr;
+    for (auto [entity, meshdata] : view.each())
+    {
+        glm::mat4 model = scene->GetSceneNodeByEntity(entity)->model;
+        auto &_mesh = MeshManager::Instance().GetMesh(meshdata.name, meshdata.index);
+        auto get_picking = _mesh->IsPicking(_viewpos, model, ray_world);
+        if (get_picking.GetHitted() && get_picking.GetRayFactor() < _record.GetRayFactor())
+        {
+            _record = get_picking;
+            _hitted_node = scene->GetSceneNodeByEntity(entity);
+        }
+    }
+    if (_hitted_node != nullptr)
+    {
+        std::cout << "Pick:" << _hitted_node->object->GetComponent<component::NameComponent>().name << std::endl;
+        // Todo: hint for mesh picked.
+    }
+}

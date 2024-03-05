@@ -118,16 +118,17 @@ void VertexBuffer::InitBuffer()
 std::vector<Vertex> VertexBuffer::GetVertices()
 {
     glBindBuffer(GL_ARRAY_BUFFER, id);
-    float *ptr = (float *)glMapBuffer(GL_ARRAY_BUFFER, GL_READ_WRITE);
+    float *ptr = (float *)glMapNamedBuffer(id, GL_READ_WRITE);
+    if (ptr == nullptr) return {};
 
     std::vector<Vertex> vertices;
-    auto step = sizeof(Vertex);
+    auto step = sizeof(Vertex) /4;
     for (int i = 0; i < length; i++)
     {
         // vec3 - 顶点位置 Position vec3 - 顶点法线 Normal vec2 - 纹理坐标 TexCoords vec3 - tangent Tangent vec3 - bitangent Bitangent
-        Vertex v;
-        v.Position.x = ptr[i * step];
-        v.Position.y = ptr[i * step + 1];
+        Vertex v{};
+        v.Position.x =  ptr[i * step];
+        v.Position.y = ptr[i* step + 1];
         v.Position.z = ptr[i * step + 2];
 
         v.Normal.x = ptr[i * step + 3];
@@ -144,15 +145,6 @@ std::vector<Vertex> VertexBuffer::GetVertices()
         v.Bitangent.x = ptr[i * step + 11];
         v.Bitangent.y = ptr[i * step + 12];
         v.Bitangent.z = ptr[i * step + 13];
-
-        // for (int j = 0; j < MAX_BONE_INFLUENCE; j++)
-        // {
-        //     v.m_BoneIDs[j] = static_cast<int>(ptr[i * step + 14 + j]);
-        // }
-        // for (int j = 0; j < MAX_BONE_INFLUENCE; j++)
-        // {
-        //     v.m_Weights[j] = ptr[i * step + 14 + MAX_BONE_INFLUENCE + j];
-        // }
 
         vertices.push_back(v);
     }

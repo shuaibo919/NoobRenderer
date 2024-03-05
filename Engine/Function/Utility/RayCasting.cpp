@@ -9,7 +9,7 @@ namespace EngineUtility
         return glm::vec3(ndc_x, ndc_y, ndc_z);
     }
 
-    glm::vec4 ToEyeCoords(glm::vec4 &ray_clip, glm::mat4 &projection_matrix)
+    glm::vec4 ToEyeCoords(glm::vec4 ray_clip, glm::mat4 projection_matrix)
     {
         glm::vec4 ray_eye = glm::inverse(projection_matrix) * ray_clip;
         // Now, we only needed to un-project the x,y part, so let's manually set the z,w part to mean "forwards, and not a point"
@@ -17,7 +17,7 @@ namespace EngineUtility
         return ray_eye;
     }
 
-    glm::vec3 ToWorldCoords(glm::vec4 &ray_eye, glm::mat4 &view_matrix)
+    glm::vec3 ToWorldCoords(glm::vec4 ray_eye, glm::mat4 view_matrix)
     {
         glm::vec3 ray_world = glm::inverse(view_matrix) * ray_eye;
         ray_world = glm::normalize(ray_world);

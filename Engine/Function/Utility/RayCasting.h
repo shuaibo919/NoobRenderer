@@ -10,7 +10,7 @@ namespace EngineUtility
      * @param view_matrix 视图矩阵
      * @return 世界坐标
      */
-    glm::vec3 ToWorldCoords(glm::vec4 &ray_eye, glm::mat4 &view_matrix);
+    glm::vec3 ToWorldCoords(glm::vec4 ray_eye, glm::mat4 view_matrix);
 
     /**
      * @brief normally, to get into clip space from eye space we multiply the vector by a projection matrix,
@@ -19,7 +19,7 @@ namespace EngineUtility
      * @param projection_matrix 投影矩阵
      * @return eye space 坐标
      */
-    glm::vec4 ToEyeCoords(glm::vec4 &ray_clip, glm::mat4 &projection_matrix);
+    glm::vec4 ToEyeCoords(glm::vec4 ray_clip, glm::mat4 projection_matrix);
 
     /**
      * @brief Get Normalised Device Coordinates(主要用于Ray Casting)
@@ -39,8 +39,8 @@ namespace EngineUtility
     private:
         bool m_hitted;
         float m_t;
-        glm::vec3 m_hit_position{ 0.f }; // 平面与光线交点
-        glm::vec3 m_plane_normal{ 0.f }; // 平面法线
+        glm::vec3 m_hit_position{0.f}; // 平面与光线交点
+        glm::vec3 m_plane_normal{0.f}; // 平面法线
     public:
         RayCastingRecord() : m_hitted(false), m_t(std::numeric_limits<float>::max()) {}
         RayCastingRecord(float t, glm::vec3 hit_position, glm::vec3 plane_normal)

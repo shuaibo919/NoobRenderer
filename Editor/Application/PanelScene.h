@@ -28,10 +28,13 @@ namespace NoobRenderer
         public:
             using Ptr = std::unique_ptr<ScenePanel>;
             void Show();
-            inline bool IsShow() { return m_show; }
-            inline void SetShow(bool show) { m_show = show; }
             ScenePanel(const std::string &name, bool show);
             ScenePanel() = delete;
+            void RayCasting(int mouse_x, int mouse_y, int view_width, int view_height);
+
+        public:
+            bool IsShow() { return m_show; }
+            void SetShow(bool show) { m_show = show; }
         };
     }
 }

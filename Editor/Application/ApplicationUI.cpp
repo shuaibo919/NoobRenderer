@@ -121,11 +121,21 @@ void ApplicationUI::OnButtonCallback(int button, int action, int mods)
     ImGui_ImplGlfw_MouseButtonCallback(m_window, button, action, mods);
     if (SceneManager::Instance().GetCurrentScene() != nullptr)
     {
-        if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS)
+        auto focused = m_viewport_panel->IsFocused();
+        if (focused && button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS)
         {
             SceneManager::Instance().GetCurrentScene()->GetCurrentCameraComponent().SetMoving(true);
+            // picking mesh
+            if (m_viewport_panel->InRenderingRegion(m_cursor_position.x, m_cursor_position.y) && m_viewport_panel->IsFocused())
+            {
+                m_scene_panel->RayCasting(
+                    m_cursor_position.x - m_viewport_panel->rendering_pos_x,
+                    m_cursor_position.y - m_viewport_panel->rendering_pos_y,
+                    m_viewport_panel->render_size.width,
+                    m_viewport_panel->render_size.height);
+            }
         }
-        if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_RELEASE)
+        if (focused && button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_RELEASE)
         {
             SceneManager::Instance().GetCurrentScene()->GetCurrentCameraComponent().SetMoving(false);
         }
@@ -134,10 +144,10 @@ void ApplicationUI::OnButtonCallback(int button, int action, int mods)
 void ApplicationUI::OnCursorPosCallback(double xpos, double ypos)
 {
     ImGui_ImplGlfw_CursorPosCallback(m_window, xpos, ypos);
-    m_cursor_position = glm::vec2(static_cast<float>(xpos), static_cast<float>(ypos));
+    m_cursor_position = glm::vec2(static_cast<int>(xpos), static_cast<int>(ypos));
     if (SceneManager::Instance().GetCurrentScene() != nullptr && !NoobGizmo::IsUsing() && m_viewport_panel->IsFocused())
     {
-        if (m_viewport_panel->InRenderingRegion(static_cast<unsigned int>(xpos), static_cast<unsigned int>(ypos)))
+        if (m_viewport_panel->InRenderingRegion(m_cursor_position.x, m_cursor_position.y))
             SceneManager::Instance().GetCurrentScene()->GetCurrentCameraComponent().Move2D(static_cast<float>(xpos), static_cast<float>(ypos));
     }
 }
@@ -146,7 +156,7 @@ void ApplicationUI::OnScrollCallback(double xoffset, double yoffset)
     ImGui_ImplGlfw_ScrollCallback(m_window, xoffset, yoffset);
     if (SceneManager::Instance().GetCurrentScene() != nullptr && !NoobGizmo::IsUsing() && m_viewport_panel->IsFocused())
     {
-        if (m_viewport_panel->InRenderingRegion(static_cast<unsigned int>(m_cursor_position.x), static_cast<unsigned int>(m_cursor_position.y)))
+        if (m_viewport_panel->InRenderingRegion(m_cursor_position.x, m_cursor_position.y))
             SceneManager::Instance().GetCurrentScene()->GetCurrentCameraComponent().Scroll(static_cast<float>(yoffset));
     }
 }

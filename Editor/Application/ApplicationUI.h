@@ -34,7 +34,7 @@ namespace NoobRenderer
         private:
             bool m_show_main_layout{true};
             bool m_show_tabs_panel;
-            glm::vec2 m_cursor_position;
+            glm::ivec2 m_cursor_position;
             void SetUIStyle();
 
             void OnResizeCallback(unsigned int width, unsigned int height);
