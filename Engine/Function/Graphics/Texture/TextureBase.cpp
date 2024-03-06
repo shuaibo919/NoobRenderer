@@ -1,19 +1,6 @@
 #include "Engine/Function/Graphics/Texture/TextureBase.h"
 using namespace NoobRenderer;
 
-TextureParameter::TextureParameter() {}
-void TextureParameter::Add(gtype::TexParaType type, gtype::TexPara para)
-{
-    m_paras.emplace_back(std::make_pair(type, para));
-}
-void TextureParameter::Apply(GLenum target)
-{
-    for (auto &para : m_paras)
-    {
-        glTexParameteri(target, static_cast<GLenum>(para.first), static_cast<GLint>(para.second));
-    }
-}
-
 TextureBase::TextureBase(int width, int height, Texture::Type type, gtype::TexType basetype,
                          gtype::Format format, gtype::Format internalformat, gtype::DataType datatype)
     : m_width(width), m_height(height), m_type(type), m_basetype(basetype),
@@ -22,12 +9,11 @@ TextureBase::TextureBase(int width, int height, Texture::Type type, gtype::TexTy
     InitTextureUnits();
     glGenTextures(1, &m_id);
 }
-
 TextureBase::TextureBase(const TextureBase &texture)
     : m_id(texture.m_id), m_width(texture.m_width),
       m_height(texture.m_height), m_type(texture.m_type), m_basetype(texture.m_basetype),
-      m_format(texture.m_format),
-      m_internalformat(texture.m_internalformat), m_datatype(texture.m_datatype)
+      m_format(texture.m_format), m_internalformat(texture.m_internalformat),
+      m_datatype(texture.m_datatype), m_params(texture.m_params)
 {
     m_tmp_slot = 0;
 }
@@ -36,7 +22,9 @@ TextureBase::TextureBase(TextureBase &&texture) noexcept : m_id(std::move(textur
                                                            m_basetype(std::move(texture.m_basetype)),
                                                            m_format(std::move(texture.m_format)),
                                                            m_internalformat(std::move(texture.m_internalformat)),
-                                                           m_datatype(std::move(texture.m_datatype))
+                                                           m_datatype(std::move(texture.m_datatype)),
+                                                           m_params(std::move(texture.m_params))
+
 {
     m_tmp_slot = 0;
 }
@@ -46,7 +34,6 @@ TextureBase::~TextureBase()
     glActiveTexture(0);
     glDeleteTextures(1, &m_id);
 }
-
 void TextureBase::TexImage2D(GLenum target, GLint level, GLint border, const void *pixels)
 {
     glTexImage2D(target, level, static_cast<GLint>(m_internalformat),
@@ -61,7 +48,14 @@ void TextureBase::TexImage2DMultisample(GLenum target, GLsizei samples, GLboolea
     glTexImage2DMultisample(target, samples, static_cast<GLint>(m_internalformat),
                             m_width, m_height, fixedsamplelocations);
 }
-
+void TextureBase::TexStorage2D(GLenum target, GLsizei levels)
+{
+    glTextureStorage2D(target, levels, static_cast<GLint>(m_internalformat), m_width, m_height);
+}
+void TextureBase::TexStorage3D(GLenum target, GLsizei levels, GLsizei depth)
+{
+    glTexStorage3D(target, levels, static_cast<GLint>(m_internalformat), m_width, m_height, depth);
+}
 void TextureBase::Bind()
 {
     glBindTexture(static_cast<GLenum>(m_basetype), m_id);
@@ -81,21 +75,55 @@ void TextureBase::Deactivate()
 {
     Unbind();
 }
-
-void TextureBase::SetParameter(gtype::TexParaType parameter, GLfloat value)
+void TextureBase::SetParameter(GLenum pname, GLfloat value)
 {
-    glTexParameterf(static_cast<GLenum>(m_basetype), static_cast<GLenum>(parameter), value);
+    glTextureParameterf(m_id, pname, value);
 }
-void TextureBase::SetParameter(gtype::TexParaType parameter, GLfloat *value)
+void TextureBase::SetParameter(GLenum pname, GLfloat *value)
 {
-    glTexParameterfv(static_cast<GLenum>(m_basetype), static_cast<GLenum>(parameter), value);
+    glTextureParameterfv(m_id, pname, value);
 }
-
+void TextureBase::SetParameter(GLenum pname, GLint value)
+{
+    glTextureParameteri(m_id, pname, value);
+}
+void TextureBase::SetParameter(GLenum pname, GLint *value)
+{
+    glTextureParameteriv(m_id, pname, value);
+}
+void TextureBase::SetParameterAndSave(GLenum pname, GLfloat value)
+{
+    m_params.paramf[pname] = value;
+    glTextureParameterf(m_id, pname, value);
+}
+void TextureBase::SetParameterAndSave(GLenum pname, GLfloat *value)
+{
+    m_params.paramfv[pname] = value;
+    glTextureParameterfv(m_id, pname, value);
+}
+void TextureBase::SetParameterAndSave(GLenum pname, GLint value)
+{
+    m_params.parami[pname] = value;
+    glTextureParameteri(m_id, pname, value);
+}
+void TextureBase::SetParameterAndSave(GLenum pname, GLint *value)
+{
+    m_params.paramiv[pname] = value;
+    glTextureParameteriv(m_id, pname, value);
+}
 void TextureBase::Rescale(unsigned int width, unsigned int height)
 {
     m_width = width;
     m_height = height;
     SettingTexture();
+    for (auto &[key, val] : m_params.paramf)
+        glTextureParameterf(m_id, key, val);
+    for (auto &[key, val] : m_params.paramfv)
+        glTextureParameterfv(m_id, key, val);
+    for (auto &[key, val] : m_params.parami)
+        glTextureParameteri(m_id, key, val);
+    for (auto &[key, val] : m_params.paramiv)
+        glTextureParameteriv(m_id, key, val);
 }
 void TextureBase::GenerateMipmap()
 {

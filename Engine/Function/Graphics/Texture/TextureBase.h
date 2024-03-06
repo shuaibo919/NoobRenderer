@@ -62,16 +62,12 @@ namespace NoobRenderer
         inline void Active(int slot) { glActiveTexture(GL_TEXTURE0 + slot); }
     }
 
-    // Wrapper Class of glTexParameteri including basic common settings;
-    class TextureParameter
+    struct TextureParamStroage
     {
-    private:
-        std::vector<std::pair<gtype::TexParaType, gtype::TexPara>> m_paras;
-
-    public:
-        TextureParameter();
-        void Add(gtype::TexParaType type, gtype::TexPara para);
-        void Apply(GLenum target);
+        std::unordered_map<GLenum, GLfloat> paramf;
+        std::unordered_map<GLenum, GLfloat *> paramfv;
+        std::unordered_map<GLenum, GLint> parami;
+        std::unordered_map<GLenum, GLint *> paramiv;
     };
 
     class TextureBase
@@ -84,13 +80,14 @@ namespace NoobRenderer
         gtype::Format m_format;
         gtype::Format m_internalformat;
         gtype::DataType m_datatype;
+        TextureParamStroage m_params;
 
     protected:
-        TextureParameter m_params;
         void TexImage2D(GLenum target, GLint level, GLint border, const void *pixels);
-        void TexImage3D(GLenum target, GLint level, GLint border, int layers, const void *pixels);
+        void TexImage3D(GLenum target, GLint level, GLint border, int depth, const void *pixels);
         void TexImage2DMultisample(GLenum target, GLsizei samples, GLboolean fixedsamplelocations);
-        // void SetParameter(gtype::TexParaType parameter, GLint * &value);
+        void TexStorage2D(GLenum target, GLsizei levels);
+        void TexStorage3D(GLenum target, GLsizei levels, GLsizei depth);
         inline void InitTextureUnits() { glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &Texture::helper::textureUnits); }
         virtual void SettingTexture() = 0;
 
@@ -109,6 +106,14 @@ namespace NoobRenderer
         void Deactivate();
         void GenerateMipmap();
         std::string_view GetTypeString();
+        void SetParameter(GLenum pname, GLfloat value);
+        void SetParameter(GLenum pname, GLfloat *value);
+        void SetParameter(GLenum pname, GLint value);
+        void SetParameter(GLenum pname, GLint *value);
+        void SetParameterAndSave(GLenum pname, GLfloat value);
+        void SetParameterAndSave(GLenum pname, GLfloat *value);
+        void SetParameterAndSave(GLenum pname, GLint value);
+        void SetParameterAndSave(GLenum pname, GLint *value);
 
     public:
         inline GLuint GetID() const { return m_id; }
@@ -120,8 +125,5 @@ namespace NoobRenderer
         inline int GetTempSlot() { return m_tmp_slot; }
         inline int GetWidth() const { return m_width; }
         inline int GetHeight() const { return m_height; }
-        inline void SetBaseParameter(TextureParameter val) { m_params = val; }
-        void SetParameter(gtype::TexParaType parameter, GLfloat value);
-        void SetParameter(gtype::TexParaType parameter, GLfloat *value);
     };
 }
