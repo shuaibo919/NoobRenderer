@@ -75,11 +75,17 @@ void OrdinaryTexture::SettingTextureFromFile(const std::string &path, int channe
         m_internalformat = gtype::Format::RGB;
 
         GLenum base_type = static_cast<GLenum>(m_basetype);
-        GLenum base_type = static_cast<GLenum>(m_basetype);
         this->Bind();
         this->TexImage2D(base_type, 0, 0, data_channel);
         this->GenerateMipmap();
         delete[] data_channel;
         stbi_image_free(data);
     }
+}
+void OrdinaryTexture::SetDefaultImageTextureParams()
+{
+    this->SetParameter(GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    this->SetParameter(GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    this->SetParameter(GL_TEXTURE_WRAP_S, GL_REPEAT);
+    this->SetParameter(GL_TEXTURE_WRAP_T, GL_REPEAT);
 }

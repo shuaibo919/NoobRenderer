@@ -12,18 +12,26 @@ namespace NoobRenderer
                 "Resource/Shader/Deferred/GeometryPass.frag");
             using namespace gtype;
             m_rt = std::make_shared<WriteToTexture>(width, height);
-            auto gPositionDepthParams = TextureParameter();
-            gPositionDepthParams.Add(TexParaType::MinFilter, TexPara::Nearest);
-            gPositionDepthParams.Add(TexParaType::MagFilter, TexPara::Nearest);
-            gPositionDepthParams.Add(TexParaType::WrapS, TexPara::ClampEdge);
-            gPositionDepthParams.Add(TexParaType::WrapT, TexPara::ClampEdge);
-            m_rt->SetTexture2D<Texture2D>(GL_COLOR_ATTACHMENT0, width, height,
-                                          gPositionDepthParams, Format::RGBA, Format::RGBA32F, DataType::FLOAT);                   // G-Buffer: gPositionDepth
-            m_rt->SetTexture2D<Texture2D>(GL_COLOR_ATTACHMENT1, width, height);                                                    // G-Buffer: gNormal
-            m_rt->SetTexture2D<Texture2D>(GL_COLOR_ATTACHMENT2, width, height);                                                    // G-Buffer: gAlbedo
-            m_rt->SetTexture2D<Texture2D>(GL_COLOR_ATTACHMENT3, width, height);                                                    // G-Buffer: gMetalRoughAo
-            m_rt->SetTexture2D<Texture2D>(GL_COLOR_ATTACHMENT4, width, height);                                                    // G-Buffer: gEmission
+            m_rt->SetTexture2D<Texture2D>(GL_COLOR_ATTACHMENT0, width, height, Format::RGBA, Format::RGBA32F, DataType::FLOAT); // G-Buffer: gPositionDepth
+            m_rt->GetTexture(0)->SetParameterAndSave(GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+            m_rt->GetTexture(0)->SetParameterAndSave(GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+            m_rt->GetTexture(0)->SetParameterAndSave(GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+            m_rt->GetTexture(0)->SetParameterAndSave(GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+            m_rt->SetTexture2D<Texture2D>(GL_COLOR_ATTACHMENT1, width, height); // G-Buffer: gNormal
+            m_rt->GetTexture(1)->SetParameterAndSave(GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+            m_rt->GetTexture(1)->SetParameterAndSave(GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+            m_rt->SetTexture2D<Texture2D>(GL_COLOR_ATTACHMENT2, width, height); // G-Buffer: gAlbedo
+            m_rt->GetTexture(2)->SetParameterAndSave(GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+            m_rt->GetTexture(2)->SetParameterAndSave(GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+            m_rt->SetTexture2D<Texture2D>(GL_COLOR_ATTACHMENT3, width, height); // G-Buffer: gMetalRoughAo
+            m_rt->GetTexture(3)->SetParameterAndSave(GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+            m_rt->GetTexture(3)->SetParameterAndSave(GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+            m_rt->SetTexture2D<Texture2D>(GL_COLOR_ATTACHMENT4, width, height); // G-Buffer: gEmission
+            m_rt->GetTexture(4)->SetParameterAndSave(GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+            m_rt->GetTexture(4)->SetParameterAndSave(GL_TEXTURE_MAG_FILTER, GL_NEAREST);
             m_rt->SetTexture2D<Texture2D>(GL_COLOR_ATTACHMENT5, width, height, Format::RGB, Format::RED, DataType::UNSIGNED_BYTE); // G-Buffer: gStencil
+            m_rt->GetTexture(5)->SetParameterAndSave(GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+            m_rt->GetTexture(5)->SetParameterAndSave(GL_TEXTURE_MAG_FILTER, GL_NEAREST);
             m_rt->SetRenderBuffer<RenderBuffer>(GL_DEPTH_STENCIL_ATTACHMENT, width, height, GL_DEPTH24_STENCIL8);
             m_rt->ExplicitColorAttach();
             m_rt->Unbind();

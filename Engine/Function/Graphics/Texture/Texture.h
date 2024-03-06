@@ -19,6 +19,7 @@ namespace NoobRenderer
                         gtype::DataType datatype = gtype::DataType::UNSIGNED_BYTE);
         OrdinaryTexture(const OrdinaryTexture &texture);
         OrdinaryTexture(OrdinaryTexture &&texture) noexcept;
+        void SetDefaultImageTextureParams();
 
     protected:
         void SettingTextureFromFile(const std::string &path);

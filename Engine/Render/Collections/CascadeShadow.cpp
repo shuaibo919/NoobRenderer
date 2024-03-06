@@ -6,9 +6,10 @@ namespace NoobRenderer
         CascadeShadow::CascadeShadow(unsigned int width, unsigned int height, int split_size, unsigned int binding)
             : m_split_size(split_size)
         {
-
+            using namespace gtype;
             m_map = std::make_shared<WriteToTexture>(width, height);
-            m_map->SetTexture<DepthTextureArray>(GL_DEPTH_ATTACHMENT, width, height, m_split_size);
+            m_map->SetTexture<Texture2DArray>(GL_DEPTH_ATTACHMENT, width, height, m_split_size,
+                                              Format::DEPTH_COMPONENT, Format::DEPTH_COMPONENT, DataType::FLOAT);
             m_map->DiscardRenderBuffer();
             std::cout << "CascadeShadow::Constructor() status = " << glCheckFramebufferStatus(GL_FRAMEBUFFER) << std::endl;
             m_map->Unbind();
@@ -37,7 +38,7 @@ namespace NoobRenderer
             scene->BasicRender(shader);
             m_map->Unbind();
         }
-        std::vector<float> CascadeShadow::GetCascadeLevels(std::vector<float>& cascade_splits, float camera_far_plane)
+        std::vector<float> CascadeShadow::GetCascadeLevels(std::vector<float> &cascade_splits, float camera_far_plane)
         {
             std::vector<float> answer(m_split_size, camera_far_plane);
             for (int i = 0; i < answer.size(); ++i)

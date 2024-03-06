@@ -16,11 +16,11 @@ namespace NoobRenderer
             int mipmap_size{128};
             int conv_size{32};
             int brdf_size{512};
-            HDRBufferTexture::Ptr RawHDRTexture{nullptr};
+            OrdinaryTexture::Ptr RawHDRTexture{nullptr};
             CubeMapTexture::Ptr HDRCubeMap{nullptr};
             CubeMapTexture::Ptr IrridianceMap{nullptr};
             CubeMapTexture::Ptr PrefilterMap{nullptr};
-            LookUpTexture::Ptr BRDFLookupTexture{nullptr};
+            Texture2D::Ptr BRDFLookupTexture{nullptr};
             IBLCubeMap() {}
             void Reset()
             {

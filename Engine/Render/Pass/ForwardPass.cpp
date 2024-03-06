@@ -18,7 +18,10 @@ namespace NoobRenderer
                 "Resource/Shader/CubeMap.frag");
             m_rt = std::make_shared<WriteToTexture>(width, height);
             m_rt->SetRenderBuffer<RenderBuffer>(GL_DEPTH_STENCIL_ATTACHMENT, width, height, GL_DEPTH24_STENCIL8);
-            m_rt->SetTexture2D<OrdinaryTexture>(GL_COLOR_ATTACHMENT0, width, height, Texture::Type::TextureColorBuffer);
+            m_rt->SetTexture2D<Texture2D>(GL_COLOR_ATTACHMENT0, width, height,
+                                          gtype::Format::RGBA, gtype::Format::RGB16F, gtype::DataType::FLOAT);
+            m_rt->GetTexture()->SetParameterAndSave(GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+            m_rt->GetTexture()->SetParameterAndSave(GL_TEXTURE_MAG_FILTER, GL_NEAREST);
             std::cout << "ForwardPass Screen::Constructor() status = " << glCheckFramebufferStatus(GL_FRAMEBUFFER) << std::endl;
             m_rt->Unbind();
             int samples = 4;

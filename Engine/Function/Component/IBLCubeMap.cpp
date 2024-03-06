@@ -21,18 +21,17 @@ namespace NoobRenderer
             tmp[5] = glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, -1.0f, 0.0f));
             return tmp;
         }
-        CubeMapTexture::Ptr CreateFromHDRTexture(unsigned int width, unsigned int height, HDRBufferTexture::Ptr &hdr_texture)
+        CubeMapTexture::Ptr CreateFromHDRTexture(unsigned int width, unsigned int height, OrdinaryTexture::Ptr &hdr_texture)
         {
             auto fbo = std::make_shared<FrameBuffer>();
             auto rbo = std::make_shared<RenderBuffer>(width, height, GL_DEPTH_COMPONENT24);
             fbo->SetRenderBuffer(GL_DEPTH_ATTACHMENT, rbo->GetID());
-            TextureParameter tex_param;
-            tex_param.Add(gtype::TexParaType::WrapR, gtype::TexPara::ClampEdge);
-            tex_param.Add(gtype::TexParaType::WrapS, gtype::TexPara::ClampEdge);
-            tex_param.Add(gtype::TexParaType::WrapT, gtype::TexPara::ClampEdge);
-            tex_param.Add(gtype::TexParaType::MinFilter, gtype::TexPara::LinearMipmapLinear);
-            tex_param.Add(gtype::TexParaType::MagFilter, gtype::TexPara::Linear);
-            auto tex = std::make_shared<CubeMapTexture>(width, height, gtype::Format::RGB, gtype::Format::RGB16F, gtype::DataType::FLOAT, tex_param);
+            auto tex = std::make_shared<CubeMapTexture>(width, height, gtype::Format::RGB, gtype::Format::RGB16F, gtype::DataType::FLOAT);
+            tex->SetParameter(GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+            tex->SetParameter(GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+            tex->SetParameter(GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+            tex->SetParameter(GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+            tex->SetParameter(GL_TEXTURE_MAG_FILTER, GL_LINEAR);
             auto shader = ShaderManager::Instance().LoadShaderAndGet("Resource/Shader/HDRToCubeMap.vert", "Resource/Shader/HDRToCubeMap.frag");
             glm::mat4 captureProjection = glm::perspective(glm::radians(90.0f), 1.0f, 0.1f, 10.0f);
             auto captureViews = GetCaptureViews();
@@ -62,14 +61,13 @@ namespace NoobRenderer
             auto fbo = std::make_shared<FrameBuffer>();
             auto rbo = std::make_shared<RenderBuffer>(width, height, GL_DEPTH_COMPONENT24);
             fbo->SetRenderBuffer(GL_DEPTH_ATTACHMENT, rbo->GetID());
-            TextureParameter tex_param;
-            tex_param.Add(gtype::TexParaType::WrapR, gtype::TexPara::ClampEdge);
-            tex_param.Add(gtype::TexParaType::WrapS, gtype::TexPara::ClampEdge);
-            tex_param.Add(gtype::TexParaType::WrapT, gtype::TexPara::ClampEdge);
-            tex_param.Add(gtype::TexParaType::MinFilter, gtype::TexPara::Linear);
-            tex_param.Add(gtype::TexParaType::MagFilter, gtype::TexPara::Linear);
             auto tex = std::make_shared<CubeMapTexture>(width, height, gtype::Format::RGB, gtype::Format::RGB16F,
-                                                        gtype::DataType::FLOAT, tex_param);
+                                                        gtype::DataType::FLOAT);
+            tex->SetParameter(GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+            tex->SetParameter(GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+            tex->SetParameter(GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+            tex->SetParameter(GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+            tex->SetParameter(GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
             auto shader = ShaderManager::Instance().LoadShaderAndGet("Resource/Shader/ConvCubeMap.vert", "Resource/Shader/ConvCubeMap.frag");
             auto captureProjection = glm::perspective(glm::radians(90.0f), 1.0f, 0.1f, 10.0f);
@@ -100,14 +98,13 @@ namespace NoobRenderer
             auto fbo = std::make_shared<FrameBuffer>();
             auto rbo = std::make_shared<RenderBuffer>(width, height, GL_DEPTH_COMPONENT24);
             fbo->SetRenderBuffer(GL_DEPTH_ATTACHMENT, rbo->GetID());
-            TextureParameter tex_param;
-            tex_param.Add(gtype::TexParaType::WrapR, gtype::TexPara::ClampEdge);
-            tex_param.Add(gtype::TexParaType::WrapS, gtype::TexPara::ClampEdge);
-            tex_param.Add(gtype::TexParaType::WrapT, gtype::TexPara::ClampEdge);
-            tex_param.Add(gtype::TexParaType::MinFilter, gtype::TexPara::LinearMipmapLinear);
-            tex_param.Add(gtype::TexParaType::MagFilter, gtype::TexPara::Linear);
             auto tex = std::make_shared<CubeMapTexture>(width, height, gtype::Format::RGB, gtype::Format::RGB16F,
-                                                        gtype::DataType::FLOAT, tex_param);
+                                                        gtype::DataType::FLOAT);
+            tex->SetParameter(GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+            tex->SetParameter(GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+            tex->SetParameter(GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+            tex->SetParameter(GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+            tex->SetParameter(GL_TEXTURE_MAG_FILTER, GL_LINEAR);
             tex->GenerateMipmap();
             auto shader = ShaderManager::Instance().LoadShaderAndGet("Resource/Shader/Prefilter.vert", "Resource/Shader/Prefilter.frag");
             auto captureProjection = glm::perspective(glm::radians(90.0f), 1.0f, 0.1f, 10.0f);
@@ -144,13 +141,17 @@ namespace NoobRenderer
             fbo->Unbind();
             return tex;
         }
-        LookUpTexture::Ptr CreateBRDFLookUpTexture(unsigned int width, unsigned int height)
+        Texture2D::Ptr CreateBRDFLookUpTexture(unsigned int width, unsigned int height)
         {
             using namespace NoobRenderer;
             auto fbo = std::make_shared<FrameBuffer>();
             auto rbo = std::make_shared<RenderBuffer>(width, height, GL_DEPTH_COMPONENT24);
             fbo->SetRenderBuffer(GL_DEPTH_ATTACHMENT, rbo->GetID());
-            auto tex = std::make_shared<LookUpTexture>(width, height, gtype::Format::RG, gtype::Format::RG16F, gtype::DataType::FLOAT);
+            auto tex = std::make_shared<Texture2D>(width, height, gtype::Format::RG, gtype::Format::RG16F, gtype::DataType::FLOAT);
+            tex->SetParameter(GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+            tex->SetParameter(GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+            tex->SetParameter(GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+            tex->SetParameter(GL_TEXTURE_MAG_FILTER, GL_LINEAR);
             fbo->SetTexture2D(GL_COLOR_ATTACHMENT0, tex->GetID(), GL_TEXTURE_2D);
             auto shader = ShaderManager::Instance().LoadShaderAndGet("Resource/Shader/CalcBRDF.vert", "Resource/Shader/CalcBRDF.frag");
             fbo->Bind();
@@ -172,7 +173,11 @@ namespace NoobRenderer
             auto ptr = static_cast<IBLCubeMap *>(typeAny);
             if (ptr->name.empty())
                 return;
-            ptr->RawHDRTexture = std::make_shared<HDRBufferTexture>(ptr->name);
+            ptr->RawHDRTexture = std::make_shared<OrdinaryTexture>(ptr->name);
+            ptr->RawHDRTexture->SetParameter(GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+            ptr->RawHDRTexture->SetParameter(GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+            ptr->RawHDRTexture->SetParameter(GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+            ptr->RawHDRTexture->SetParameter(GL_TEXTURE_MAG_FILTER, GL_LINEAR);
             ptr->HDRCubeMap = CreateFromHDRTexture(ptr->cubemap_size, ptr->cubemap_size, ptr->RawHDRTexture);
             ptr->IrridianceMap = CreateConvolutionEnvMap(ptr->conv_size, ptr->conv_size, ptr->HDRCubeMap);
             ptr->PrefilterMap = CreatePreFilterCubeMap(ptr->mipmap_size, ptr->mipmap_size, ptr->HDRCubeMap);
@@ -183,7 +188,11 @@ namespace NoobRenderer
         {
             if (this->name.empty())
                 return;
-            this->RawHDRTexture = std::make_shared<HDRBufferTexture>(this->name);
+            this->RawHDRTexture = std::make_shared<OrdinaryTexture>(this->name);
+            this->RawHDRTexture->SetParameter(GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+            this->RawHDRTexture->SetParameter(GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+            this->RawHDRTexture->SetParameter(GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+            this->RawHDRTexture->SetParameter(GL_TEXTURE_MAG_FILTER, GL_LINEAR);
             this->HDRCubeMap = CreateFromHDRTexture(this->cubemap_size, this->cubemap_size, this->RawHDRTexture);
             this->IrridianceMap = CreateConvolutionEnvMap(this->conv_size, this->conv_size, this->HDRCubeMap);
             this->PrefilterMap = CreatePreFilterCubeMap(this->mipmap_size, this->mipmap_size, this->HDRCubeMap);

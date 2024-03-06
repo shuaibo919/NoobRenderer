@@ -57,6 +57,7 @@ namespace LoadingUtils
         OrdinaryTexture::Ptr tex = ReadMaterialUsingAssimp(mat, type, dir, specifc_channel);
         if (tex != nullptr)
         {
+            tex->SetDefaultImageTextureParams();
             return std::make_shared<MaterialTexture>(tex);
         }
         MaterialTexture::Ptr mat_tex = nullptr;
@@ -81,6 +82,7 @@ namespace LoadingUtils
         OrdinaryTexture::Ptr tex = ReadMaterialUsingAssimp(mat, type, dir, specifc_channel);
         if (tex != nullptr)
         {
+            tex->SetDefaultImageTextureParams();
             return std::make_shared<MaterialTexture>(tex);
         }
         return nullptr;
