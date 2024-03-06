@@ -5,14 +5,15 @@
 // Graphics Type
 namespace gtype
 {
-
     enum class TexType : GLenum
     {
         Tex2D = GL_TEXTURE_2D,
+        Tex3D = GL_TEXTURE_3D,
         Tex2DArray = GL_TEXTURE_2D_ARRAY,
         Tex2DMultisample = GL_TEXTURE_2D_MULTISAMPLE,
         TexCube = GL_TEXTURE_CUBE_MAP
     };
+
     enum class Format : GLint
     {
         NONE = 0,
@@ -30,31 +31,11 @@ namespace gtype
         RG16F = GL_RG16F,
         R16F = GL_R16F,
     };
+
     enum class DataType : GLenum
     {
         UNSIGNED_BYTE = GL_UNSIGNED_BYTE,
         FLOAT = GL_FLOAT
-    };
-    enum class TexPara : GLint
-    {
-        Repeat = GL_REPEAT,
-        ClampEdge = GL_CLAMP_TO_EDGE,
-        ClampBorder = GL_CLAMP_TO_BORDER,
-        MirroredRepeat = GL_MIRRORED_REPEAT,
-        Nearest = GL_NEAREST,
-        Linear = GL_LINEAR,
-        LinearMipmapLinear = GL_LINEAR_MIPMAP_LINEAR,
-        NearsetMipmapNearest = GL_NEAREST_MIPMAP_NEAREST,
-    };
-
-    enum class TexParaType : GLenum
-    {
-        MinFilter = GL_TEXTURE_MIN_FILTER,
-        MagFilter = GL_TEXTURE_MAG_FILTER,
-        WrapS = GL_TEXTURE_WRAP_S,
-        WrapT = GL_TEXTURE_WRAP_T,
-        WrapR = GL_TEXTURE_WRAP_R,
-        BorderColor = GL_TEXTURE_BORDER_COLOR
     };
 
     enum class Capability
