@@ -10,6 +10,10 @@ namespace NoobRenderer
             m_map = std::make_shared<WriteToTexture>(width, height);
             m_map->SetTexture<Texture2DArray>(GL_DEPTH_ATTACHMENT, width, height, m_split_size,
                                               Format::DEPTH_COMPONENT, Format::DEPTH_COMPONENT, DataType::FLOAT);
+            m_map->GetTexture()->SetParameter(GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+            m_map->GetTexture()->SetParameter(GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+            m_map->GetTexture()->SetParameter(GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+            m_map->GetTexture()->SetParameter(GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
             m_map->DiscardRenderBuffer();
             std::cout << "CascadeShadow::Constructor() status = " << glCheckFramebufferStatus(GL_FRAMEBUFFER) << std::endl;
             m_map->Unbind();

@@ -86,8 +86,6 @@ namespace NoobRenderer
         void TexImage2D(GLenum target, GLint level, GLint border, const void *pixels);
         void TexImage3D(GLenum target, GLint level, GLint border, int depth, const void *pixels);
         void TexImage2DMultisample(GLenum target, GLsizei samples, GLboolean fixedsamplelocations);
-        void TexStorage2D(GLenum target, GLsizei levels);
-        void TexStorage3D(GLenum target, GLsizei levels, GLsizei depth);
         inline void InitTextureUnits() { glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &Texture::helper::textureUnits); }
         virtual void SettingTexture() = 0;
 
@@ -106,6 +104,8 @@ namespace NoobRenderer
         void Deactivate();
         void GenerateMipmap();
         std::string_view GetTypeString();
+        void TexStorage2D(GLenum target, GLsizei levels);
+        void TexStorage3D(GLenum target, GLsizei levels, GLsizei depth);
         void SetParameter(GLenum pname, GLfloat value);
         void SetParameter(GLenum pname, GLfloat *value);
         void SetParameter(GLenum pname, GLint value);

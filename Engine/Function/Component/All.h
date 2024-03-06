@@ -7,6 +7,7 @@
 #include "Engine/Function/Component/BoundingBox.h"
 #include "Engine/Function/Component/IBLCubeMap.h"
 #include "Engine/Function/Component/ScreenSpaceReflection.h"
+#include "Engine/Function/Component/VoxelGlobalIllumination.h"
 namespace NoobRenderer
 {
     namespace component
