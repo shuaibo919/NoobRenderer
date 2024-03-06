@@ -65,9 +65,10 @@ void ViewportPanel::LightHint()
 void ViewportPanel::ListRenderingButtons()
 {
     static const char *button_icons[] = {
-        ICON_FA_ARROWS_UP_DOWN_LEFT_RIGHT, ICON_FA_ARROWS_SPIN, ICON_FA_ARROWS_LEFT_RIGHT_TO_LINE, ICON_FA_CODE, ICON_FA_GEAR};
+        ICON_FA_ARROWS_UP_DOWN_LEFT_RIGHT, ICON_FA_ARROWS_SPIN, ICON_FA_ARROWS_LEFT_RIGHT_TO_LINE, ICON_FA_ARROW_POINTER,
+        ICON_FA_CODE, ICON_FA_GEAR};
     static const char *button_tips[] = {
-        "Translate Mode", "Rotate Mode", "Scale Mode", "Pass Mode", "ViewPort Setting"};
+        "Translate Mode", "Rotate Mode", "Scale Mode", "Select Mode", "Pass Mode", "ViewPort Setting"};
     static const std::function<void(void)> button_funcs[] = {
         [&]()
         { gizmo_mode = NoobGizmo::Mode::TRANSITION; },
@@ -76,10 +77,12 @@ void ViewportPanel::ListRenderingButtons()
         [&]()
         { gizmo_mode = NoobGizmo::Mode::SCALING; },
         [&]()
+        { gizmo_mode = NoobGizmo::Mode::SELECT; },
+        [&]()
         { m_show_pass = !m_show_pass; },
         [&]()
         { m_show_setting = !m_show_setting; }};
-    for (int i = 0; i < 5; i++)
+    for (int i = 0; i < 6; i++)
     {
         if (i > 0)
             ImGui::SameLine();

@@ -14,7 +14,8 @@ public:
     {
         TRANSITION,
         SCALING,
-        ROTATE
+        ROTATE,
+        SELECT,
     };
 
 private:
