@@ -26,6 +26,8 @@ namespace gtype
         RGB32F = GL_RGB32F,
         RG32F = GL_RG32F,
         R32F = GL_R32F,
+        RGBA8 =  GL_RGBA8,
+        RGBA16 = GL_RGBA16,
         RGBA16F = GL_RGBA16F,
         RGB16F = GL_RGB16F,
         RG16F = GL_RG16F,

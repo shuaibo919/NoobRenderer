@@ -21,6 +21,7 @@ namespace NoobRenderer
         void BlitFrom(FrameBuffer::Ptr &frameBuffer, unsigned int width, unsigned int height);
         void SetRenderBuffer(unsigned int attachment, unsigned int renderBufferID);
         void SetTexture2D(unsigned int attachment, unsigned int textureId, GLenum textarget = GL_TEXTURE_2D, int level = 0);
+        void SetTexture3D(unsigned int attachment, unsigned int textureId, int level = 0, int zoffset = 0);
         void SetTexture(unsigned int attachment, unsigned int textureId, int level = 0);
         void Bind() override;
         void Unbind() override;

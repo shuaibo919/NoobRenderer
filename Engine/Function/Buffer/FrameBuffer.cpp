@@ -39,6 +39,12 @@ void FrameBuffer::SetTexture2D(unsigned int attachment, unsigned int textureId, 
 {
     glFramebufferTexture2D(GL_FRAMEBUFFER, attachment, textarget, textureId, level);
 }
+
+void FrameBuffer::SetTexture3D(unsigned int attachment, unsigned int textureId, int level, int zoffset)
+{
+    glFramebufferTexture3D(GL_FRAMEBUFFER, attachment, GL_TEXTURE_3D, textureId, level, zoffset);
+}
+
 void FrameBuffer::SetTexture(unsigned int attachment, unsigned int textureId, int level)
 {
     glFramebufferTexture(GL_FRAMEBUFFER, attachment, textureId, level);
