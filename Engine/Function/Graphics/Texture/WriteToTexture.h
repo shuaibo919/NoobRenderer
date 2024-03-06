@@ -53,15 +53,6 @@ namespace NoobRenderer
         }
 
         template <EngineUtility::TisBasedOf<TextureBase> T, typename... Args>
-        inline void SetTexture3D(unsigned int attachment, Args &&...args)
-        {
-            tex_attachments.push_back(attachment);
-            m_texs.push_back(std::make_shared<T>(std::forward<Args>(args)...));
-            m_fbo->SetTexture3D(attachment, m_texs.back()->GetID(), static_cast<GLenum>(m_texs.back()->GetBaseType()));
-            m_texs.back()->Unbind();
-        }
-
-        template <EngineUtility::TisBasedOf<TextureBase> T, typename... Args>
         inline void SetTexture(unsigned int attachment, Args &&...args)
         {
             // Rescale For this Type Not Implmented!
