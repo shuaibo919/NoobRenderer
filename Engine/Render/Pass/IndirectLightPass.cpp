@@ -11,8 +11,8 @@ namespace NoobRenderer
                 "Resource/Shader/Deferred/Screen.vert",
                 "Resource/Shader/Deferred/IndirectLightPass.frag");
             m_rt = std::make_shared<WriteToTexture>(width, height);
-            m_rt->SetTexture2D<ColorTexture>(GL_COLOR_ATTACHMENT0, width, height,
-                                             gtype::Format::RGBA, gtype::Format::RGBA32F, gtype::DataType::FLOAT);
+            m_rt->SetTexture2D<Texture2D>(GL_COLOR_ATTACHMENT0, width, height,
+                                          gtype::Format::RGBA, gtype::Format::RGBA32F, gtype::DataType::FLOAT);
             m_rt->SetRenderBuffer<RenderBuffer>(GL_DEPTH_ATTACHMENT, width, height, GL_DEPTH_COMPONENT);
             m_rt->Unbind();
         }

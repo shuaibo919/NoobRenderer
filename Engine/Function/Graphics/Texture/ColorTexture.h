@@ -3,24 +3,24 @@
 
 namespace NoobRenderer
 {
-    class ColorTexture : public TextureBase
+    class Texture2D : public TextureBase
     {
     public:
-        using Ptr = std::shared_ptr<ColorTexture>;
+        using Ptr = std::shared_ptr<Texture2D>;
         // Default MinFilter & MagFilter: Nearest
-        ColorTexture(int width, int height,
-                     gtype::Format tex_format = gtype::Format::RGB,
-                     gtype::Format tex_internal_format = gtype::Format::RGB32F,
-                     gtype::DataType datatype = gtype::DataType::FLOAT);
-        ColorTexture(int width, int height, TextureParameter params,
-                     gtype::Format tex_format = gtype::Format::RGB,
-                     gtype::Format tex_internal_format = gtype::Format::RGB32F,
-                     gtype::DataType datatype = gtype::DataType::FLOAT);
-        ColorTexture(int width, int height, TextureParameter params, void *buf,
-                     gtype::Format tex_format = gtype::Format::RGB,
-                     gtype::Format tex_internal_format = gtype::Format::RGB32F,
-                     gtype::DataType datatype = gtype::DataType::FLOAT);
-        ColorTexture() = delete;
+        Texture2D(int width, int height,
+                  gtype::Format tex_format = gtype::Format::RGB,
+                  gtype::Format tex_internal_format = gtype::Format::RGB32F,
+                  gtype::DataType datatype = gtype::DataType::FLOAT);
+        Texture2D(int width, int height, TextureParameter params,
+                  gtype::Format tex_format = gtype::Format::RGB,
+                  gtype::Format tex_internal_format = gtype::Format::RGB32F,
+                  gtype::DataType datatype = gtype::DataType::FLOAT);
+        Texture2D(int width, int height, TextureParameter params, void *buf,
+                  gtype::Format tex_format = gtype::Format::RGB,
+                  gtype::Format tex_internal_format = gtype::Format::RGB32F,
+                  gtype::DataType datatype = gtype::DataType::FLOAT);
+        Texture2D() = delete;
 
     private:
         void SettingTexture() override;

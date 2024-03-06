@@ -13,13 +13,13 @@ namespace NoobRenderer
                 "Resource/Shader/Deferred/Screen.vert",
                 "Resource/Shader/Deferred/SSAOBlurPass.frag");
             m_rt = std::make_shared<WriteToTexture>(width, height);
-            m_rt->SetTexture2D<ColorTexture>(GL_COLOR_ATTACHMENT0, width, height, gtype::Format::RGB, gtype::Format::RED, gtype::DataType::FLOAT);
+            m_rt->SetTexture2D<Texture2D>(GL_COLOR_ATTACHMENT0, width, height, gtype::Format::RGB, gtype::Format::RED, gtype::DataType::FLOAT);
             m_rt->SetRenderBuffer<RenderBuffer>(GL_DEPTH_ATTACHMENT, width, height, GL_DEPTH_COMPONENT);
             std::cout << "SSAOPass RT::Constructor() status = " << glCheckFramebufferStatus(GL_FRAMEBUFFER) << std::endl;
             m_rt->Unbind();
 
             m_ssao = std::make_shared<WriteToTexture>(width, height);
-            m_ssao->SetTexture2D<ColorTexture>(GL_COLOR_ATTACHMENT0, width, height, gtype::Format::RGB, gtype::Format::RED, gtype::DataType::FLOAT);
+            m_ssao->SetTexture2D<Texture2D>(GL_COLOR_ATTACHMENT0, width, height, gtype::Format::RGB, gtype::Format::RED, gtype::DataType::FLOAT);
             m_ssao->SetRenderBuffer<RenderBuffer>(GL_DEPTH_ATTACHMENT, width, height, GL_DEPTH_COMPONENT);
             std::cout << "SSAOPass RT::Constructor() status = " << glCheckFramebufferStatus(GL_FRAMEBUFFER) << std::endl;
             m_ssao->Unbind();
@@ -50,7 +50,7 @@ namespace NoobRenderer
             params.Add(gtype::TexParaType::MagFilter, gtype::TexPara::Nearest);
             params.Add(gtype::TexParaType::WrapS, gtype::TexPara::Repeat);
             params.Add(gtype::TexParaType::WrapT, gtype::TexPara::Repeat);
-            m_noise = std::make_shared<ColorTexture>(4, 4, params, &ssaoNoise[0], gtype::Format::RGB, gtype::Format::RGB16F, gtype::DataType::FLOAT);
+            m_noise = std::make_shared<Texture2D>(4, 4, params, &ssaoNoise[0], gtype::Format::RGB, gtype::Format::RGB16F, gtype::DataType::FLOAT);
             m_noise->Unbind();
         }
         void SSAOPass::Rescale(unsigned int width, unsigned int height)

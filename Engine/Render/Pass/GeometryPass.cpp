@@ -17,13 +17,13 @@ namespace NoobRenderer
             gPositionDepthParams.Add(TexParaType::MagFilter, TexPara::Nearest);
             gPositionDepthParams.Add(TexParaType::WrapS, TexPara::ClampEdge);
             gPositionDepthParams.Add(TexParaType::WrapT, TexPara::ClampEdge);
-            m_rt->SetTexture2D<ColorTexture>(GL_COLOR_ATTACHMENT0, width, height,
-                                             gPositionDepthParams, Format::RGBA, Format::RGBA32F, DataType::FLOAT);                   // G-Buffer: gPositionDepth
-            m_rt->SetTexture2D<ColorTexture>(GL_COLOR_ATTACHMENT1, width, height);                                                    // G-Buffer: gNormal
-            m_rt->SetTexture2D<ColorTexture>(GL_COLOR_ATTACHMENT2, width, height);                                                    // G-Buffer: gAlbedo
-            m_rt->SetTexture2D<ColorTexture>(GL_COLOR_ATTACHMENT3, width, height);                                                    // G-Buffer: gMetalRoughAo
-            m_rt->SetTexture2D<ColorTexture>(GL_COLOR_ATTACHMENT4, width, height);                                                    // G-Buffer: gEmission
-            m_rt->SetTexture2D<ColorTexture>(GL_COLOR_ATTACHMENT5, width, height, Format::RGB, Format::RED, DataType::UNSIGNED_BYTE); // G-Buffer: gStencil
+            m_rt->SetTexture2D<Texture2D>(GL_COLOR_ATTACHMENT0, width, height,
+                                          gPositionDepthParams, Format::RGBA, Format::RGBA32F, DataType::FLOAT);                   // G-Buffer: gPositionDepth
+            m_rt->SetTexture2D<Texture2D>(GL_COLOR_ATTACHMENT1, width, height);                                                    // G-Buffer: gNormal
+            m_rt->SetTexture2D<Texture2D>(GL_COLOR_ATTACHMENT2, width, height);                                                    // G-Buffer: gAlbedo
+            m_rt->SetTexture2D<Texture2D>(GL_COLOR_ATTACHMENT3, width, height);                                                    // G-Buffer: gMetalRoughAo
+            m_rt->SetTexture2D<Texture2D>(GL_COLOR_ATTACHMENT4, width, height);                                                    // G-Buffer: gEmission
+            m_rt->SetTexture2D<Texture2D>(GL_COLOR_ATTACHMENT5, width, height, Format::RGB, Format::RED, DataType::UNSIGNED_BYTE); // G-Buffer: gStencil
             m_rt->SetRenderBuffer<RenderBuffer>(GL_DEPTH_STENCIL_ATTACHMENT, width, height, GL_DEPTH24_STENCIL8);
             m_rt->ExplicitColorAttach();
             m_rt->Unbind();

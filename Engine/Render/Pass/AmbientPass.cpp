@@ -14,8 +14,8 @@ namespace NoobRenderer
                 "Resource/Shader/Deferred/CubeMap.vert",
                 "Resource/Shader/Deferred/CubeMap.frag");
             m_rt = std::make_shared<WriteToTexture>(width, height);
-            m_rt->SetTexture2D<ColorTexture>(GL_COLOR_ATTACHMENT0, width, height,
-                                             gtype::Format::RGBA, gtype::Format::RGBA16F, gtype::DataType::FLOAT);
+            m_rt->SetTexture2D<Texture2D>(GL_COLOR_ATTACHMENT0, width, height,
+                                          gtype::Format::RGBA, gtype::Format::RGBA16F, gtype::DataType::FLOAT);
             m_rt->SetRenderBuffer<RenderBuffer>(GL_DEPTH_ATTACHMENT, width, height, GL_DEPTH_COMPONENT);
             m_rt->Unbind();
             std::cout << "AmbientPass RT::Constructor() status = " << glCheckFramebufferStatus(GL_FRAMEBUFFER) << std::endl;

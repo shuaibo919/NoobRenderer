@@ -20,20 +20,20 @@ namespace NoobRenderer
                 "Resource/Shader/Deferred/ScreenBlur.frag");
 
             m_rt = std::make_shared<WriteToTexture>(width, height);
-            m_rt->SetTexture2D<ColorTexture>(GL_COLOR_ATTACHMENT0, width, height,
-                                             gtype::Format::RGBA, gtype::Format::RGBA32F, gtype::DataType::FLOAT);
+            m_rt->SetTexture2D<Texture2D>(GL_COLOR_ATTACHMENT0, width, height,
+                                          gtype::Format::RGBA, gtype::Format::RGBA32F, gtype::DataType::FLOAT);
             m_rt->SetRenderBuffer<RenderBuffer>(GL_DEPTH_ATTACHMENT, width, height, GL_DEPTH_COMPONENT);
             m_rt->Unbind();
             std::cout << "LightPass RT::Constructor() status = " << glCheckFramebufferStatus(GL_FRAMEBUFFER) << std::endl;
 
             m_volumetric_light_rt = std::make_shared<WriteToTexture>(width, height);
-            m_volumetric_light_rt->SetTexture2D<ColorTexture>(GL_COLOR_ATTACHMENT0, width, height);
+            m_volumetric_light_rt->SetTexture2D<Texture2D>(GL_COLOR_ATTACHMENT0, width, height);
             m_volumetric_light_rt->SetRenderBuffer<RenderBuffer>(GL_DEPTH_ATTACHMENT, width, height, GL_DEPTH_COMPONENT);
             m_volumetric_light_rt->Unbind();
             std::cout << "LightPass Volumetric RT::Constructor() status = " << glCheckFramebufferStatus(GL_FRAMEBUFFER) << std::endl;
 
             m_blur_rt = std::make_shared<WriteToTexture>(width, height);
-            m_blur_rt->SetTexture2D<ColorTexture>(GL_COLOR_ATTACHMENT0, width, height, gtype::Format::RGBA, gtype::Format::RGBA, gtype::DataType::FLOAT);
+            m_blur_rt->SetTexture2D<Texture2D>(GL_COLOR_ATTACHMENT0, width, height, gtype::Format::RGBA, gtype::Format::RGBA, gtype::DataType::FLOAT);
             m_blur_rt->SetRenderBuffer<RenderBuffer>(GL_DEPTH_ATTACHMENT, width, height, GL_DEPTH_COMPONENT);
             std::cout << "LightPass Blur Color RT::Constructor() status = " << glCheckFramebufferStatus(GL_FRAMEBUFFER) << std::endl;
             m_blur_rt->Unbind();

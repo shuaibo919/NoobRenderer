@@ -9,7 +9,7 @@ namespace NoobRenderer
         private:
             ShaderProgram::Ptr m_shader{nullptr};
             ShaderProgram::Ptr m_blur{nullptr};
-            ColorTexture::Ptr m_noise{nullptr};
+            Texture2D::Ptr m_noise{nullptr};
             WriteToTexture::Ptr m_ssao{nullptr};
             std::vector<glm::vec3> m_kernel;
             std::array<std::string, 2> RenderStorageInputKey{

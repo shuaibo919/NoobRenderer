@@ -11,7 +11,7 @@ namespace NoobRenderer
                 "Resource/Shader/Deferred/SSRPass.vert",
                 "Resource/Shader/Deferred/SSRPass.frag");
             m_rt = std::make_shared<WriteToTexture>(width, height);
-            m_rt->SetTexture2D<ColorTexture>(GL_COLOR_ATTACHMENT0, width, height, gtype::Format::RGB, gtype::Format::RGB16F, gtype::DataType::FLOAT);
+            m_rt->SetTexture2D<Texture2D>(GL_COLOR_ATTACHMENT0, width, height, gtype::Format::RGB, gtype::Format::RGB16F, gtype::DataType::FLOAT);
             m_rt->SetRenderBuffer<RenderBuffer>(GL_DEPTH_ATTACHMENT, width, height, GL_DEPTH_COMPONENT);
             std::cout << "SSRPass RT::Constructor() status = " << glCheckFramebufferStatus(GL_FRAMEBUFFER) << std::endl;
             m_rt->Unbind();
