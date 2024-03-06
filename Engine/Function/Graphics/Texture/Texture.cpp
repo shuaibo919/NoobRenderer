@@ -6,20 +6,12 @@ OrdinaryTexture::OrdinaryTexture(const std::string &path, const Texture::Type &t
     : TextureBase(0, 0, type, gtype::TexType::Tex2D, gtype::Format::NONE, gtype::Format::NONE, datatype),
       m_path(path)
 {
-    this->m_params.Add(gtype::TexParaType::MinFilter, gtype::TexPara::LinearMipmapLinear);
-    this->m_params.Add(gtype::TexParaType::MagFilter, gtype::TexPara::Linear);
-    this->m_params.Add(gtype::TexParaType::WrapS, gtype::TexPara::Repeat);
-    this->m_params.Add(gtype::TexParaType::WrapT, gtype::TexPara::Repeat);
     SettingTextureFromFile(m_path);
 }
 OrdinaryTexture::OrdinaryTexture(const std::string &path, int specify_channel, const Texture::Type &type, gtype::DataType datatype)
     : TextureBase(0, 0, type, gtype::TexType::Tex2D, gtype::Format::NONE, gtype::Format::NONE, datatype),
       m_path(path)
 {
-    this->m_params.Add(gtype::TexParaType::MinFilter, gtype::TexPara::LinearMipmapLinear);
-    this->m_params.Add(gtype::TexParaType::MagFilter, gtype::TexPara::Linear);
-    this->m_params.Add(gtype::TexParaType::WrapS, gtype::TexPara::Repeat);
-    this->m_params.Add(gtype::TexParaType::WrapT, gtype::TexPara::Repeat);
     if (specify_channel < 0)
     {
         SettingTextureFromFile(m_path);
@@ -29,29 +21,6 @@ OrdinaryTexture::OrdinaryTexture(const std::string &path, int specify_channel, c
         SettingTextureFromFile(m_path, specify_channel);
     }
 }
-
-OrdinaryTexture::OrdinaryTexture(unsigned int width, unsigned int height, const Texture::Type &type,
-                                 gtype::Format _tf, gtype::Format _tif, gtype::DataType datatype)
-    : TextureBase(width, height, type, gtype::TexType::Tex2D, _tf, _tif, datatype),
-      m_path("")
-{
-    this->m_params.Add(gtype::TexParaType::MinFilter, gtype::TexPara::Linear);
-    this->m_params.Add(gtype::TexParaType::MagFilter, gtype::TexPara::Linear);
-    SettingTexture();
-}
-
-OrdinaryTexture::OrdinaryTexture(void *data, unsigned int width, unsigned int height, const Texture::Type &type,
-                                 gtype::Format _tf, gtype::Format _tif, gtype::DataType datatype)
-    : TextureBase(width, height, type, gtype::TexType::Tex2D, _tf, _tif, datatype),
-      m_path("")
-{
-    this->m_params.Add(gtype::TexParaType::MinFilter, gtype::TexPara::LinearMipmapLinear);
-    this->m_params.Add(gtype::TexParaType::MagFilter, gtype::TexPara::Linear);
-    this->m_params.Add(gtype::TexParaType::MinFilter, gtype::TexPara::Linear);
-    this->m_params.Add(gtype::TexParaType::MagFilter, gtype::TexPara::Linear);
-    SettingTextureFromData(data);
-}
-
 OrdinaryTexture::OrdinaryTexture(const OrdinaryTexture &texture)
     : m_path(texture.m_path), TextureBase(texture)
 {
@@ -67,18 +36,7 @@ void OrdinaryTexture::SettingTexture()
     GLenum target = static_cast<GLenum>(m_basetype);
     this->Bind();
     this->TexImage2D(target, 0, 0, NULL);
-    this->m_params.Apply(target);
 }
-
-void OrdinaryTexture::SettingTextureFromData(void *data)
-{
-    GLenum base_type = static_cast<GLenum>(m_basetype);
-    this->Bind();
-    this->m_params.Apply(base_type);
-    this->TexImage2D(base_type, 0, 0, data);
-    this->GenerateMipmap();
-}
-
 void OrdinaryTexture::SettingTextureFromFile(const std::string &path)
 {
     stbi_set_flip_vertically_on_load(false);
@@ -93,7 +51,6 @@ void OrdinaryTexture::SettingTextureFromFile(const std::string &path)
 
     GLenum base_type = static_cast<GLenum>(m_basetype);
     this->Bind();
-    this->m_params.Apply(base_type);
     this->TexImage2D(base_type, 0, 0, data);
     if (data)
     {
@@ -118,7 +75,10 @@ void OrdinaryTexture::SettingTextureFromFile(const std::string &path, int channe
         m_internalformat = gtype::Format::RGB;
 
         GLenum base_type = static_cast<GLenum>(m_basetype);
-        SettingTextureFromData(data_channel);
+        GLenum base_type = static_cast<GLenum>(m_basetype);
+        this->Bind();
+        this->TexImage2D(base_type, 0, 0, data_channel);
+        this->GenerateMipmap();
         delete[] data_channel;
         stbi_image_free(data);
     }

@@ -12,7 +12,7 @@ namespace NoobRenderer
     public:
         using Ptr = std::shared_ptr<CubeMapTexture>;
         CubeMapTexture(unsigned int width, unsigned int height, gtype::Format format, gtype::Format interformat,
-                       gtype::DataType datatype, TextureParameter texParas);
+                       gtype::DataType datatype);
         CubeMapTexture() = delete;
 
     private:
