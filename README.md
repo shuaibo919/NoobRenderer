@@ -24,8 +24,11 @@ cmake --build . -j32
 - PBR, Physically based rendering
 - SSR, SSAO
 - IBL, Image based lighting
-- volumetric Lighting
-- Future Work: ......
+- Volumetric Lighting
+> - Future Work:
+>    - [] VXGI (Work in progress)
+>    - [] Area Light (Waits to be merged into remote branch)
+
 
 ### Reference
 - [Learnopengl](https://learnopengl.com/)
@@ -39,3 +42,4 @@ cmake --build . -j32
 - https://lettier.github.io/3d-game-shaders-for-beginners/screen-space-reflection.html
 - [Linearly Transformed Cosines](https://eheitzresearch.wordpress.com/415-2/)
 - https://sugulee.wordpress.com/2021/01/19/screen-space-reflections-implementation-and-optimization-part-2-hi-z-tracing-method/
+- https://jose-villegas.github.io/post/deferred_voxel_shading/
