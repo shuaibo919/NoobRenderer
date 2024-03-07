@@ -26,8 +26,8 @@ cmake --build . -j32
 - IBL, Image based lighting
 - Volumetric Lighting
 > - Future Work:
->    - [] VXGI (Work in progress)
->    - [] Area Light (Waits to be merged into remote branch)
+>    - [ ] VXGI (Work in progress)
+>    - [ ] Area Light (Waits to be merged into remote branch)
 
 
 ### Reference
