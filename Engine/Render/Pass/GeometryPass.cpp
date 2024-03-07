@@ -1,5 +1,5 @@
 #include "Engine/Render/Pass/GeometryPass.h"
-#include "Engine/Render/Pass/Utils.h"
+#include "Engine/Render/Collections/Utils.h"
 #include <random>
 namespace NoobRenderer
 {
@@ -64,12 +64,12 @@ namespace NoobRenderer
                 /* Mesh Material Setting */
                 auto material = std::dynamic_pointer_cast<PBRMaterial>(mesh_ptr->GetMaterial());
                 Texture::ResetSlot();
-                auto has_albedo = passutils::SetMaterialUniform(material->albedo, m_shader, "albedo", passutils::MatUniValue::Vec3);
-                auto has_emission = passutils::SetMaterialUniform(material->emission, m_shader, "emission", passutils::MatUniValue::Vec3);
+                auto has_albedo = utils::SetMaterialUniform(material->albedo, m_shader, "albedo", utils::MatUniValue::Vec3);
+                auto has_emission = utils::SetMaterialUniform(material->emission, m_shader, "emission", utils::MatUniValue::Vec3);
                 // auto has_ao = passutils::SetMaterialUniform(material->ao, m_shader, "ao", passutils::MatUniValue::Float);
-                auto has_metallic = passutils::SetMaterialUniform(material->metallic, m_shader, "metallic", passutils::MatUniValue::Float);
-                auto has_roughness = passutils::SetMaterialUniform(material->roughness, m_shader, "roughness", passutils::MatUniValue::Float);
-                auto has_normal = passutils::SetMaterialUniform(material->normal, m_shader);
+                auto has_metallic = utils::SetMaterialUniform(material->metallic, m_shader, "metallic", utils::MatUniValue::Float);
+                auto has_roughness = utils::SetMaterialUniform(material->roughness, m_shader, "roughness", utils::MatUniValue::Float);
+                auto has_normal = utils::SetMaterialUniform(material->normal, m_shader);
                 // auto has_height = SetMaterialUniform(material->height, m_lightShader);
                 m_shader->SetUniform("hasAlbedo", static_cast<float>(has_albedo));
                 m_shader->SetUniform("hasEmission", static_cast<float>(has_emission));
