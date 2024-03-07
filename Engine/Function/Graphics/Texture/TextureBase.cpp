@@ -60,11 +60,14 @@ void TextureBase::Bind()
 {
     glBindTexture(static_cast<GLenum>(m_basetype), m_id);
 }
+void TextureBase::BindImage(GLuint unit, GLint level, GLboolean layered, GLint layer, GLenum access, GLenum format)
+{
+    glBindImageTexture(unit, m_id, level, layered, layer, access, format);
+}
 void TextureBase::Unbind()
 {
     glBindTexture(static_cast<GLenum>(m_basetype), 0);
 }
-
 void TextureBase::Activate()
 {
     m_tmp_slot = Texture::UseSlot();
@@ -74,6 +77,10 @@ void TextureBase::Activate()
 void TextureBase::Deactivate()
 {
     Unbind();
+}
+void TextureBase::ClearTexImage(GLint level, const void *pixels)
+{
+    glClearTexImage(m_id, level, static_cast<GLenum>(m_format), static_cast<GLenum>(m_datatype), pixels);
 }
 void TextureBase::SetParameter(GLenum pname, GLfloat value)
 {

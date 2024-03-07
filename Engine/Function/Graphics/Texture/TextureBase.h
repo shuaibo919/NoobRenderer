@@ -114,6 +114,8 @@ namespace NoobRenderer
         void SetParameterAndSave(GLenum pname, GLfloat *value);
         void SetParameterAndSave(GLenum pname, GLint value);
         void SetParameterAndSave(GLenum pname, GLint *value);
+        void ClearTexImage(GLint level, const void *pixels);
+        void BindImage(GLuint unit, GLint level, GLboolean layered, GLint layer, GLenum access, GLenum format);
 
     public:
         inline GLuint GetID() const { return m_id; }
