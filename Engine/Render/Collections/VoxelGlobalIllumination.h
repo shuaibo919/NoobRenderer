@@ -20,6 +20,9 @@ namespace NoobRenderer
             inline static WriteToTexture::Ptr gi_rt{nullptr};
             static void Init(component::VoxelGlobalIllumination &gi);
             static void Voxelize(Scene::Ptr &scene, component::VoxelGlobalIllumination &gi);
+            static void LightInjection(Scene::Ptr &scene, component::VoxelGlobalIllumination &gi);
+            static void BuildMipmap(Scene::Ptr &scene, component::VoxelGlobalIllumination &gi);
+            static void ConeTracing(Scene::Ptr &scene, component::VoxelGlobalIllumination &gi);
 
         public:
             static void Apply(Scene::Ptr &scene, component::VoxelGlobalIllumination &gi);

@@ -21,6 +21,7 @@ namespace NoobRenderer
             ComponentRegisterationMap::Register<component::Camera>("Camera");
             ComponentRegisterationMap::Register<component::IBLCubeMap>("IBLCubeMap");
             ComponentRegisterationMap::Register<component::ScreenSpaceReflection>("ScreenSpaceReflection");
+            ComponentRegisterationMap::Register<component::VoxelGlobalIllumination>("VoxelGlobalIllumination");
             ComponentRegisterationMap::RegisterPreCalculation<component::IBLCubeMap>(&component::IBLCubeMap::ConductPreCalculation);
             // Todo: LTC PreCalculation
             // ComponentRegisterationMap::RegisterPreCalculation<component::AreaLight>()
