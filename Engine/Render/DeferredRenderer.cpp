@@ -43,6 +43,10 @@ namespace NoobRenderer
             FinalPass.Render(current_scene, RTS);
             id = RTS.Get("Result")->GetID();
         }
+        WriteToTexture::Ptr &DeferredRenderer::GetGeometryInfo()
+        {
+            return GPass.GetRenderTexture();
+        }
 
     }
 }
