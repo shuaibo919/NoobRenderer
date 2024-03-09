@@ -23,11 +23,11 @@ void FrameBuffer::ToTexture(int attachment, int texturePrimitive, int textureID)
     glFramebufferTexture2D(GL_FRAMEBUFFER, attachment, texturePrimitive, textureID, 0);
 }
 
-void FrameBuffer::BlitFrom(FrameBuffer::Ptr &frameBuffer, unsigned int width, unsigned int height)
+void FrameBuffer::BlitBufferFrom(FrameBuffer::Ptr &frameBuffer, unsigned int width, unsigned int height, GLbitfield mask, GLenum filter)
 {
     glBindFramebuffer(GL_READ_FRAMEBUFFER, id);
     glBindFramebuffer(GL_DRAW_FRAMEBUFFER, frameBuffer->GetID());
-    glBlitFramebuffer(0, 0, width, height, 0, 0, width, height, GL_COLOR_BUFFER_BIT, GL_NEAREST);
+    glBlitFramebuffer(0, 0, width, height, 0, 0, width, height, mask, filter);
 }
 
 void FrameBuffer::SetRenderBuffer(unsigned int attachment, unsigned int renderBufferID)

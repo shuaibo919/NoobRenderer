@@ -21,7 +21,7 @@ namespace NoobRenderer
             void Resize(unsigned int width, unsigned int height) override;
             void Update() override;
             void Init() override;
-            WriteToTexture::Ptr &GetGeometryInfo() override;
+            WriteToTexture::Ptr &GetRTHasGeometryInfo() override;
 
         public:
             GeometryPass GPass;

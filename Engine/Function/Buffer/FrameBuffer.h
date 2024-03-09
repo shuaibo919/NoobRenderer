@@ -18,7 +18,7 @@ namespace NoobRenderer
 
     public:
         void ToTexture(int attachment, int texturePrimitive, int textureID);
-        void BlitFrom(FrameBuffer::Ptr &frameBuffer, unsigned int width, unsigned int height);
+        void BlitBufferFrom(FrameBuffer::Ptr &frameBuffer, unsigned int width, unsigned int height, GLbitfield mask = GL_COLOR_BUFFER_BIT, GLenum filter = GL_NEAREST);
         void SetRenderBuffer(unsigned int attachment, unsigned int renderBufferID);
         void SetTexture2D(unsigned int attachment, unsigned int textureId, GLenum textarget = GL_TEXTURE_2D, int level = 0);
         void SetTexture3D(unsigned int attachment, unsigned int textureId, int level = 0, int zoffset = 0);

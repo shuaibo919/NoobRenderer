@@ -26,7 +26,7 @@ namespace NoobRenderer
             FPass.Render(current_scene, RTS);
             id = RTS.Get("Result")->GetID();
         }
-        WriteToTexture::Ptr &ForwardPBRRenderer::GetGeometryInfo()
+        WriteToTexture::Ptr &ForwardPBRRenderer::GetRTHasGeometryInfo()
         {
             return FPass.GetRenderTexture();
         }

@@ -24,7 +24,7 @@ namespace NoobRenderer
     public:
         void ExplicitColorAttach();
         void DiscardRenderBuffer();
-        void BlitFrom(const WriteToTexture::Ptr &write2tex);
+        void BlitBufferFrom(const WriteToTexture::Ptr &write2tex, GLbitfield mask = GL_COLOR_BUFFER_BIT, GLenum filter = GL_NEAREST);
         TextureBase::Ptr &GetTexture(int idx = 0);
         void ActivateTex(int idx = 0);
         void DeactivateTex(int tex_idx = 0);

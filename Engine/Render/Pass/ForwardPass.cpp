@@ -47,7 +47,7 @@ namespace NoobRenderer
             //     glViewport(0, 0, m_rt->GetWidth(), m_rt->GetHeight());
             //     SetSceneUniforms(scene, input);
             // }
-            // m_msaa_offline->BlitFrom(m_rt);
+            // m_msaa_offline->BlitBufferFrom(m_rt);
             // m_msaa_offline->Unbind();
             // input.Insert(RenderStorageOutputKey[0], m_rt->GetTexture(0));
         }

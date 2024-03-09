@@ -37,7 +37,7 @@ namespace NoobRenderer
             virtual void Resize(unsigned int width, unsigned int height){};
             virtual void Init(){};
             virtual void Update(){};
-            virtual WriteToTexture::Ptr &GetGeometryInfo() = 0;
+            virtual WriteToTexture::Ptr &GetRTHasGeometryInfo() = 0;
 
         protected:
             GLint id{-1};

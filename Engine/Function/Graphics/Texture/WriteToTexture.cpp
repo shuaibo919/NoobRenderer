@@ -24,10 +24,10 @@ void WriteToTexture::DiscardRenderBuffer()
     glNamedFramebufferDrawBuffer(m_fbo->GetID(), GL_NONE);
     glNamedFramebufferReadBuffer(m_fbo->GetID(), GL_NONE);
 }
-void WriteToTexture::BlitFrom(const WriteToTexture::Ptr &write2tex)
+void WriteToTexture::BlitBufferFrom(const WriteToTexture::Ptr &write2tex, GLbitfield mask, GLenum filter)
 {
     auto fbo = write2tex->m_fbo;
-    m_fbo->BlitFrom(fbo, m_width, m_height);
+    m_fbo->BlitBufferFrom(fbo, m_width, m_height, mask, filter);
 }
 void WriteToTexture::Rescale(unsigned int width, unsigned int height)
 {
