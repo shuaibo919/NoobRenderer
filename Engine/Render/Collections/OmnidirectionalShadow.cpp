@@ -8,7 +8,7 @@ namespace NoobRenderer
 
             m_map = std::make_shared<WriteToTexture>(width, height);
             GLfloat borderColor[] = {0.0, 0.0, 0.0, 1.0};
-            m_map->SetTexture<CubeMapTexture>(GL_DEPTH_ATTACHMENT, width, height, gtype::Format::DEPTH_COMPONENT, gtype::Format::DEPTH_COMPONENT, gtype::DataType::FLOAT);
+            m_map->SetTexture<CubeMapTexture>(GL_DEPTH_ATTACHMENT, width, height, Texture::Format::DEPTH_COMPONENT, Texture::Format::DEPTH_COMPONENT, Texture::DataType::FLOAT);
             m_map->GetTexture()->SetParameter(GL_TEXTURE_MIN_FILTER, GL_NEAREST);
             m_map->GetTexture()->SetParameter(GL_TEXTURE_MAG_FILTER, GL_NEAREST);
             m_map->GetTexture()->SetParameter(GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);

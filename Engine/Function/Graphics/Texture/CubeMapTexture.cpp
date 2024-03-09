@@ -1,8 +1,8 @@
 #include "Engine/Function/Graphics/Texture/CubeMapTexture.h"
 using namespace NoobRenderer;
-CubeMapTexture::CubeMapTexture(unsigned int width, unsigned int height, gtype::Format format, gtype::Format interformat,
-                               gtype::DataType datatype)
-    : TextureBase(width, height, Texture::Type::TextureCubeMap, gtype::TexType::TexCube, format, interformat, datatype)
+CubeMapTexture::CubeMapTexture(unsigned int width, unsigned int height, Texture::Format format, Texture::Format interformat,
+                               Texture::DataType datatype)
+    : TextureBase(width, height, Texture::Type::TextureCubeMap, Texture::BaseType::TexCube, format, interformat, datatype)
 {
     SettingTexture();
 }

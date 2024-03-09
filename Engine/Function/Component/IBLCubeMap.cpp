@@ -21,12 +21,12 @@ namespace NoobRenderer
             tmp[5] = glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, -1.0f, 0.0f));
             return tmp;
         }
-        CubeMapTexture::Ptr CreateFromHDRTexture(unsigned int width, unsigned int height, OrdinaryTexture::Ptr &hdr_texture)
+        CubeMapTexture::Ptr CreateFromHDRTexture(unsigned int width, unsigned int height, Texture2D::Ptr &hdr_texture)
         {
             auto fbo = std::make_shared<FrameBuffer>();
             auto rbo = std::make_shared<RenderBuffer>(width, height, GL_DEPTH_COMPONENT24);
             fbo->SetRenderBuffer(GL_DEPTH_ATTACHMENT, rbo->GetID());
-            auto tex = std::make_shared<CubeMapTexture>(width, height, gtype::Format::RGB, gtype::Format::RGB16F, gtype::DataType::FLOAT);
+            auto tex = std::make_shared<CubeMapTexture>(width, height, Texture::Format::RGB, Texture::Format::RGB16F, Texture::DataType::FLOAT);
             tex->SetParameter(GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
             tex->SetParameter(GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
             tex->SetParameter(GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
@@ -61,8 +61,8 @@ namespace NoobRenderer
             auto fbo = std::make_shared<FrameBuffer>();
             auto rbo = std::make_shared<RenderBuffer>(width, height, GL_DEPTH_COMPONENT24);
             fbo->SetRenderBuffer(GL_DEPTH_ATTACHMENT, rbo->GetID());
-            auto tex = std::make_shared<CubeMapTexture>(width, height, gtype::Format::RGB, gtype::Format::RGB16F,
-                                                        gtype::DataType::FLOAT);
+            auto tex = std::make_shared<CubeMapTexture>(width, height, Texture::Format::RGB, Texture::Format::RGB16F,
+                                                        Texture::DataType::FLOAT);
             tex->SetParameter(GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
             tex->SetParameter(GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
             tex->SetParameter(GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
@@ -98,8 +98,8 @@ namespace NoobRenderer
             auto fbo = std::make_shared<FrameBuffer>();
             auto rbo = std::make_shared<RenderBuffer>(width, height, GL_DEPTH_COMPONENT24);
             fbo->SetRenderBuffer(GL_DEPTH_ATTACHMENT, rbo->GetID());
-            auto tex = std::make_shared<CubeMapTexture>(width, height, gtype::Format::RGB, gtype::Format::RGB16F,
-                                                        gtype::DataType::FLOAT);
+            auto tex = std::make_shared<CubeMapTexture>(width, height, Texture::Format::RGB, Texture::Format::RGB16F,
+                                                        Texture::DataType::FLOAT);
             tex->SetParameter(GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
             tex->SetParameter(GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
             tex->SetParameter(GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
@@ -147,7 +147,7 @@ namespace NoobRenderer
             auto fbo = std::make_shared<FrameBuffer>();
             auto rbo = std::make_shared<RenderBuffer>(width, height, GL_DEPTH_COMPONENT24);
             fbo->SetRenderBuffer(GL_DEPTH_ATTACHMENT, rbo->GetID());
-            auto tex = std::make_shared<Texture2D>(width, height, gtype::Format::RG, gtype::Format::RG16F, gtype::DataType::FLOAT);
+            auto tex = std::make_shared<Texture2D>(width, height, Texture::Format::RG, Texture::Format::RG16F, Texture::DataType::FLOAT);
             tex->SetParameter(GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
             tex->SetParameter(GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
             tex->SetParameter(GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -173,7 +173,7 @@ namespace NoobRenderer
             auto ptr = static_cast<IBLCubeMap *>(typeAny);
             if (ptr->name.empty())
                 return;
-            ptr->RawHDRTexture = std::make_shared<OrdinaryTexture>(ptr->name);
+            ptr->RawHDRTexture = std::make_shared<Texture2D>(ptr->name);
             ptr->RawHDRTexture->SetParameter(GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
             ptr->RawHDRTexture->SetParameter(GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
             ptr->RawHDRTexture->SetParameter(GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -188,7 +188,7 @@ namespace NoobRenderer
         {
             if (this->name.empty())
                 return;
-            this->RawHDRTexture = std::make_shared<OrdinaryTexture>(this->name);
+            this->RawHDRTexture = std::make_shared<Texture2D>(this->name);
             this->RawHDRTexture->SetParameter(GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
             this->RawHDRTexture->SetParameter(GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
             this->RawHDRTexture->SetParameter(GL_TEXTURE_MIN_FILTER, GL_LINEAR);

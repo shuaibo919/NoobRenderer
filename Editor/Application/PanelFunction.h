@@ -14,7 +14,7 @@ namespace NoobRenderer
         class FunctionPanel
         {
         private:
-            std::unordered_map<std::string, OrdinaryTexture::Ptr> m_resource_icons;
+            std::unordered_map<std::string, Texture2D::Ptr> m_resource_icons;
             std::string m_name;
             bool m_show;
             bool m_show_debug;

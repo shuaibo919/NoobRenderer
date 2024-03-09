@@ -1,8 +1,8 @@
 #include "Engine/Function/Graphics/Texture/MultiSampleTexture.h"
 using namespace NoobRenderer;
-MultiSampleTexture::MultiSampleTexture(unsigned int width, unsigned int height, gtype::Format internalformat, int samples,
+MultiSampleTexture::MultiSampleTexture(unsigned int width, unsigned int height, Texture::Format internalformat, int samples,
                                        const Texture::Type &type)
-    : TextureBase(width, height, Texture::Type::TextureColorBuffer, gtype::TexType::Tex2DMultisample, internalformat, internalformat, gtype::DataType::UNSIGNED_BYTE)
+    : TextureBase(width, height, Texture::Type::TextureColorBuffer, Texture::BaseType::Tex2DMultisample, internalformat, internalformat, Texture::DataType::UNSIGNED_BYTE)
 {
     SettingTexture();
 }

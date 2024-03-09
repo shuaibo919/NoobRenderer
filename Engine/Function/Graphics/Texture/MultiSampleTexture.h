@@ -8,7 +8,7 @@ namespace NoobRenderer
     {
     public:
         using Ptr = std::shared_ptr<MultiSampleTexture>;
-        MultiSampleTexture(unsigned int width, unsigned int height, gtype::Format internalformat, int samples,
+        MultiSampleTexture(unsigned int width, unsigned int height, Texture::Format internalformat, int samples,
                            const Texture::Type &type = Texture::Type::TextureColorBuffer);
         MultiSampleTexture() = delete;
 

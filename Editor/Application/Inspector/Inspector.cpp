@@ -39,7 +39,7 @@ namespace NoobRenderer
             auto getfile = common::ShowFileDiaglogue(std::string(name));
             if (getfile.first != "")
             {
-                auto tex_2d = std::make_shared<OrdinaryTexture>(getfile.first, type);
+                auto tex_2d = std::make_shared<Texture2D>(getfile.first, type);
                 mattex = std::make_shared<MaterialTexture>(tex_2d);
             }
             ImGui::PopStyleVar();

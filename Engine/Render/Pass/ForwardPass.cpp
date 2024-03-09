@@ -19,7 +19,7 @@ namespace NoobRenderer
             m_rt = std::make_shared<WriteToTexture>(width, height);
             m_rt->SetRenderBuffer<RenderBuffer>(GL_DEPTH_STENCIL_ATTACHMENT, width, height, GL_DEPTH24_STENCIL8);
             m_rt->SetTexture2D<Texture2D>(GL_COLOR_ATTACHMENT0, width, height,
-                                          gtype::Format::RGBA, gtype::Format::RGB16F, gtype::DataType::FLOAT);
+                                          Texture::Format::RGBA, Texture::Format::RGB16F, Texture::DataType::FLOAT);
             m_rt->GetTexture()->SetParameterAndSave(GL_TEXTURE_MIN_FILTER, GL_NEAREST);
             m_rt->GetTexture()->SetParameterAndSave(GL_TEXTURE_MAG_FILTER, GL_NEAREST);
             std::cout << "ForwardPass Screen::Constructor() status = " << glCheckFramebufferStatus(GL_FRAMEBUFFER) << std::endl;
@@ -27,7 +27,7 @@ namespace NoobRenderer
             int samples = 4;
             m_msaa_offline = std::make_shared<WriteToTexture>(width, height);
             m_msaa_offline->SetRenderBuffer<MultiSampleRenderBuffer>(GL_DEPTH_STENCIL_ATTACHMENT, width, height, GL_DEPTH24_STENCIL8, samples);
-            m_msaa_offline->SetTexture2D<MultiSampleTexture>(GL_COLOR_ATTACHMENT0, width, height, gtype::Format::RGB, samples);
+            m_msaa_offline->SetTexture2D<MultiSampleTexture>(GL_COLOR_ATTACHMENT0, width, height, Texture::Format::RGB, samples);
             std::cout << "ForwardPass MSAA offline::Constructor() status = " << glCheckFramebufferStatus(GL_FRAMEBUFFER) << std::endl;
             m_msaa_offline->Unbind();
         }

@@ -8,7 +8,7 @@ using namespace NoobRenderer;
 
 namespace LoadingUtils
 {
-    static std::unordered_map<std::string, OrdinaryTexture::Ptr> texure_cache;
+    static std::unordered_map<std::string, Texture2D::Ptr> texure_cache;
 
     static Texture::Type FromaiTextureType(aiTextureType type)
     {
@@ -38,7 +38,7 @@ namespace LoadingUtils
         return Texture::Type::None;
     }
 
-    static NoobRenderer::OrdinaryTexture::Ptr ReadMaterialUsingAssimp(aiMaterial *mat, aiTextureType type, const std::string &dir, int specifc_channel = -1)
+    static NoobRenderer::Texture2D::Ptr ReadMaterialUsingAssimp(aiMaterial *mat, aiTextureType type, const std::string &dir, int specifc_channel = -1)
     {
         auto load_type = FromaiTextureType(type);
         auto counts = mat->GetTextureCount(type);
@@ -47,14 +47,14 @@ namespace LoadingUtils
         aiString str;
         mat->GetTexture(type, 0, &str);
         auto filename = dir + "/" + std::string(str.C_Str());
-        return std::make_shared<OrdinaryTexture>(filename, specifc_channel, load_type);
+        return std::make_shared<Texture2D>(filename, specifc_channel, load_type);
     }
 
     static NoobRenderer::MaterialTexture::Ptr CreateMaterialUsingAssimp(aiMaterial *&mat, aiTextureType type,
                                                                         const char *_pKey, unsigned int _type, unsigned int _idx,
                                                                         const std::string &dir, int specifc_channel = -1, bool vec3 = false)
     {
-        OrdinaryTexture::Ptr tex = ReadMaterialUsingAssimp(mat, type, dir, specifc_channel);
+        Texture2D::Ptr tex = ReadMaterialUsingAssimp(mat, type, dir, specifc_channel);
         if (tex != nullptr)
         {
             tex->SetDefaultImageTextureParams();
@@ -79,7 +79,7 @@ namespace LoadingUtils
     }
     static NoobRenderer::MaterialTexture::Ptr CreateMaterialUsingAssimp(aiMaterial *mat, aiTextureType type, const std::string &dir, int specifc_channel = -1)
     {
-        OrdinaryTexture::Ptr tex = ReadMaterialUsingAssimp(mat, type, dir, specifc_channel);
+        Texture2D::Ptr tex = ReadMaterialUsingAssimp(mat, type, dir, specifc_channel);
         if (tex != nullptr)
         {
             tex->SetDefaultImageTextureParams();

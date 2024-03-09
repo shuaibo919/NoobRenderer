@@ -9,26 +9,40 @@ namespace NoobRenderer
         using Ptr = std::shared_ptr<Texture2D>;
         // Default MinFilter & MagFilter: Nearest
         Texture2D(int width, int height,
-                  gtype::Format tex_format = gtype::Format::RGB,
-                  gtype::Format tex_internal_format = gtype::Format::RGB32F,
-                  gtype::DataType datatype = gtype::DataType::FLOAT);
+                  Texture::Format tex_format = Texture::Format::RGB,
+                  Texture::Format tex_internal_format = Texture::Format::RGB32F,
+                  Texture::DataType datatype = Texture::DataType::FLOAT);
         Texture2D(int width, int height, void *buf,
-                  gtype::Format tex_format = gtype::Format::RGB,
-                  gtype::Format tex_internal_format = gtype::Format::RGB32F,
-                  gtype::DataType datatype = gtype::DataType::FLOAT);
+                  Texture::Format tex_format = Texture::Format::RGB,
+                  Texture::Format tex_internal_format = Texture::Format::RGB32F,
+                  Texture::DataType datatype = Texture::DataType::FLOAT);
+        Texture2D(const std::string &path, const Texture::Type &type = Texture::Type::None,
+                  Texture::DataType datatype = Texture::DataType::UNSIGNED_BYTE);
+        Texture2D(const std::string &path, int specify_channel, const Texture::Type &type = Texture::Type::None,
+                  Texture::DataType datatype = Texture::DataType::UNSIGNED_BYTE);
+        Texture2D(const Texture2D &texture);
+        Texture2D(Texture2D &&texture) noexcept;
         Texture2D() = delete;
+        void SetDefaultImageTextureParams();
+
+    public:
+        void SetPath(const std::string &path) { this->m_path = path; }
+        const std::string &GetPath() { return m_path; }
 
     private:
+        std::string m_path;
         void SettingTexture() override;
+        void SettingTextureFromFile(const std::string &path);
+        void SettingTextureFromFile(const std::string &path, int channel);
     };
     class Texture2DArray : public TextureBase
     {
     public:
         using Ptr = std::shared_ptr<Texture2DArray>;
         Texture2DArray(int width, int height, int layers,
-                       gtype::Format format = gtype::Format::RGB,
-                       gtype::Format internal_format = gtype::Format::RGB32F,
-                       gtype::DataType datatype = gtype::DataType::FLOAT);
+                       Texture::Format format = Texture::Format::RGB,
+                       Texture::Format internal_format = Texture::Format::RGB32F,
+                       Texture::DataType datatype = Texture::DataType::FLOAT);
         int GetLayers() const { return m_layers; }
 
     private:
@@ -41,9 +55,9 @@ namespace NoobRenderer
     public:
         using Ptr = std::shared_ptr<Texture3D>;
         Texture3D(int width, int height, int depth,
-                  gtype::Format format = gtype::Format::RGB,
-                  gtype::Format internal_format = gtype::Format::RGB32F,
-                  gtype::DataType datatype = gtype::DataType::FLOAT);
+                  Texture::Format format = Texture::Format::RGB,
+                  Texture::Format internal_format = Texture::Format::RGB32F,
+                  Texture::DataType datatype = Texture::DataType::FLOAT);
         Texture3D() = delete;
         int GetDepth() const { return m_depth; }
 

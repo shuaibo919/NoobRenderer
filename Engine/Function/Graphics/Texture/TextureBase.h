@@ -7,6 +7,41 @@ namespace NoobRenderer
     class TextureBase;
     namespace Texture
     {
+        enum class BaseType : GLenum
+        {
+            Tex2D = GL_TEXTURE_2D,
+            Tex3D = GL_TEXTURE_3D,
+            Tex2DArray = GL_TEXTURE_2D_ARRAY,
+            Tex2DMultisample = GL_TEXTURE_2D_MULTISAMPLE,
+            TexCube = GL_TEXTURE_CUBE_MAP
+        };
+
+        enum class Format : GLint
+        {
+            NONE = 0,
+            RGBA = GL_RGBA,
+            RGB = GL_RGB,
+            RG = GL_RG,
+            RED = GL_RED,
+            DEPTH_COMPONENT = GL_DEPTH_COMPONENT,
+            RGBA32F = GL_RGBA32F,
+            RGB32F = GL_RGB32F,
+            RG32F = GL_RG32F,
+            R32F = GL_R32F,
+            RGBA8 = GL_RGBA8,
+            RGBA16 = GL_RGBA16,
+            RGBA16F = GL_RGBA16F,
+            RGB16F = GL_RGB16F,
+            RG16F = GL_RG16F,
+            R16F = GL_R16F,
+        };
+
+        enum class DataType : GLenum
+        {
+            UNSIGNED_BYTE = GL_UNSIGNED_BYTE,
+            FLOAT = GL_FLOAT
+        };
+
         enum class Type : int
         {
             None = -1,
@@ -76,10 +111,10 @@ namespace NoobRenderer
         GLuint m_id;
         int m_width, m_height, m_tmp_slot;
         Texture::Type m_type;
-        gtype::TexType m_basetype;
-        gtype::Format m_format;
-        gtype::Format m_internalformat;
-        gtype::DataType m_datatype;
+        Texture::BaseType m_basetype;
+        Texture::Format m_format;
+        Texture::Format m_internalformat;
+        Texture::DataType m_datatype;
         TextureParamStroage m_params;
 
     protected:
@@ -92,8 +127,8 @@ namespace NoobRenderer
     public:
         using Ptr = std::shared_ptr<TextureBase>;
         TextureBase() = delete;
-        TextureBase(int width, int height, Texture::Type type, gtype::TexType basetype,
-                    gtype::Format format, gtype::Format internalformat, gtype::DataType datatype);
+        TextureBase(int width, int height, Texture::Type type, Texture::BaseType basetype,
+                    Texture::Format format, Texture::Format internalformat, Texture::DataType datatype);
         TextureBase(const TextureBase &texture);
         TextureBase(TextureBase &&texture) noexcept;
         virtual ~TextureBase();
@@ -120,10 +155,10 @@ namespace NoobRenderer
     public:
         inline GLuint GetID() const { return m_id; }
         inline Texture::Type &GetType() { return m_type; }
-        inline gtype::TexType &GetBaseType() { return m_basetype; }
-        inline gtype::Format GetFormat() const { return m_format; }
-        inline gtype::Format GetInternalFormat() const { return m_internalformat; }
-        inline gtype::DataType GetDataType() const { return m_datatype; }
+        inline Texture::BaseType &GetBaseType() { return m_basetype; }
+        inline Texture::Format GetFormat() const { return m_format; }
+        inline Texture::Format GetInternalFormat() const { return m_internalformat; }
+        inline Texture::DataType GetDataType() const { return m_datatype; }
         inline int GetTempSlot() { return m_tmp_slot; }
         inline int GetWidth() const { return m_width; }
         inline int GetHeight() const { return m_height; }

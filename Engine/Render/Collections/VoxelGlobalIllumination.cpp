@@ -3,7 +3,7 @@
 using namespace NoobRenderer::render;
 void VoxelGlobalIllumination::Init(component::VoxelGlobalIllumination &gi)
 {
-    using namespace gtype;
+    using namespace Texture;
     voxelize_shader = ShaderManager::Instance().LoadShaderAndGet(
         "Resource/Shader/VXGI/Voxelize.vert", "Resource/Shader/VXGI/Voxelize.geom", "Resource/Shader/VXGI/Voxelize.frag");
     // voxel_vis_rt = std::make_shared<WriteToTexture>(gi.voxel_size, gi.voxel_size);

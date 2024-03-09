@@ -1,5 +1,5 @@
 #include "Engine/Render/Pass/LightPass.h"
-#include "Engine/Render/Pass/Utils.h"
+#include "Engine/Render/Collections/Utils.h"
 #include <random>
 namespace NoobRenderer
 {
@@ -21,7 +21,7 @@ namespace NoobRenderer
 
             m_rt = std::make_shared<WriteToTexture>(width, height);
             m_rt->SetTexture2D<Texture2D>(GL_COLOR_ATTACHMENT0, width, height,
-                                          gtype::Format::RGBA, gtype::Format::RGBA32F, gtype::DataType::FLOAT);
+                                          Texture::Format::RGBA, Texture::Format::RGBA32F, Texture::DataType::FLOAT);
             m_rt->GetTexture()->SetParameterAndSave(GL_TEXTURE_MIN_FILTER, GL_NEAREST);
             m_rt->GetTexture()->SetParameterAndSave(GL_TEXTURE_MAG_FILTER, GL_NEAREST);
             m_rt->SetRenderBuffer<RenderBuffer>(GL_DEPTH_ATTACHMENT, width, height, GL_DEPTH_COMPONENT);
@@ -37,7 +37,7 @@ namespace NoobRenderer
             std::cout << "LightPass Volumetric RT::Constructor() status = " << glCheckFramebufferStatus(GL_FRAMEBUFFER) << std::endl;
 
             m_blur_rt = std::make_shared<WriteToTexture>(width, height);
-            m_blur_rt->SetTexture2D<Texture2D>(GL_COLOR_ATTACHMENT0, width, height, gtype::Format::RGBA, gtype::Format::RGBA, gtype::DataType::FLOAT);
+            m_blur_rt->SetTexture2D<Texture2D>(GL_COLOR_ATTACHMENT0, width, height, Texture::Format::RGBA, Texture::Format::RGBA, Texture::DataType::FLOAT);
             m_blur_rt->GetTexture()->SetParameterAndSave(GL_TEXTURE_MIN_FILTER, GL_NEAREST);
             m_blur_rt->GetTexture()->SetParameterAndSave(GL_TEXTURE_MAG_FILTER, GL_NEAREST);
             m_blur_rt->SetRenderBuffer<RenderBuffer>(GL_DEPTH_ATTACHMENT, width, height, GL_DEPTH_COMPONENT);

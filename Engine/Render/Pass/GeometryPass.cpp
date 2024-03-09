@@ -10,7 +10,7 @@ namespace NoobRenderer
             m_shader = ShaderManager::Instance().LoadShaderAndGet(
                 "Resource/Shader/Deferred/GeometryPass.vert",
                 "Resource/Shader/Deferred/GeometryPass.frag");
-            using namespace gtype;
+            using namespace Texture;
             m_rt = std::make_shared<WriteToTexture>(width, height);
             m_rt->SetTexture2D<Texture2D>(GL_COLOR_ATTACHMENT0, width, height, Format::RGBA, Format::RGBA32F, DataType::FLOAT); // G-Buffer: gPositionDepth
             m_rt->GetTexture(0)->SetParameterAndSave(GL_TEXTURE_MIN_FILTER, GL_NEAREST);

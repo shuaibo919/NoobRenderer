@@ -1,5 +1,5 @@
 #include "Engine/Render/Pass/IndirectLightPass.h"
-#include "Engine/Render/Pass/Utils.h"
+#include "Engine/Render/Collections/Utils.h"
 #include <random>
 namespace NoobRenderer
 {
@@ -12,7 +12,7 @@ namespace NoobRenderer
                 "Resource/Shader/Deferred/IndirectLightPass.frag");
             m_rt = std::make_shared<WriteToTexture>(width, height);
             m_rt->SetTexture2D<Texture2D>(GL_COLOR_ATTACHMENT0, width, height,
-                                          gtype::Format::RGBA, gtype::Format::RGBA32F, gtype::DataType::FLOAT);
+                                          Texture::Format::RGBA, Texture::Format::RGBA32F, Texture::DataType::FLOAT);
             m_rt->GetTexture(0)->SetParameterAndSave(GL_TEXTURE_MIN_FILTER, GL_NEAREST);
             m_rt->GetTexture(0)->SetParameterAndSave(GL_TEXTURE_MAG_FILTER, GL_NEAREST);
             m_rt->SetRenderBuffer<RenderBuffer>(GL_DEPTH_ATTACHMENT, width, height, GL_DEPTH_COMPONENT);

@@ -1,8 +1,8 @@
 #include "Engine/Function/Graphics/Texture/TextureBase.h"
 using namespace NoobRenderer;
 
-TextureBase::TextureBase(int width, int height, Texture::Type type, gtype::TexType basetype,
-                         gtype::Format format, gtype::Format internalformat, gtype::DataType datatype)
+TextureBase::TextureBase(int width, int height, Texture::Type type, Texture::BaseType basetype,
+                         Texture::Format format, Texture::Format internalformat, Texture::DataType datatype)
     : m_width(width), m_height(height), m_type(type), m_basetype(basetype),
       m_format(format), m_internalformat(internalformat), m_datatype(datatype)
 {

@@ -1,7 +1,7 @@
 ﻿#pragma once
 #include "Engine/Function/Buffer/All.h"
 #include "Engine/Function/Utility/RayCasting.h"
-#include "Engine/Function/Graphics/Texture/Texture.h"
+#include "Engine/Function/Graphics/Texture/ColorTexture.h"
 #include "Engine/Function/Graphics/Material/All.h"
 
 namespace NoobRenderer

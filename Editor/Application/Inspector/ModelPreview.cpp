@@ -1,5 +1,5 @@
 #include "Application/Inspector/ModelPreview.h"
-#include "Engine/Render/Pass/Utils.h"
+#include "Engine/Render/Collections/Utils.h"
 using namespace NoobRenderer::inspection;
 void ModelPreview::Init()
 {
@@ -20,7 +20,7 @@ void ModelPreview::Add(std::string name)
     //     return;
     // m_preview_results[name] = std::make_shared<WriteToTexture>(m_preview_size, m_preview_size);
     // auto &rt = m_preview_results[name];
-    // rt->SetTexture2D<OrdinaryTexture>(GL_COLOR_ATTACHMENT0, m_preview_size, m_preview_size);
+    // rt->SetTexture2D<Texture2D>(GL_COLOR_ATTACHMENT0, m_preview_size, m_preview_size);
     // rt->SetRenderBuffer<RenderBuffer>(GL_DEPTH_ATTACHMENT, m_preview_size, m_preview_size, GL_DEPTH_COMPONENT);
     // std::cout << "ModelPreview RT::Constructor() status = " << glCheckFramebufferStatus(GL_FRAMEBUFFER) << std::endl;
     // rt->Bind();

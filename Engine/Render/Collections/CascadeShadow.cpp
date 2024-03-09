@@ -6,10 +6,16 @@ namespace NoobRenderer
         CascadeShadow::CascadeShadow(unsigned int width, unsigned int height, int split_size, unsigned int binding)
             : m_split_size(split_size)
         {
-            using namespace gtype;
+            using namespace Texture;
+            GLfloat borderColor[] = {1.0, 1.0, 1.0, 1.0};
             m_map = std::make_shared<WriteToTexture>(width, height);
             m_map->SetTexture<Texture2DArray>(GL_DEPTH_ATTACHMENT, width, height, m_split_size,
                                               Format::DEPTH_COMPONENT, Format::DEPTH_COMPONENT, DataType::FLOAT);
+            m_map->GetTexture(0)->SetParameter(GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+            m_map->GetTexture(0)->SetParameter(GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+            m_map->GetTexture(0)->SetParameter(GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+            m_map->GetTexture(0)->SetParameter(GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+            m_map->GetTexture(0)->SetParameter(GL_TEXTURE_BORDER_COLOR, borderColor);
             m_map->DiscardRenderBuffer();
             std::cout << "CascadeShadow::Constructor() status = " << glCheckFramebufferStatus(GL_FRAMEBUFFER) << std::endl;
             m_map->Unbind();

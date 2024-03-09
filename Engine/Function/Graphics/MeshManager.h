@@ -38,7 +38,7 @@ namespace NoobRenderer
         inline std::array<std::string, 2> GetBuildInMeshsName() const { return {"Cube", "Sphere"}; };
 
     private:
-        std::unordered_map<std::string, OrdinaryTexture::Ptr> m_tmp_tex_loaded;
+        std::unordered_map<std::string, Texture2D::Ptr> m_tmp_tex_loaded;
         Mesh::Ptr ProcessAssimpMesh(aiMesh *mesh, const aiScene *scene);
         void ProcessAssimpNode(std::vector<Mesh::Ptr> &mesh_lists, std::array<float, 6> &bbox, aiNode *node, const aiScene *scene, const std::string &dir);
     };

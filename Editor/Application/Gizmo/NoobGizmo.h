@@ -23,9 +23,9 @@ private:
     inline static float gizmo_rect_y{0};
     inline static float gizmo_rect_width{0};
     inline static float gizmo_rect_height{0};
-    static void ManipulateTransition(NoobRenderer::Scene::Node::Ptr &node);
-    static void ManipulateScaling(NoobRenderer::Scene::Node::Ptr &node);
-    static void ManipulateRotate(NoobRenderer::Scene::Node::Ptr &node);
+    static void ManipulateTransition(NoobRenderer::Scene::Node::Ptr &node, glm::mat4 &view, glm::mat4 &projection);
+    static void ManipulateScaling(NoobRenderer::Scene::Node::Ptr &node, glm::mat4 &view, glm::mat4 &projection);
+    static void ManipulateRotate(NoobRenderer::Scene::Node::Ptr &node, glm::mat4 &view, glm::mat4 &projection);
 
 public:
     static void SetRegion(unsigned int posx, unsigned int posy, unsigned int width, unsigned int height);
