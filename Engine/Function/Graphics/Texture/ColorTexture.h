@@ -17,9 +17,11 @@ namespace NoobRenderer
                   Texture::Format tex_internal_format = Texture::Format::RGB32F,
                   Texture::DataType datatype = Texture::DataType::FLOAT);
         Texture2D(const std::string &path, const Texture::Type &type = Texture::Type::None,
-                  Texture::DataType datatype = Texture::DataType::UNSIGNED_BYTE);
+                  Texture::DataType datatype = Texture::DataType::UNSIGNED_BYTE, bool load_filp = false);
         Texture2D(const std::string &path, int specify_channel, const Texture::Type &type = Texture::Type::None,
-                  Texture::DataType datatype = Texture::DataType::UNSIGNED_BYTE);
+                  Texture::DataType datatype = Texture::DataType::UNSIGNED_BYTE, bool load_filp = false);
+        Texture2D(Texture::Format tex_format, Texture::Format tex_internal_format,
+                  Texture::DataType datatype, const std::string &path, bool load_filp = false);
         Texture2D(const Texture2D &texture);
         Texture2D(Texture2D &&texture) noexcept;
         Texture2D() = delete;
@@ -32,8 +34,8 @@ namespace NoobRenderer
     private:
         std::string m_path;
         void SettingTexture() override;
-        void SettingTextureFromFile(const std::string &path);
-        void SettingTextureFromFile(const std::string &path, int channel);
+        void SettingTextureFromFile(const std::string &path, bool load_filp = false);
+        void SettingTextureFromFile(const std::string &path, int channel, bool load_filp = false);
     };
     class Texture2DArray : public TextureBase
     {

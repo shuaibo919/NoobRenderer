@@ -50,10 +50,10 @@ namespace NoobRenderer
                 ssaoNoise.push_back(noise);
             }
             m_noise = std::make_shared<Texture2D>(4, 4, &ssaoNoise[0], Texture::Format::RGB, Texture::Format::RGB16F, Texture::DataType::FLOAT);
-            m_ssao->GetTexture()->SetParameter(GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-            m_ssao->GetTexture()->SetParameter(GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-            m_ssao->GetTexture()->SetParameter(GL_TEXTURE_WRAP_S, GL_REPEAT);
-            m_ssao->GetTexture()->SetParameter(GL_TEXTURE_WRAP_T, GL_REPEAT);
+            m_noise->SetParameter(GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+            m_noise->SetParameter(GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+            m_noise->SetParameter(GL_TEXTURE_WRAP_S, GL_REPEAT);
+            m_noise->SetParameter(GL_TEXTURE_WRAP_T, GL_REPEAT);
             m_noise->Unbind();
         }
         void SSAOPass::Rescale(unsigned int width, unsigned int height)

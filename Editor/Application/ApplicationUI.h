@@ -6,6 +6,7 @@
 #include "Application/PanelViewport.h"
 #include "Application/PanelFunction.h"
 #include "Application/PanelPreference.h"
+#include "Application/Visualization/OutlinePass.h"
 
 namespace NoobRenderer
 {
@@ -25,11 +26,16 @@ namespace NoobRenderer
             inline bool GetReadyToRendering() { return m_viewport_panel->GetReadyToRendering(); }
 
         private:
+            DrawPickedMeshOutlinePass m_outline_pass;
             ScenePanel::Ptr m_scene_panel{nullptr};
             InspectorPanel::Ptr m_inspector_panel{nullptr};
             ViewportPanel::Ptr m_viewport_panel{nullptr};
             PreferencePanel::Ptr m_preference_panel{nullptr};
             FunctionPanel::Ptr m_function_panel{nullptr};
+
+        public:
+            void PostProcessingRender();
+            void PostProcessingRescale();
 
         private:
             bool m_show_main_layout{true};

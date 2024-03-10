@@ -30,7 +30,6 @@ namespace NoobRenderer
             void Show();
             ScenePanel(const std::string &name, bool show);
             ScenePanel() = delete;
-            void RayCasting(int mouse_x, int mouse_y, int view_width, int view_height);
 
         public:
             bool IsShow() { return m_show; }

@@ -14,7 +14,7 @@ namespace NoobRenderer
             m_rt = std::make_shared<WriteToTexture>(width, height);
             m_rt->SetRenderBuffer<RenderBuffer>(GL_DEPTH_STENCIL_ATTACHMENT, width, height, GL_DEPTH24_STENCIL8);
             m_rt->SetTexture2D<Texture2D>(GL_COLOR_ATTACHMENT0, width, height,
-                                          Texture::Format::RGBA, Texture::Format::RGB16F, Texture::DataType::FLOAT);
+                                          Texture::Format::RGBA, Texture::Format::RGBA16F, Texture::DataType::FLOAT);
             m_rt->GetTexture()->SetParameterAndSave(GL_TEXTURE_MIN_FILTER, GL_NEAREST);
             m_rt->GetTexture()->SetParameterAndSave(GL_TEXTURE_MAG_FILTER, GL_NEAREST);
             std::cout << "FinalPass RT::Constructor() status = " << glCheckFramebufferStatus(GL_FRAMEBUFFER) << std::endl;
@@ -26,6 +26,7 @@ namespace NoobRenderer
         }
         void FinalPass::Render(Scene::Ptr &scene, RenderStorage &input)
         {
+            auto &root = scene->GetRootNode();
             Texture::ResetSlot();
             m_rt->Bind();
             glDisable(GL_DEPTH_TEST);

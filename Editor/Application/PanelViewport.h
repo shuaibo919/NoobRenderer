@@ -38,12 +38,13 @@ namespace NoobRenderer
             ViewportPanel() = delete;
             void Show();
             bool InRenderingRegion(unsigned int x, unsigned int y);
+            void RayCasting(int mouse_x, int mouse_y);
 
         public:
             EngineWindow::Size render_size{0, 0};
             unsigned int rendering_pos_x;
             unsigned int rendering_pos_y;
-            NoobGizmo::Mode gizmo_mode{NoobGizmo::Mode::TRANSITION};
+            NoobGizmo::Mode gizmo_mode{NoobGizmo::Mode::Transition};
 
         public:
             bool IsFocused() const { return m_focused; }

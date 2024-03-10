@@ -4,6 +4,7 @@ using namespace NoobRenderer::Application;
 
 bool Editor::Init(std::string_view name)
 {
+    // Todo: read config from "EditorConfig.json"
     EngineWindow::Size wsize = {1284, 768};
     ui = std::make_shared<ApplicationUI>(wsize, name, 4, 6);
     if (!ui->Init("#version 130"))
@@ -14,7 +15,7 @@ bool Editor::Init(std::string_view name)
     Engine::Instance().Init();
     inspection::Init();
     Engine::Instance().AddRenderer<render::DeferredRenderer>("Deferred Renderer", wsize.width / 2, wsize.height / 2);
-    //Engine::Instance().AddRenderer<render::ForwardPBRRenderer>("Forward Renderer", wsize.width / 2, wsize.height / 2);
+    // Engine::Instance().AddRenderer<render::ForwardPBRRenderer>("Forward Renderer", wsize.width / 2, wsize.height / 2);
     Engine::Instance().SetCurrentRenderer("Deferred Renderer");
     ui->RegisterIO();
     return true;
@@ -37,6 +38,8 @@ void Editor::Run()
                 Engine::Instance().GetCurrentRenderer()->Resize(ui->GetRenderingSize().width, ui->GetRenderingSize().height);
                 Engine::Instance().UpdateCurrentScene();
                 Engine::Instance().UpdateCurrentRenderer();
+                ui->PostProcessingRescale();
+                ui->PostProcessingRender();
             }
             ui->RescaleViewport();
             ui->UpdateUI();

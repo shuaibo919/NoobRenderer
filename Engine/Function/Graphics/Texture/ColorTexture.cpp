@@ -16,19 +16,34 @@ Texture2D::Texture2D(int width, int height, void *buf, Texture::Format tex_forma
     this->Bind();
     this->TexImage2D(target, 0, 0, buf);
 }
-Texture2D::Texture2D(const std::string &path, const Texture::Type &type, Texture::DataType datatype)
+Texture2D::Texture2D(const std::string &path, const Texture::Type &type, Texture::DataType datatype, bool load_filp)
     : TextureBase(0, 0, type, Texture::BaseType::Tex2D, Texture::Format::NONE, Texture::Format::NONE, datatype),
       m_path(path)
 {
-    SettingTextureFromFile(m_path);
+    SettingTextureFromFile(m_path, load_filp);
 }
-Texture2D::Texture2D(const std::string &path, int specify_channel, const Texture::Type &type, Texture::DataType datatype)
+Texture2D::Texture2D(Texture::Format tex_format, Texture::Format tex_internal_format,
+                     Texture::DataType datatype, const std::string &path, bool load_filp)
+    : TextureBase(0, 0, Texture::Type::TextureColorBuffer, Texture::BaseType::Tex2D, tex_format, tex_internal_format, datatype),
+      m_path(path)
+{
+    stbi_set_flip_vertically_on_load(load_filp);
+    int nrComponents;
+    void *data = stbi_loadf(path.c_str(), &m_width, &m_height, &nrComponents, 0);
+    GLenum target = static_cast<GLenum>(m_basetype);
+    this->Bind();
+    this->TexImage2D(target, 0, 0, data);
+    glGenerateMipmap(target);
+    if (data)
+        stbi_image_free(data);
+}
+Texture2D::Texture2D(const std::string &path, int specify_channel, const Texture::Type &type, Texture::DataType datatype, bool load_filp)
     : TextureBase(0, 0, type, Texture::BaseType::Tex2D, Texture::Format::NONE, Texture::Format::NONE, datatype),
       m_path(path)
 {
     if (specify_channel < 0)
     {
-        SettingTextureFromFile(m_path);
+        SettingTextureFromFile(m_path, load_filp);
     }
     else
     {
@@ -50,9 +65,9 @@ void Texture2D::SettingTexture()
     this->Bind();
     this->TexImage2D(target, 0, 0, nullptr);
 }
-void Texture2D::SettingTextureFromFile(const std::string &path)
+void Texture2D::SettingTextureFromFile(const std::string &path, bool load_filp)
 {
-    stbi_set_flip_vertically_on_load(false);
+    stbi_set_flip_vertically_on_load(load_filp);
     int nrComponents;
     void *data = stbi_load(path.c_str(), &m_width, &m_height, &nrComponents, 0);
     m_format = Texture::Format::RGBA;
@@ -71,9 +86,9 @@ void Texture2D::SettingTextureFromFile(const std::string &path)
         stbi_image_free(data);
     }
 }
-void Texture2D::SettingTextureFromFile(const std::string &path, int channel)
+void Texture2D::SettingTextureFromFile(const std::string &path, int channel, bool load_filp)
 {
-    stbi_set_flip_vertically_on_load(false);
+    stbi_set_flip_vertically_on_load(load_filp);
     int nrComponents;
     unsigned char *data = stbi_load(path.c_str(), &m_width, &m_height, &nrComponents, 0);
 

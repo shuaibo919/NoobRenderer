@@ -12,10 +12,11 @@ class NoobGizmo
 public:
     enum class Mode
     {
-        TRANSITION,
-        SCALING,
-        ROTATE,
-        SELECT,
+        Transition, // Editor mode
+        Scaling,    // Editor mode
+        Rotate,     // Editor mode
+        Select,     // Editor mode
+        Play,       // Play mode
     };
 
 private:

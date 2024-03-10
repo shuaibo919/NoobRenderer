@@ -11,13 +11,13 @@ void NoobGizmo::ShowGizmo(NoobGizmo::Mode mode, NoobRenderer::Scene::Node::Ptr &
     auto camera_projection = camera_node.GetProjectionMatrix();
     switch (mode)
     {
-    case NoobGizmo::Mode::TRANSITION:
+    case NoobGizmo::Mode::Transition:
         ManipulateTransition(node, camera_view, camera_projection);
         break;
-    case NoobGizmo::Mode::ROTATE:
+    case NoobGizmo::Mode::Rotate:
         ManipulateRotate(node, camera_view, camera_projection);
         break;
-    case NoobGizmo::Mode::SCALING:
+    case NoobGizmo::Mode::Scaling:
         ManipulateScaling(node, camera_view, camera_projection);
         break;
 

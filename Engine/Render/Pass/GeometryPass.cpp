@@ -35,6 +35,7 @@ namespace NoobRenderer
             m_rt->SetRenderBuffer<RenderBuffer>(GL_DEPTH_STENCIL_ATTACHMENT, width, height, GL_DEPTH24_STENCIL8);
             m_rt->ExplicitColorAttach();
             m_rt->Unbind();
+            std::cout << "GeometryPass RT::Constructor() status = " << glCheckFramebufferStatus(GL_FRAMEBUFFER) << std::endl;
         }
         void GeometryPass::Rescale(unsigned int width, unsigned int height)
         {
@@ -86,6 +87,5 @@ namespace NoobRenderer
                 input.Insert(RenderStorageOutputKey[i], m_rt->GetTexture(i));
             }
         }
-
     }
 }

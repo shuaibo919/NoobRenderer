@@ -173,7 +173,7 @@ namespace NoobRenderer
             auto ptr = static_cast<IBLCubeMap *>(typeAny);
             if (ptr->name.empty())
                 return;
-            ptr->RawHDRTexture = std::make_shared<Texture2D>(ptr->name);
+            ptr->RawHDRTexture = std::make_shared<Texture2D>(Texture::Format::RGB, Texture::Format::RGB16F, Texture::DataType::FLOAT, ptr->name, true);
             ptr->RawHDRTexture->SetParameter(GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
             ptr->RawHDRTexture->SetParameter(GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
             ptr->RawHDRTexture->SetParameter(GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -188,7 +188,7 @@ namespace NoobRenderer
         {
             if (this->name.empty())
                 return;
-            this->RawHDRTexture = std::make_shared<Texture2D>(this->name);
+            this->RawHDRTexture = std::make_shared<Texture2D>(Texture::Format::RGB, Texture::Format::RGB16F, Texture::DataType::FLOAT, this->name, true);
             this->RawHDRTexture->SetParameter(GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
             this->RawHDRTexture->SetParameter(GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
             this->RawHDRTexture->SetParameter(GL_TEXTURE_MIN_FILTER, GL_LINEAR);

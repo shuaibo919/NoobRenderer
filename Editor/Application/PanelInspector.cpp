@@ -15,6 +15,7 @@ void InspectorPanel::ListEntityAllComponents()
         }
         /* Reflect all components of a given entity. */
         auto &entity = Selected::Instance().node->object;
+        if (entity == nullptr) return;
         auto reg = entity->GetRegistry();
         for (auto &&curr : reg->storage())
         {

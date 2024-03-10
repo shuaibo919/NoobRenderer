@@ -47,19 +47,23 @@ bool ApplicationUI::Init(std::string_view glsl_version)
         std::cout << "ApplicationUI::ImGui ImplOpenGL3 Init Failed!" << std::endl;
         return false;
     }
+
     SetUIStyle();
     common::imgui_style = ImGui::GetStyle();
-    RegisterOnReSizeFunc(std::bind(&ApplicationUI::OnResizeCallback, this, std::placeholders::_1, std::placeholders::_2));
-    RegisterOnKeyFunc(std::bind(&ApplicationUI::OnKeyCallback, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3, std::placeholders::_4));
-    RegisterOnCursorPosFunc(std::bind(&ApplicationUI::OnCursorPosCallback, this, std::placeholders::_1, std::placeholders::_2));
-    RegisterOnMouseButtonFunc(std::bind(&ApplicationUI::OnButtonCallback, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
-    RegisterOnScrollFunc(std::bind(&ApplicationUI::OnScrollCallback, this, std::placeholders::_1, std::placeholders::_2));
 
     m_scene_panel = std::make_unique<ScenePanel>("SceneList", true);
     m_inspector_panel = std::make_unique<InspectorPanel>("Inspector", true);
     m_viewport_panel = std::make_unique<ViewportPanel>("Viewport", true);
     m_function_panel = std::make_unique<FunctionPanel>("Function", true);
     m_preference_panel = std::make_unique<PreferencePanel>("Preference", false);
+
+    m_outline_pass.Init(m_viewport_panel->render_size.width, m_viewport_panel->render_size.height);
+
+    RegisterOnReSizeFunc(std::bind(&ApplicationUI::OnResizeCallback, this, std::placeholders::_1, std::placeholders::_2));
+    RegisterOnKeyFunc(std::bind(&ApplicationUI::OnKeyCallback, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3, std::placeholders::_4));
+    RegisterOnCursorPosFunc(std::bind(&ApplicationUI::OnCursorPosCallback, this, std::placeholders::_1, std::placeholders::_2));
+    RegisterOnMouseButtonFunc(std::bind(&ApplicationUI::OnButtonCallback, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
+    RegisterOnScrollFunc(std::bind(&ApplicationUI::OnScrollCallback, this, std::placeholders::_1, std::placeholders::_2));
 
     return true;
 }
@@ -125,15 +129,7 @@ void ApplicationUI::OnButtonCallback(int button, int action, int mods)
         if (focused && button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS)
         {
             SceneManager::Instance().GetCurrentScene()->GetCurrentCameraComponent().SetMoving(true);
-            // picking mesh
-            if (m_viewport_panel->InRenderingRegion(m_cursor_position.x, m_cursor_position.y) && m_viewport_panel->IsFocused())
-            {
-                m_scene_panel->RayCasting(
-                    m_cursor_position.x - m_viewport_panel->rendering_pos_x,
-                    m_cursor_position.y - m_viewport_panel->rendering_pos_y,
-                    m_viewport_panel->render_size.width,
-                    m_viewport_panel->render_size.height);
-            }
+            m_viewport_panel->RayCasting(m_cursor_position.x, m_cursor_position.y);
         }
         if (focused && button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_RELEASE)
         {
@@ -389,4 +385,13 @@ void ApplicationUI::SubMenuSetting()
     {
         m_preference_panel->SetShow(!m_preference_panel->IsShow());
     }
+}
+
+void ApplicationUI::PostProcessingRender()
+{
+    m_outline_pass.Render(Selected::Instance().node);
+}
+void ApplicationUI::PostProcessingRescale()
+{
+    m_outline_pass.Rescale(this->GetRenderingSize().width, this->GetRenderingSize().height);
 }

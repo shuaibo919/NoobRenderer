@@ -5,6 +5,7 @@ file(GLOB APP_SRC ${CMAKE_CURRENT_SOURCE_DIR}/Application/*.cpp)
 file(GLOB APP_INSPECTOR_SRC ${CMAKE_CURRENT_SOURCE_DIR}/Application/Inspector/*.cpp)
 file(GLOB APP_GIZMO_SRC ${CMAKE_CURRENT_SOURCE_DIR}/Application/Gizmo/*.cpp)
 file(GLOB APP_FILE_SRC ${CMAKE_CURRENT_SOURCE_DIR}/Application/FileBrowser/*.cpp)
+file(GLOB APP_VIS_SRC ${CMAKE_CURRENT_SOURCE_DIR}/Application/Visualization/*.cpp)
 file(GLOB CONFIG_SRC ${CMAKE_CURRENT_SOURCE_DIR}/Config/*.cpp)
 file(GLOB MAIN_SRC ${CMAKE_CURRENT_SOURCE_DIR}/*.cpp)
 
@@ -13,6 +14,7 @@ list(APPEND EDITOR_SOURCES
     ${APP_INSPECTOR_SRC}
     ${APP_GIZMO_SRC}
     ${APP_FILE_SRC}
+    ${APP_VIS_SRC}
     ${CONFIG_SRC}
     ${MAIN_SRC}
 )

@@ -1,5 +1,4 @@
 ﻿#include "Application/PanelViewport.h"
-#include "Application/Gizmo/ImGuizmo.h"
 using namespace NoobRenderer::Application;
 ViewportPanel::ViewportPanel(const std::string &name, bool show) : m_name(name), m_show(show) {}
 void ViewportPanel::RenderingViewport()
@@ -18,9 +17,12 @@ void ViewportPanel::RenderingViewport()
     if (renderer != nullptr)
     {
         auto tex = renderer->GetRenderResult();
+        if (gizmo_mode == NoobGizmo::Mode::Select && renderer->RTS.find("Editor Result") != renderer->RTS.end() && renderer->RTS.Get("Editor Result")!= nullptr)
+        {
+            tex = renderer->RTS.Get("Editor Result")->GetID();
+        }
         if (tex != -1)
         {
-            // 叠加在Rendering窗口上
             ImGui::GetWindowDrawList()->AddImage((ImTextureID)(intptr_t)(tex),
                                                  ImVec2(static_cast<float>(rendering_pos_x), static_cast<float>(rendering_pos_y)),
                                                  ImVec2(rendering_pos_x + ImGui::GetContentRegionAvail().x, rendering_pos_y + ImGui::GetContentRegionAvail().y),
@@ -30,7 +32,6 @@ void ViewportPanel::RenderingViewport()
                 ImGui::GetColorU32(ImGuiCol_Text),
                 ("FPS: " + std::to_string(ImGui::GetIO().Framerate)).c_str());
 
-            // ImGui::Image((ImTextureID)(intptr_t)(tex), ImGui::GetContentRegionAvail(), ImVec2(0, 1), ImVec2(1, 0));
             NoobGizmo::SetRegion(rendering_pos_x, rendering_pos_y, render_size.width, render_size.height);
             if (m_show_grid)
                 NoobGizmo::ShowGrid(m_grid_size);
@@ -53,7 +54,7 @@ void ViewportPanel::LightHint()
     auto view = current_scene_reg->view<component::PointLight>();
     for (auto [entity, light] : view.each())
     {
-        if (gizmo_mode != NoobGizmo::Mode::TRANSITION)
+        if (gizmo_mode != NoobGizmo::Mode::Transition)
             continue;
 
         if (NoobGizmo::ShowLightHint(light.position) && !current_scene_reg->any_of<component::MeshData>(entity))
@@ -71,13 +72,13 @@ void ViewportPanel::ListRenderingButtons()
         "Translate Mode", "Rotate Mode", "Scale Mode", "Select Mode", "Pass Mode", "ViewPort Setting"};
     static const std::function<void(void)> button_funcs[] = {
         [&]()
-        { gizmo_mode = NoobGizmo::Mode::TRANSITION; },
+        { gizmo_mode = NoobGizmo::Mode::Transition; },
         [&]()
-        { gizmo_mode = NoobGizmo::Mode::ROTATE; },
+        { gizmo_mode = NoobGizmo::Mode::Rotate; },
         [&]()
-        { gizmo_mode = NoobGizmo::Mode::SCALING; },
+        { gizmo_mode = NoobGizmo::Mode::Scaling; },
         [&]()
-        { gizmo_mode = NoobGizmo::Mode::SELECT; },
+        { gizmo_mode = NoobGizmo::Mode::Select; },
         [&]()
         { m_show_pass = !m_show_pass; },
         [&]()
@@ -147,6 +148,8 @@ void ViewportPanel::PassVisualizationPanel()
                 std::vector<std::pair<std::string, GLuint>> tmp_key_texs;
                 for (auto &[key, tex_desc] : renderer->RTS)
                 {
+                    if (tex_desc.first == nullptr)
+                        continue;
                     if (tex_desc.second != 0) // now only support 2d render texs
                         continue;
                     tmp_key_texs.push_back({key, tex_desc.first->GetID()});
@@ -200,4 +203,44 @@ void ViewportPanel::FloattingPanel()
     ImGui::SameLine();
 
     ImGui::End();
+}
+void ViewportPanel::RayCasting(int mouse_x, int mouse_y)
+{
+    if (gizmo_mode != NoobGizmo::Mode::Select)
+        return;
+    if (!InRenderingRegion(mouse_x, mouse_y))
+        return;
+    mouse_x = mouse_x - rendering_pos_x;
+    mouse_y = mouse_y - rendering_pos_y;
+    using namespace NoobRenderer;
+    auto scene = SceneManager::Instance().GetCurrentScene();
+    if (scene == nullptr)
+        return;
+    auto &camera = scene->GetCurrentCameraComponent();
+    auto registry = scene->GetRegistry();
+    auto view = registry->view<component::MeshData>();
+    // we want our ray's z to point forwards - this is usually the negative z direction in OpenGL style
+    glm::vec3 ray_ndc = EngineUtility::GetNormalisedDeviceCoordinates(static_cast<float>(mouse_x), static_cast<float>(mouse_y), render_size.width, render_size.height);
+    glm::vec4 ray_clip = glm::vec4(ray_ndc.x, ray_ndc.y, -1.0, 1.0);
+    glm::vec4 ray_eye = EngineUtility::ToEyeCoords(ray_clip, camera.GetProjectionMatrix());
+    glm::vec3 ray_world = EngineUtility::ToWorldCoords(ray_eye, camera.GetViewMatrix());
+
+    auto _record = EngineUtility::RayCastingRecord();
+    auto _viewpos = camera.GetPositionVector();
+    Scene::Node::Ptr _hitted_node = nullptr;
+    for (auto [entity, meshdata] : view.each())
+    {
+        glm::mat4 model = scene->GetSceneNodeByEntity(entity)->model;
+        auto &_mesh = MeshManager::Instance().GetMesh(meshdata.name, meshdata.index);
+        auto get_picking = _mesh->IsPicking(_viewpos, model, ray_world);
+        if (get_picking.GetHitted() && get_picking.GetRayFactor() < _record.GetRayFactor())
+        {
+            _record = get_picking;
+            _hitted_node = scene->GetSceneNodeByEntity(entity);
+        }
+    }
+    if (_hitted_node != nullptr)
+    {
+        Selected::Instance().node = _hitted_node;
+    }
 }
