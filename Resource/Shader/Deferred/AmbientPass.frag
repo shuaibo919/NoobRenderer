@@ -47,7 +47,7 @@ void main()
     vec2 brdf  = texture(brdfLUT, vec2(max(dot(N, V), 0.0), roughness)).rg;
     vec3 specular = hasBrdfLUT * hasPrefilterMap * prefilteredColor * (F * brdf.x + brdf.y);
 
-    FragColor = vec4(kD * ambientStrength * (diffuse + specular), 1.0);
+    FragColor = vec4(ambientStrength * (kD * diffuse + specular), 1.0);
 }
 
 
