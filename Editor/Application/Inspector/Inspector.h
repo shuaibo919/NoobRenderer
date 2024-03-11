@@ -294,11 +294,27 @@ namespace NoobRenderer
         inline void InspectComponent<component::ScreenSpaceReflection>(NoobRenderer::Entity::Ptr &entity, void *typeAny)
         {
             bool visible = true;
-            auto cs = static_cast<component::ScreenSpaceReflection *>(typeAny);
+            auto ssr = static_cast<component::ScreenSpaceReflection *>(typeAny);
             ImGui::Separator();
             if (ImGui::CollapsingHeader("ScreenSpaceReflection Component", ImGuiTreeNodeFlags_DefaultOpen))
             {
-                ImGui::Checkbox("Enable", &cs->enable);
+                ImGui::Checkbox("Enable", &ssr->enable);
+            }
+            if (!visible)
+            {
+                entity->RemoveComponent<component::ScreenSpaceReflection>();
+            }
+        }
+
+        template <>
+        inline void InspectComponent<component::VoxelGlobalIllumination>(NoobRenderer::Entity::Ptr &entity, void *typeAny)
+        {
+            bool visible = true;
+            auto vxgi = static_cast<component::VoxelGlobalIllumination *>(typeAny);
+            ImGui::Separator();
+            if (ImGui::CollapsingHeader("VoxelGlobalIllumination Component", ImGuiTreeNodeFlags_DefaultOpen))
+            {
+                ImGui::SliderInt("Voxel Size##VoxelGlobalIllumination", &vxgi->voxel_size, 1, 500);
             }
             if (!visible)
             {
