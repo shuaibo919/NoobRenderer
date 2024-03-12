@@ -44,6 +44,7 @@ namespace NoobRenderer
             m_shader->SetUniform("viewportSize", glm::vec2(m_rt->GetWidth(), m_rt->GetHeight()));
             for (auto [entity, mesh_data, ssr] : view.each())
             {
+                if (mesh_data.mesh == nullptr) continue;
                 m_shader->SetUniform("model", scene->GetSceneNodeByEntity(entity)->model);
                 m_shader->SetUniform("maxRayDistance", 100.f);
                 mesh_data.mesh->Draw();
