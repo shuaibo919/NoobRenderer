@@ -314,7 +314,7 @@ namespace NoobRenderer
             ImGui::Separator();
             if (ImGui::CollapsingHeader("VoxelGlobalIllumination Component", ImGuiTreeNodeFlags_DefaultOpen))
             {
-                ImGui::SliderInt("Voxel Size##VoxelGlobalIllumination", &vxgi->voxel_size, 1, 500);
+                ImGui::SliderInt("Voxel Size##VoxelGlobalIllumination", &vxgi->voxelize_resolution, 1, 500);
             }
             if (!visible)
             {

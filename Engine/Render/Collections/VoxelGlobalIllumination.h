@@ -17,7 +17,8 @@ namespace NoobRenderer
             inline static bool ready{nullptr};
             inline static ShaderProgram::Ptr voxelize_shader{nullptr};
             inline static WriteToTexture::Ptr voxel_vis_rt{nullptr};
-            inline static WriteToTexture::Ptr gi_rt{nullptr};
+            inline static WriteToTexture::Ptr vxgi_rt{nullptr};
+            inline static std::array<glm::mat4, 3> voxel_projection_view_mat;
             static void Init(component::VoxelGlobalIllumination &gi);
             static void Voxelize(Scene::Ptr &scene, component::VoxelGlobalIllumination &gi);
             static void LightInjection(Scene::Ptr &scene, component::VoxelGlobalIllumination &gi);

@@ -70,3 +70,5 @@ void imageAtomicRGBA8Avg(layout(r32ui) coherent volatile uimage3D img, ivec3 coo
         ++numIterations;
     }
 }
+
+
