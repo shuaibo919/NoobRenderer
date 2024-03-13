@@ -25,7 +25,7 @@ namespace NoobRenderer
             using Ptr = std::shared_ptr<CascadeShadow>;
             CascadeShadow() = delete;
             CascadeShadow(unsigned int width, unsigned int height, int split_size, unsigned int binding = 0);
-            std::vector<float> GetCascadeLevels(std::vector<float>& cascade_splits, float camera_far_plane);
+            std::vector<float> GetCascadeLevels(std::vector<float> &cascade_splits, float camera_far_plane);
             ~CascadeShadow();
             void WrtieToMap(ShaderProgram::Ptr shader, Scene::Ptr &scene, component::DirectionalLight &light);
             inline void ActivateTex() { m_map->ActivateTex(); }

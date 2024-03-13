@@ -1,4 +1,5 @@
 #include "Engine/Render/Pass/IndirectLightPass.h"
+#include "Engine/Render/Collections/VoxelGlobalIllumination.h"
 #include "Engine/Render/Collections/Utils.h"
 #include <random>
 namespace NoobRenderer
@@ -37,6 +38,13 @@ namespace NoobRenderer
             m_rt->Unbind();
             glEnable(GL_DEPTH_TEST);
             input.Insert(RenderStorageOutputKey[0], m_rt->GetTexture(0));
+
+            auto &root = scene->GetRootNode();
+            auto vxgi = root->object->TryGetComponent<component::VoxelGlobalIllumination>();
+            if (vxgi != nullptr)
+            {
+                VoxelGlobalIllumination::Apply(scene, *vxgi);
+            }
         }
 
     }

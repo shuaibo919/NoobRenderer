@@ -3,9 +3,10 @@
 using namespace NoobRenderer::render;
 void VoxelGlobalIllumination::Init(component::VoxelGlobalIllumination &gi)
 {
+    ready = true;
     using namespace Texture;
     voxelize_shader = ShaderManager::Instance().LoadShaderAndGet(
-        "Resource/Shader/VXGI/Voxelize.vert", "Resource/Shader/VXGI/Voxelize.geom", "Resource/Shader/VXGI/Voxelize.frag");
+        "Resource/Shader/VXGI/Voxelize.vert", "Resource/Shader/VXGI/Voxelize.frag", "Resource/Shader/VXGI/Voxelize.geom");
     // voxel_vis_rt = std::make_shared<WriteToTexture>(gi.voxelize_resolution, gi.voxelize_resolution);
     vxgi_rt = std::make_shared<WriteToTexture>(gi.voxelize_resolution, gi.voxelize_resolution);
     vxgi_rt->SetTexture3D<Texture3D>(GL_COLOR_ATTACHMENT0, gi.voxelize_resolution, gi.voxelize_resolution, gi.voxelize_resolution, Format::RGBA8, Format::RGBA, DataType::UNSIGNED_BYTE); // Albedo3D

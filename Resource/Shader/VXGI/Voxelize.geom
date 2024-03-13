@@ -1,17 +1,17 @@
 #version 460 core
 
 layout (triangles) in;
-layout (triangle_strip, max_vertices=3) out;
+layout (triangle_strip, max_vertices = 3) out;
 
 /* Vertex Input */
 in VS_OUT{
-    vec3 geoVoxelPos;
     vec2 TexCoords;
     vec3 Normal;
 } vs_in[];
 
 /* Geometry Output */
 out GS_OUT{
+	vec3 geoVoxelPos;
     vec3 geoNormal;
     vec2 geoTexCoords;
 }gs_out;
@@ -24,19 +24,13 @@ int GetProjectionAxis();
 
 void main()
 {
-	vec3 texCoord[3];
 	int selectedIndex = GetProjectionAxis();
-
-    for (int i = 0; i < gl_in.length(); i++)
-    {
-        texCoord[i] = vs_in[i].texCoord; 
-    }
     mat4 voxelMatrix = voxelPVMat[selectedIndex];
 	for(int i = 0 ;i < 3; ++i){
 		gl_Position = voxelMatrix * gl_in[i].gl_Position;
-        gs_out.geoVoxelPos = // todo
+        gs_out.geoVoxelPos = ((gl_Position + 1.0f) * voxelResolution / 2.0f).xyz;
 		gs_out.geoTexCoords = vs_in[i].TexCoords;
-		gs_out.geoNormal = gs_in[i].Normal;
+		gs_out.geoNormal = vs_in[i].Normal;
 		EmitVertex();
 		
 	}
