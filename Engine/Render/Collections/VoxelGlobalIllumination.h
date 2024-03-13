@@ -18,6 +18,7 @@ namespace NoobRenderer
             inline static ShaderProgram::Ptr voxelize_shader{nullptr};
             inline static WriteToTexture::Ptr voxel_vis_rt{nullptr};
             inline static WriteToTexture::Ptr vxgi_rt{nullptr};
+            inline static WriteToTexture::Ptr vxgi_debug_rt{nullptr};
             inline static std::array<glm::mat4, 3> voxel_projection_view_mat;
             static void Init(component::VoxelGlobalIllumination &gi);
             static void Voxelize(Scene::Ptr &scene, component::VoxelGlobalIllumination &gi);
@@ -27,6 +28,8 @@ namespace NoobRenderer
 
         public:
             static void Apply(Scene::Ptr &scene, component::VoxelGlobalIllumination &gi);
+            static int DrawVoxelScene(Scene::Ptr &scene, glm::ivec2 viewport_size, component::VoxelGlobalIllumination &gi);
+            static void ClearALLDebugRT();
         };
     }
 }

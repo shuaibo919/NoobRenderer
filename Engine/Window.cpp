@@ -41,7 +41,10 @@ namespace NoobRenderer::io
             func(cursor_x, cursor_y);
     }
 }
-
+extern "C"
+{
+    
+}
 EngineWindow::EngineWindow(EngineWindow::Size size, std::string_view title, int major_version, int minor_version)
     : m_size(size)
 {

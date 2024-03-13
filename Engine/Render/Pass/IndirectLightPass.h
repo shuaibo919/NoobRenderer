@@ -1,5 +1,7 @@
 #pragma once
 #include "Engine/Render/Pass/RenderPass.h"
+#include "Engine/Render/Collections/VoxelGlobalIllumination.h"
+#include "Engine/Render/Collections/Utils.h"
 namespace NoobRenderer
 {
     namespace render

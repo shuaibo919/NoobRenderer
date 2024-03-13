@@ -28,6 +28,8 @@ void main()
     mat4 voxelMatrix = voxelPVMat[selectedIndex];
 	for(int i = 0 ;i < 3; ++i){
 		gl_Position = voxelMatrix * gl_in[i].gl_Position;
+		vec3 pos = pos.xyz;
+		pos -= pos.z;
         gs_out.geoVoxelPos = ((gl_Position + 1.0f) * voxelResolution / 2.0f).xyz;
 		gs_out.geoTexCoords = vs_in[i].TexCoords;
 		gs_out.geoNormal = vs_in[i].Normal;

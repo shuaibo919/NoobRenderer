@@ -95,3 +95,15 @@ void VoxelGlobalIllumination::Apply(Scene::Ptr &scene, component::VoxelGlobalIll
     BuildMipmap(scene, gi);
     ConeTracing(scene, gi);
 }
+int VoxelGlobalIllumination::DrawVoxelScene(Scene::Ptr &scene, glm::ivec2 viewport_size, component::VoxelGlobalIllumination &gi)
+{
+    if(vxgi_debug_rt == nullptr)
+    {
+        vxgi_debug_rt = std::make_shared<WriteToTexture>(viewport_size.x,viewport_size.y);
+        vxgi_debug_rt->SetTexture2D<Texture2D>(GL_COLOR_ATTACHMENT0, GL_RGBA16F, GL_RGBA, GL_FLOAT);
+    }
+}
+void VoxelGlobalIllumination::ClearALLDebugRT()
+{
+    vxgi_debug_rt.reset();
+}

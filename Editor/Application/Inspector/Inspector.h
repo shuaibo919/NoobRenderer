@@ -29,6 +29,23 @@ namespace NoobRenderer
             ComponentUIMap::Register<component::Camera>();
             ComponentUIMap::Register<component::IBLCubeMap>();
             ComponentUIMap::Register<component::ScreenSpaceReflection>();
+            ComponentUIMap::Register<component::VoxelGlobalIllumination>();
+        }
+
+        template <>
+        inline void InspectComponent<component::ActiveComponent>(NoobRenderer::Entity::Ptr &entity, void *typeAny)
+        {
+            auto active = static_cast<component::ActiveComponent *>(typeAny);
+            bool visible = true;
+            ImGui::Separator();
+            if (ImGui::CollapsingHeader("Active Component", &visible, ImGuiTreeNodeFlags_DefaultOpen))
+            {
+                // todo
+            }
+            if (visible == false)
+            {
+                entity->RemoveComponent<component::ActiveComponent>();
+            }
         }
 
         template <>
@@ -309,16 +326,29 @@ namespace NoobRenderer
         template <>
         inline void InspectComponent<component::VoxelGlobalIllumination>(NoobRenderer::Entity::Ptr &entity, void *typeAny)
         {
+            // For debug, beta
+            static bool debug_window = false;
             bool visible = true;
             auto vxgi = static_cast<component::VoxelGlobalIllumination *>(typeAny);
             ImGui::Separator();
             if (ImGui::CollapsingHeader("VoxelGlobalIllumination Component", ImGuiTreeNodeFlags_DefaultOpen))
             {
                 ImGui::SliderInt("Voxel Size##VoxelGlobalIllumination", &vxgi->voxelize_resolution, 1, 500);
+                ImGui::Checkbox("Show Voxelize Wolrd", &debug_window); // For debug, beta
             }
             if (!visible)
             {
                 entity->RemoveComponent<component::ScreenSpaceReflection>();
+            }
+            if (debug_window)
+            {
+                auto window_size = ImGui::GetWindowSize();
+                ImGui::SetNextWindowSize(ImVec2(window_size.x, window_size.y), ImGuiCond_Once);
+                ImGui::Begin("Voxelize Wolrd", &debug_window);
+                {
+                   
+                }
+                ImGui::End();
             }
         }
     }

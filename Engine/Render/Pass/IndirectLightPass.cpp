@@ -1,6 +1,4 @@
 #include "Engine/Render/Pass/IndirectLightPass.h"
-#include "Engine/Render/Collections/VoxelGlobalIllumination.h"
-#include "Engine/Render/Collections/Utils.h"
 #include <random>
 namespace NoobRenderer
 {
