@@ -326,27 +326,34 @@ namespace NoobRenderer
         template <>
         inline void InspectComponent<component::VoxelGlobalIllumination>(NoobRenderer::Entity::Ptr &entity, void *typeAny)
         {
-            // For debug, beta
-            static bool debug_window = false;
-            bool visible = true;
+            /* This Function still work in progress!  */
+            /* For Debug, May crashed ! */
+            static bool ortho_window = false;
+            static int ortho_show_rt_id = 0;
+            static bool visualize_window = false;
             auto vxgi = static_cast<component::VoxelGlobalIllumination *>(typeAny);
             ImGui::Separator();
             if (ImGui::CollapsingHeader("VoxelGlobalIllumination Component", ImGuiTreeNodeFlags_DefaultOpen))
             {
                 ImGui::SliderInt("Voxel Size##VoxelGlobalIllumination", &vxgi->voxelize_resolution, 1, 500);
-                ImGui::Checkbox("Show Voxelize Wolrd", &debug_window); // For debug, beta
+                ImGui::DragFloat("Voxel World Size##VoxelGlobalIllumination", &vxgi->world_size, 0.1f, 1.0f, 200.0f);
+                
+                // ImGui::SliderInt("Ortho RT id##VoxelGlobalIllumination", &ortho_show_rt_id, 0, 2);
+                // ImGui::Checkbox("Show Ortho Wolrd", &ortho_window); //  For Debug, May crashed !
+                ImGui::Checkbox("Show Visualize Wolrd", &visualize_window); //  For Debug, May crashed !
             }
-            if (!visible)
-            {
-                entity->RemoveComponent<component::ScreenSpaceReflection>();
-            }
-            if (debug_window)
+            if (visualize_window)
             {
                 auto window_size = ImGui::GetWindowSize();
                 ImGui::SetNextWindowSize(ImVec2(window_size.x, window_size.y), ImGuiCond_Once);
-                ImGui::Begin("Voxelize Wolrd", &debug_window);
+                ImGui::Begin("Visualize Wolrd", &visualize_window);
                 {
-                   
+                    auto avail_region = ImGui::GetContentRegionAvail();
+                    auto &tex = render::VoxelGlobalIllumination::GetDrawVoxelScene();
+                    if (tex != nullptr)
+                    {
+                        ImGui::Image((ImTextureID)(intptr_t)(tex->GetTexture()->GetID()), ImVec2(avail_region), ImVec2(0, 1), ImVec2(1, 0));
+                    }
                 }
                 ImGui::End();
             }
