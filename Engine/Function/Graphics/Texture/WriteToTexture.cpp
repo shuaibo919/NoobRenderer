@@ -19,6 +19,10 @@ void WriteToTexture::ExplicitColorAttach()
         glNamedFramebufferDrawBuffers(m_fbo->GetID(), static_cast<GLsizei>(tex_attachments.size()), tex_attachments.data());
     }
 }
+void WriteToTexture::ExplicitColorAttach(GLenum buf)
+{
+    glNamedFramebufferDrawBuffer(m_fbo->GetID(), buf);
+}
 void WriteToTexture::DiscardRenderBuffer()
 {
     glNamedFramebufferDrawBuffer(m_fbo->GetID(), GL_NONE);
