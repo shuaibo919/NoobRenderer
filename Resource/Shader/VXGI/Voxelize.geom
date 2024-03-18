@@ -1,65 +1,48 @@
 #version 460 core
+layout(triangles) in;
+layout(triangle_strip, max_vertices = 3) out;
 
-layout (triangles) in;
-layout (triangle_strip, max_vertices = 3) out;
+uniform mat4 uProjx;
+uniform mat4 uProjy;
+uniform mat4 uProjz;
 
-/* Vertex Input */
-in VS_OUT{
-    vec2 TexCoords;
-    vec3 Normal;
-} vs_in[];
+in	VertexData{
+	vec2 TexCoord;
+	vec3 Normal;
+}gs_in[];
 
-/* Geometry Output */
-out GS_OUT{
-	vec3 geoVoxelPos;
-    vec3 geoNormal;
-    vec2 geoTexCoords;
+
+out FragData{
+	vec3 WsPos;
+	vec3 Normal;
+	vec2 TexCoord;
+	flat int axis;
 }gs_out;
 
-/* Uniform Vars */
-uniform mat4[3] voxelPVMat;
-uniform int voxelResolution;
 
-int GetProjectionAxis();
+void main(){
 
-void main()
-{
-	int selectedIndex = GetProjectionAxis();
-    mat4 voxelMatrix = voxelPVMat[selectedIndex];
-	for(int i = 0 ;i < 3; ++i){
-		gl_Position = voxelMatrix * gl_in[i].gl_Position;
-		vec3 pos = pos.xyz;
-		pos -= pos.z;
-        gs_out.geoVoxelPos = ((gl_Position + 1.0f) * voxelResolution / 2.0f).xyz;
-		gs_out.geoTexCoords = vs_in[i].TexCoords;
-		gs_out.geoNormal = vs_in[i].Normal;
+	vec3 edge1 = gl_in[0].gl_Position.xyz-gl_in[1].gl_Position.xyz;
+	vec3 edge2 = gl_in[2].gl_Position.xyz-gl_in[0].gl_Position.xyz;
+	vec3 normal = abs(cross(edge1, edge2));
+
+	if(normal.x >= normal.y && normal.x >= normal.z)
+        gs_out.axis = 1;
+    else if (normal.y >= normal.x  && normal.y >= normal.z)
+        gs_out.axis = 2;
+    else
+        gs_out.axis = 3;
+
+    mat4 projectionMatrix = gs_out.axis == 1 ? uProjx : gs_out.axis == 2 ? uProjy : uProjz;
+
+	for(int i = 0;i < 3; i++)
+	{
+		gs_out.TexCoord = gs_in[i].TexCoord;
+		gs_out.Normal = gs_in[i].Normal;
+		gs_out.WsPos = gl_in[i].gl_Position.xyz;
+		gl_Position = projectionMatrix * gl_in[i].gl_Position;
 		EmitVertex();
-		
 	}
 	EndPrimitive();
+
 }
-
-int GetProjectionAxis()
-{
-	vec3 p1 = gl_in[1].gl_Position.xyz - gl_in[0].gl_Position.xyz;
-	vec3 p2 = gl_in[2].gl_Position.xyz - gl_in[0].gl_Position.xyz;
-	vec3 faceNormal = cross(p1, p2);
-
-	float nDX = abs(faceNormal.x);
-	float nDY = abs(faceNormal.y);
-	float nDZ = abs(faceNormal.z);
-
-	if( nDX > nDY && nDX > nDZ )
-    {
-		return 0;
-	}
-	else if( nDY > nDX && nDY > nDZ  )
-    {
-	    return 1;
-    }
-	else
-    {
-	    return 2;
-	}
-}
-
