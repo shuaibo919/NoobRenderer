@@ -37,12 +37,17 @@ namespace NoobRenderer
             glEnable(GL_DEPTH_TEST);
             input.Insert(RenderStorageOutputKey[0], m_rt->GetTexture(0));
 
+            /* |：Beta Start  */
+            /* This Function still work in progress!  */
+            /* For Debug, May crashed ! */
             auto &root = scene->GetRootNode();
             auto vxgi = root->object->TryGetComponent<component::VoxelGlobalIllumination>();
             if (vxgi != nullptr)
             {
                 VoxelGlobalIllumination::Apply(scene, *vxgi);
+                VoxelGlobalIllumination::DrawVoxelScene(scene, glm::ivec2(m_rt->GetWidth(),m_rt->GetHeight()), *vxgi);
             }
+            /* Beta End :| */
         }
 
     }
