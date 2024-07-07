@@ -1,9 +1,0 @@
-#ifndef PLUTO_SAMPLER_DESCRIPTOR_H
-#define PLUTO_SAMPLER_DESCRIPTOR_H
-
-namespace Pluto::backend
-{
-
-}
-
-#endif // PLUTO_SAMPLER_DESCRIPTOR_H
