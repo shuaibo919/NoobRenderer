@@ -1,0 +1,24 @@
+# build files
+out/
+out
+bin/
+bin
+Debug/
+Debug
+Release/
+Release
+build/
+build
+
+# visual studio code configs
+.vscode/
+.vscode
+
+# visual studio configs
+.vs/
+.vs 
+CMakeSettings.json
+
+# jetbrains
+.idea/
+.idea

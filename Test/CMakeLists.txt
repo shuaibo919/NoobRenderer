@@ -1,17 +1,13 @@
+set(TARGET_NAME Test)
 message("Generate Test File Enabled")
 
-file(GLOB SRC ${CMAKE_CURRENT_SOURCE_DIR}/*.cpp)
+file(GLOB TEST_SRC ${CMAKE_CURRENT_SOURCE_DIR}/*.cpp)
 
-set(EXECUTABLE_OUTPUT_PATH ${OUTPUT_DIR})
-
-foreach(_var ${SRC})
+foreach(_var ${TEST_SRC})
     get_filename_component(app_name ${_var} NAME_WE)
     add_executable(${app_name} ${_var})
-    add_dependencies(${app_name} imgui Engine)
-    target_link_libraries(${app_name} PUBLIC imgui Engine)
-    target_include_directories(${app_name} PUBLIC ${ROOT_DIR}/)
-    target_include_directories(${app_name} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/)
-    target_include_directories(${app_name} PUBLIC ${ROOT_DIR}/Third/imgui)
-    target_include_directories(${app_name} PUBLIC ${ROOT_DIR}/Third/imgui/backends)
+    target_link_libraries(${app_name} PUBLIC ${PLUTO_ENGINE_NAME})
+    target_include_directories(${app_name} PUBLIC ${CMAKE_BEGIN_PATH}/Pluto)
+    add_dependencies(${app_name} ${PLUTO_ENGINE_NAME})
     message("Test ${app_name} Generated!")
 endforeach()
