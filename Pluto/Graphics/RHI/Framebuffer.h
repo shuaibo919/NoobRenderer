@@ -39,11 +39,8 @@ namespace pluto
 
             const Properties &GetProperties() const { return *mProperties; }
 
-            static void ClearCache();
-            static void DeleteUnusedCache();
-
             virtual void Validate() {};
-            virtual void SetClearColour(const glm::vec4 &colour) = 0;
+            virtual void SetClearColor(const glm::vec4 &color) = 0;
 
         protected:
             Properties *mProperties;

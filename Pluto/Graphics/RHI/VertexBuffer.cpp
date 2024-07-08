@@ -33,10 +33,12 @@ VertexBuffer::Ptr pluto::Graphics::VertexBuffer::Builder::Create(std::shared_ptr
 {
     return pContext->CreateVertexBuffer(std::move(mProperties));
 }
+
 VertexBuffer::VertexBuffer(Properties *&&pProperties)
     : mProperties(pProperties)
 {
 }
+
 VertexBuffer::~VertexBuffer()
 {
     if (mProperties != nullptr)

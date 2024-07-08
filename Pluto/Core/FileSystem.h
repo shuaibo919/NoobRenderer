@@ -21,6 +21,7 @@ namespace pluto
         bool AbsolutePathToFileSystem(const std::string &path, std::string &outFileSystemPath, bool folder = false);
         std::string AbsolutePathToFileSystem(const std::string &path, bool folder = false);
         void SetAssetRoot(std::string root) { mAssetRootPath = root; };
+        std::string GetPhysicalPath(const std::string &path);
 
     private:
         std::string mAssetRootPath;

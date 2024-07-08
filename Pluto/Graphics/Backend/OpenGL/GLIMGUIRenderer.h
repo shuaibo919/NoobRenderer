@@ -6,11 +6,11 @@ namespace pluto
 {
     namespace Graphics
     {
-        class GLIMGUIRenderer : public IMGUIRenderer
+        class GLImGuiRenderer : public ImGuiRenderer
         {
         public:
-            GLIMGUIRenderer(uint32_t width, uint32_t height, bool clearScreen);
-            ~GLIMGUIRenderer();
+            GLImGuiRenderer(uint32_t width, uint32_t height, bool clearScreen);
+            ~GLImGuiRenderer();
 
             void Init() override;
             void NewFrame() override;
@@ -21,7 +21,7 @@ namespace pluto
             // static void Init();
 
         protected:
-            static IMGUIRenderer *CreateFuncGL(uint32_t width, uint32_t height, bool clearScreen);
+            static ImGuiRenderer *CreateFuncGL(uint32_t width, uint32_t height, bool clearScreen);
 
         private:
             void *m_WindowHandle;

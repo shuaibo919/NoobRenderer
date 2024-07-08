@@ -6,13 +6,16 @@ set(CMAKE_BUILD_TYPE "Debug")
 project(Pluto)
 
 # Build options
-SET(GENERATE_TESTS ON)
+if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+    SET(GENERATE_TESTS ON)
+    add_definitions(-DPLUTO_DEBUG)
+else()
+    SET(GENERATE_TESTS OFF)
+endif()
 
 if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
     set(CMAKE_EXE_LINKER_FLAGS /NODEFAULTLIB:"Libcmtd.lib")
     set(CMAKE_EXE_LINKER_FLAGS /NODEFAULTLIB:"Libcmt.lib")
-else()
-    message(FATAL_ERROR "Not yet Support other complier.")
 endif()
 
 # Include Guards

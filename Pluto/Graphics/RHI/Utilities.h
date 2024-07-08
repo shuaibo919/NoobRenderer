@@ -1,6 +1,6 @@
 #pragma once
+#include "Core/Utilities.h"
 #include "Graphics/RHI/Declarations.h"
-
 namespace pluto
 {
     namespace Graphics
@@ -11,35 +11,35 @@ namespace pluto
             {
                 switch (type)
                 {
-                case ElementType::BYTE:
-                case ElementType::UBYTE:
-                case ElementType::SHORT:
-                case ElementType::USHORT:
-                case ElementType::INT:
-                case ElementType::UINT:
-                case ElementType::FLOAT:
-                case ElementType::HALF:
+                case ElementType::Byte:
+                case ElementType::Ubyte:
+                case ElementType::Short:
+                case ElementType::Ushort:
+                case ElementType::Int:
+                case ElementType::Uint:
+                case ElementType::Float:
+                case ElementType::Half:
                     return 1;
-                case ElementType::FLOAT2:
-                case ElementType::HALF2:
-                case ElementType::BYTE2:
-                case ElementType::UBYTE2:
-                case ElementType::SHORT2:
-                case ElementType::USHORT2:
+                case ElementType::Float2:
+                case ElementType::Half2:
+                case ElementType::Byte2:
+                case ElementType::Ubyte2:
+                case ElementType::Short2:
+                case ElementType::Ushort2:
                     return 2;
-                case ElementType::FLOAT3:
-                case ElementType::HALF3:
-                case ElementType::BYTE3:
-                case ElementType::UBYTE3:
-                case ElementType::SHORT3:
-                case ElementType::USHORT3:
+                case ElementType::Float3:
+                case ElementType::Half3:
+                case ElementType::Byte3:
+                case ElementType::Ubyte3:
+                case ElementType::Short3:
+                case ElementType::Ushort3:
                     return 3;
-                case ElementType::FLOAT4:
-                case ElementType::HALF4:
-                case ElementType::BYTE4:
-                case ElementType::UBYTE4:
-                case ElementType::SHORT4:
-                case ElementType::USHORT4:
+                case ElementType::Float4:
+                case ElementType::Half4:
+                case ElementType::Byte4:
+                case ElementType::Ubyte4:
+                case ElementType::Short4:
+                case ElementType::Ushort4:
                     return 4;
                 default:
                     break;

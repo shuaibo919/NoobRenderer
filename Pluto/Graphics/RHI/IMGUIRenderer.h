@@ -13,12 +13,12 @@ namespace pluto
             uint32_t mip;
         };
 
-        class IMGUIRenderer
+        class ImGuiRenderer
         {
         public:
-            static IMGUIRenderer *Create(uint32_t width, uint32_t height, bool clearScreen);
+            static ImGuiRenderer *Create(uint32_t width, uint32_t height, bool clearScreen);
 
-            virtual ~IMGUIRenderer() = default;
+            virtual ~ImGuiRenderer() = default;
             virtual void Init() = 0;
             virtual void NewFrame() = 0;
             virtual void Render(CommandBuffer *commandBuffer) = 0;
@@ -29,7 +29,7 @@ namespace pluto
             virtual ImGuiTextureID *AddTexture(Texture *texture, TextureType type = TextureType::None, uint32_t level = 0, uint32_t mip = 0);
 
         protected:
-            static IMGUIRenderer *(*CreateFunc)(uint32_t, uint32_t, bool);
+            static ImGuiRenderer *(*CreateFunc)(uint32_t, uint32_t, bool);
 
 #define MAX_IMGUI_TEXTURES 1024
             ImGuiTextureID m_TextureIDs[MAX_IMGUI_TEXTURES];

@@ -9,6 +9,11 @@ namespace pluto
         class GLShader;
         class GLDescriptorSet : public DescriptorSet
         {
+            friend class GLContext;
+
+        public:
+            GLDescriptorSet(GLDescriptorSet::Properties *&&pProperties);
+            ~GLDescriptorSet();
         };
     }
 }

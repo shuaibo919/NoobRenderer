@@ -1,9 +1,9 @@
 #include "Graphics/Backend/OpenGL/GL.h"
 #include "Graphics/Backend/OpenGL/GLDebug.h"
+#include "Core/Log.hpp"
 
-#ifdef GL_DEBUG
-
-bool pluto::GLLogCall(const char *function, const char *file, const int32_t line)
+#ifdef PLUTO_DEBUG
+bool pluto::Graphics::OpenGL::CheckError(const char *function, const char *file, const int32_t line)
 {
     GLenum err(glGetError());
     bool Error = true;
@@ -30,18 +30,11 @@ bool pluto::GLLogCall(const char *function, const char *file, const int32_t line
             break;
         default:;
         }
-
-        std::cerr << "GL_" << error.c_str() << " - " << file << " - " << function << ":" << line << std::endl;
+        pluto::log<pluto::Error>("GL_%s - %s - %s:%d", error.c_str(), file, function, line);
         Error = false;
         err = glGetError();
     }
     return Error;
-}
-
-void pluto::GLClearError()
-{
-    while (glGetError() != GL_NO_ERROR)
-        ;
 }
 
 #endif

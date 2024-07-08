@@ -1,8 +1,13 @@
+/* OpenGL SwapChain */
 #include "Graphics/Backend/OpenGL/GLSwapChain.h"
+/* Usage */
 #include "Graphics/Backend/OpenGL/GLTexture.h"
-#include "Graphics/Backend/OpenGL/GLCommandBuffer.h"
 #include "Graphics/Backend/OpenGL/GLContext.h"
-#include "Graphics/RHI/Framebuffer.h"
+#include "Graphics/Backend/OpenGL/GLCommandBuffer.h"
+/* Common */
+#include "Graphics/Backend/OpenGL/GL.h"
+#include "Graphics/Backend/OpenGL/GLDebug.h"
+#include "Graphics/Backend/OpenGL/GLUtilities.h"
 
 using namespace pluto::Graphics;
 GLSwapChain::GLSwapChain(GLSwapChain::Properties *&&pProperties)
@@ -29,6 +34,19 @@ Texture::Ptr GLSwapChain::GetCurrentImage()
 {
     return nullptr; // swapChainBuffers[0];
 }
+std::shared_ptr<Texture> GLSwapChain::GetImage(uint32_t index)
+{
+    return nullptr;
+};
+
+uint32_t GLSwapChain::GetCurrentImageIndex() const
+{
+    return 0;
+}
+
+void GLSwapChain::SetVSync(bool vsync)
+{
+}
 
 uint32_t GLSwapChain::GetCurrentBufferIndex() const
 {
@@ -41,5 +59,5 @@ size_t GLSwapChain::GetSwapChainBufferCount() const
 }
 CommandBuffer::Ptr GLSwapChain::GetCurrentCommandBuffer()
 {
-    return nullptr;
+    return mCommand;
 }

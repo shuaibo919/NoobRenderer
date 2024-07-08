@@ -1,6 +1,5 @@
 #pragma once
 #include "Graphics/RHI/VertexBuffer.h"
-#include "Graphics/Backend/OpenGL/GLDebug.h"
 
 namespace pluto
 {
@@ -15,11 +14,8 @@ namespace pluto
             ~GLVertexBuffer();
 
         public:
-            void Bind(CommandBuffer *commandBuffer, Pipeline *pipeline, uint8_t binding = 0) override;
+            void Bind(std::shared_ptr<CommandBuffer> commandBuffer, std::shared_ptr<Pipeline> pipeline, uint8_t binding = 0) override;
             void Unbind() override;
-
-        protected:
-            void DelayedBackendInitialize() override;
 
         private:
             uint32_t mHandle;

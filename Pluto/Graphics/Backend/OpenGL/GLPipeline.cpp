@@ -1,186 +1,137 @@
+/* OpenGL Pipeline */
 #include "Graphics/Backend/OpenGL/GLPipeline.h"
-// #include "Graphics/Backend/OpenGL/GLDescriptorSet.h"
+/* Usage */
+#include "Graphics/Backend/OpenGL/GLContext.h"
+#include "Graphics/Backend/OpenGL/GLVertexBuffer.h"
+#include "Graphics/Backend/OpenGL/GLTexture.h"
+#include "Graphics/Backend/OpenGL/GLDescriptorSet.h"
 #include "Graphics/Backend/OpenGL/GLShader.h"
+#include "Graphics/Backend/OpenGL/GLRenderPass.h"
 #include "Graphics/Backend/OpenGL/GLFramebuffer.h"
 #include "Graphics/Backend/OpenGL/GLRenderPass.h"
 #include "Graphics/Backend/OpenGL/GLSwapChain.h"
-// #include "Graphics/Backend/OpenGL/GLRenderer.h"
-// #include "Graphics/Backend/OpenGL/GLDebug.h"
-
+/* Common */
 #include "Graphics/Backend/OpenGL/GL.h"
+#include "Graphics/Backend/OpenGL/GLDebug.h"
+#include "Graphics/Backend/OpenGL/GLUtilities.h"
 
 using namespace pluto::Graphics;
 GLPipeline::GLPipeline(GLPipeline::Properties *&&pProperties)
     : Pipeline(std::move(pProperties))
 {
+    glGenVertexArrays(1, &mVertexArray);
 }
 
 GLPipeline::~GLPipeline()
 {
+    glDeleteVertexArrays(1, &mVertexArray);
 }
-void GLPipeline::BindVertexArray()
+void GLPipeline::BindVertexArray(std::shared_ptr<VertexBuffer> vbo)
 {
-    //     GLCall(glBindVertexArray(m_VertexArray));
-    //     auto &vertexLayout = ((GLShader *)mShader)->GetBufferLayout().GetLayout();
-    //     uint32_t count = 0;
+    GlCall(glBindVertexArray(static_cast<GLuint>(mVertexArray)));
+    auto &vbo_propertis = vbo->GetProperties();
+    uint16_t attriArrayPosition = 0;
+    for (size_t i = 0; i < vbo_propertis.usedAttributes.size(); ++i)
+    {
+        if (vbo_propertis.usedAttributes[i])
+        {
+            GLuint index = static_cast<GLuint>(i);
+            GLint count = GLUtilities::GetElementCount(vbo_propertis.attributes[i].type);
+            GLenum type = GLUtilities::GetDataType(vbo_propertis.attributes[i].type);
+            GLsizei stride = vbo_propertis.attributes[i].stride;
+            void const *pointer = reinterpret_cast<void const *>(vbo_propertis.attributes[i].offset);
 
-    //     for (auto &layout : vertexLayout)
-    //     {
-    //         GLCall(glEnableVertexAttribArray(count));
-    //         size_t offset = static_cast<size_t>(layout.offset);
-    //         VertexAtrribPointer(layout.format, count, offset, ((GLShader *)mShader)->GetBufferLayout().GetStride());
-    //         count++;
-    //     }
+            GlCall(glEnableVertexAttribArray(attriArrayPosition));
+            GlCall(glVertexAttribPointer(attriArrayPosition, count, type, GL_FALSE, stride, pointer));
+            attriArrayPosition++;
+        }
+    }
 }
 void GLPipeline::CreateFramebuffers()
 {
-    //     std::vector<TextureType> attachmentTypes;
-    //     std::vector<Texture *> attachments;
+    //     std::vector<AttachmentType> attachmentTypes;
+    //     std::vector<std::shared_ptr<Texture>> attachments;
 
-    //     if (m_Description.swapchainTarget)
+    //     if (mProperties->swapchainTarget)
     //     {
-    //         attachmentTypes.push_back(TextureType::COLOUR);
-    //         attachments.push_back(Renderer::GetMainSwapChain()->GetImage(0));
+    //         attachmentTypes.push_back(AttachmentType::Color);
+    //         // attachments.push_back(Renderer::GetMainSwapChain()->GetImage(0));
     //     }
     //     else
     //     {
-    //         // for (auto texture : m_Description.colourTargets)
-    //         // {
-    //         //     if (texture)
-    //         //     {
-    //         //         attachmentTypes.push_back(texture->GetType());
-    //         //         attachments.push_back(texture);
-    //         //     }
-    //         // }
-    //     }
-
-    //     // if (m_Description.depthTarget)
-    //     // {
-    //     //     attachmentTypes.push_back(m_Description.depthTarget->GetType());
-    //     //     attachments.push_back(m_Description.depthTarget);
-    //     // }
-
-    //     // if (m_Description.depthArrayTarget)
-    //     // {
-    //     //     attachmentTypes.push_back(m_Description.depthArrayTarget->GetType());
-    //     //     attachments.push_back(m_Description.depthArrayTarget);
-    //     // }
-
-    //     // if (m_Description.cubeMapTarget)
-    //     // {
-    //     //     attachmentTypes.push_back(m_Description.cubeMapTarget->GetType());
-    //     //     attachments.push_back(m_Description.cubeMapTarget);
-    //     // }
-
-    //     Graphics::RenderPassDesc renderPassDesc;
-    //     renderPassDesc.attachmentCount = uint32_t(attachmentTypes.size());
-    //     renderPassDesc.attachmentTypes = attachmentTypes.data();
-    //     renderPassDesc.attachments = attachments.data();
-    //     renderPassDesc.clear = m_Description.clearTargets;
-    //     renderPassDesc.cubeMapIndex = m_Description.cubeMapIndex;
-    //     renderPassDesc.mipIndex = m_Description.mipIndex;
-
-    //     m_RenderPass = Graphics::RenderPass::Get(renderPassDesc);
-
-    //     FramebufferDesc frameBufferDesc{};
-    //     frameBufferDesc.width = GetWidth();
-    //     frameBufferDesc.height = GetHeight();
-    //     frameBufferDesc.attachmentCount = uint32_t(attachments.size());
-    //     frameBufferDesc.renderPass = m_RenderPass.get();
-    //     frameBufferDesc.attachmentTypes = attachmentTypes.data();
-    //     frameBufferDesc.mipIndex = m_Description.mipIndex;
-    //     if (m_Description.swapchainTarget)
-    //     {
-    //         for (uint32_t i = 0; i < Renderer::GetMainSwapChain()->GetSwapChainBufferCount(); i++)
+    //         for (auto texture : mProperties->colourTargets)
     //         {
-    //             frameBufferDesc.screenFBO = true;
-    //             attachments[0] = Renderer::GetMainSwapChain()->GetImage(i);
-    //             frameBufferDesc.attachments = attachments.data();
-
-    //             m_Framebuffers.emplace_back(Framebuffer::Get(frameBufferDesc));
+    //             if (texture)
+    //             {
+    //                 attachmentTypes.push_back(texture->GetProperties().);
+    //                 attachments.push_back(texture);
+    //             }
     //         }
     //     }
-    //     else if (m_Description.depthArrayTarget)
+
+    //     auto renderPassProperties = new RenderPass::Properties();
+    //     renderPassProperties->attachments = attachments;
+    //     renderPassProperties->attachmentTypes = attachmentTypes;
+    //     renderPassProperties->clear = mProperties->clearTargets;
+    //     renderPassProperties->mipIndex = mProperties->mipIndex;
+    //     mRenderPass = std::dynamic_pointer_cast<GLRenderPass>(OpenGL::CreateRenderPass(std::move(renderPassProperties)));
+
+    // FramebufferDesc frameBufferDesc{};
+    // frameBufferDesc.width = GetWidth();
+    // frameBufferDesc.height = GetHeight();
+    // frameBufferDesc.attachmentCount = uint32_t(attachments.size());
+    // frameBufferDesc.renderPass = m_RenderPass.get();
+    // frameBufferDesc.attachmentTypes = attachmentTypes.data();
+    // frameBufferDesc.mipIndex = m_Description.mipIndex;
+    // if (m_Description.swapchainTarget)
+    // {
+    //     for (uint32_t i = 0; i < Renderer::GetMainSwapChain()->GetSwapChainBufferCount(); i++)
     //     {
-    //         // for (uint32_t i = 0; i < ((GLTextureDepthArray *)m_Description.depthArrayTarget)->GetCount(); ++i)
-    //         // {
-    //         //     frameBufferDesc.layer = i;
-    //         //     frameBufferDesc.screenFBO = false;
-
-    //         //     attachments[0] = m_Description.depthArrayTarget;
-    //         //     frameBufferDesc.attachments = attachments.data();
-
-    //         //     m_Framebuffers.emplace_back(Framebuffer::Get(frameBufferDesc));
-    //         // }
-    //     }
-    //     else if (m_Description.cubeMapTarget)
-    //     {
-    //         // for (uint32_t i = 0; i < 6; ++i)
-    //         //{
-    //         //     frameBufferDesc.layer = i;
-    //         //     frameBufferDesc.screenFBO = false;
-
-    //         //    attachments[0] = m_Description.cubeMapTarget;
-    //         //    frameBufferDesc.attachments = attachments.data();
-
-    //         //    m_Framebuffers.emplace_back(Framebuffer::Get(frameBufferDesc));
-    //         //}
-
-    //         frameBufferDesc.layer = m_Description.cubeMapIndex;
+    //         frameBufferDesc.screenFBO = true;
+    //         attachments[0] = Renderer::GetMainSwapChain()->GetImage(i);
     //         frameBufferDesc.attachments = attachments.data();
-    //         frameBufferDesc.screenFBO = false;
+
     //         m_Framebuffers.emplace_back(Framebuffer::Get(frameBufferDesc));
     //     }
-    //     else
-    //     {
-    //         frameBufferDesc.attachments = attachments.data();
-    //         frameBufferDesc.screenFBO = false;
-    //         m_Framebuffers.emplace_back(Framebuffer::Get(frameBufferDesc));
-    //     }
+    // }
+    // else if (m_Description.depthArrayTarget)
+    // {
+    //     // for (uint32_t i = 0; i < ((GLTextureDepthArray *)m_Description.depthArrayTarget)->GetCount(); ++i)
+    //     // {
+    //     //     frameBufferDesc.layer = i;
+    //     //     frameBufferDesc.screenFBO = false;
+
+    //     //     attachments[0] = m_Description.depthArrayTarget;
+    //     //     frameBufferDesc.attachments = attachments.data();
+
+    //     //     m_Framebuffers.emplace_back(Framebuffer::Get(frameBufferDesc));
+    //     // }
+    // }
+    // else if (m_Description.cubeMapTarget)
+    // {
+    //     // for (uint32_t i = 0; i < 6; ++i)
+    //     //{
+    //     //     frameBufferDesc.layer = i;
+    //     //     frameBufferDesc.screenFBO = false;
+
+    //     //    attachments[0] = m_Description.cubeMapTarget;
+    //     //    frameBufferDesc.attachments = attachments.data();
+
+    //     //    m_Framebuffers.emplace_back(Framebuffer::Get(frameBufferDesc));
+    //     //}
+
+    //     frameBufferDesc.layer = m_Description.cubeMapIndex;
+    //     frameBufferDesc.attachments = attachments.data();
+    //     frameBufferDesc.screenFBO = false;
+    //     m_Framebuffers.emplace_back(Framebuffer::Get(frameBufferDesc));
+    // }
+    // else
+    // {
+    //     frameBufferDesc.attachments = attachments.data();
+    //     frameBufferDesc.screenFBO = false;
+    //     m_Framebuffers.emplace_back(Framebuffer::Get(frameBufferDesc));
+    // }
 }
-
-// void VertexAtrribPointer(RHIFormat format, uint32_t index, size_t offset, uint32_t stride)
-// {
-//     switch (format)
-//     {
-//     case RHIFormat::R32_Float:
-//         GLCall(glVertexAttribPointer(index, 1, GL_FLOAT, false, stride, (const void *)(intptr_t)(offset)));
-//         break;
-//     case RHIFormat::R32G32_Float:
-//         GLCall(glVertexAttribPointer(index, 2, GL_FLOAT, false, stride, (const void *)(intptr_t)(offset)));
-//         break;
-//     case RHIFormat::R32G32B32_Float:
-//         GLCall(glVertexAttribPointer(index, 3, GL_FLOAT, false, stride, (const void *)(intptr_t)(offset)));
-//         break;
-//     case RHIFormat::R32G32B32A32_Float:
-//         GLCall(glVertexAttribPointer(index, 4, GL_FLOAT, false, stride, (const void *)(intptr_t)(offset)));
-//         break;
-//     case RHIFormat::R8_UInt:
-//         GLCall(glVertexAttribPointer(index, 1, GL_UNSIGNED_BYTE, false, stride, (const void *)(intptr_t)(offset)));
-//         break;
-//     case RHIFormat::R32_UInt:
-//         GLCall(glVertexAttribPointer(index, 1, GL_UNSIGNED_INT, false, stride, (const void *)(intptr_t)(offset)));
-//         break;
-//     case RHIFormat::R32G32_UInt:
-//         GLCall(glVertexAttribPointer(index, 2, GL_UNSIGNED_INT, false, stride, (const void *)(intptr_t)(offset)));
-//         break;
-//     case RHIFormat::R32G32B32_UInt:
-//         GLCall(glVertexAttribPointer(index, 3, GL_UNSIGNED_INT, false, stride, (const void *)(intptr_t)(offset)));
-//         break;
-//     case RHIFormat::R32G32B32A32_UInt:
-//         GLCall(glVertexAttribPointer(index, 4, GL_UNSIGNED_INT, false, stride, (const void *)(intptr_t)(offset)));
-//         break;
-//     case RHIFormat::R32G32_Int:
-//         GLCall(glVertexAttribPointer(index, 2, GL_INT, false, stride, (const void *)(intptr_t)(offset)));
-//         break;
-//     case RHIFormat::R32G32B32_Int:
-//         GLCall(glVertexAttribPointer(index, 3, GL_INT, false, stride, (const void *)(intptr_t)(offset)));
-//         break;
-//     case RHIFormat::R32G32B32A32_Int:
-//         GLCall(glVertexAttribPointer(index, 4, GL_INT, false, stride, (const void *)(intptr_t)(offset)));
-//         break;
-//     }
-// }
 
 void GLPipeline::Bind(std::shared_ptr<CommandBuffer> commandBuffer, uint32_t layer)
 {
@@ -197,7 +148,7 @@ void GLPipeline::Bind(std::shared_ptr<CommandBuffer> commandBuffer, uint32_t lay
         framebuffer = mFramebuffers[0];
     }
 
-    mRenderPass->BeginRenderPass(commandBuffer, mProperties->clearColor, framebuffer, Graphics::INLINE);
+    mRenderPass->BeginRenderPass(commandBuffer, mProperties->clearColor, framebuffer, Graphics::Inline);
     mProperties->shader->Bind();
 
     if (mProperties->transparencyEnabled)
@@ -230,16 +181,16 @@ void GLPipeline::Bind(std::shared_ptr<CommandBuffer> commandBuffer, uint32_t lay
 
     switch (mProperties->cullMode)
     {
-    case CullMode::BACK:
+    case CullMode::Back:
         glCullFace(GL_BACK);
         break;
-    case CullMode::FRONT:
+    case CullMode::Front:
         glCullFace(GL_FRONT);
         break;
-    case CullMode::FRONTANDBACK:
+    case CullMode::FrontAndBack:
         glCullFace(GL_FRONT_AND_BACK);
         break;
-    case CullMode::NONE:
+    case CullMode::None:
         glDisable(GL_CULL_FACE);
         break;
     }
@@ -261,6 +212,6 @@ void GLPipeline::ClearRenderTargets(std::shared_ptr<CommandBuffer> commandBuffer
     for (auto framebuffer : mFramebuffers)
     {
         // framebuffer.As<GLFramebuffer>()->Bind();
-        // GLRenderer::ClearInternal(RENDERER_BUFFER_COLOUR | RENDERER_BUFFER_DEPTH | RENDERER_BUFFER_STENCIL);
+        // GLRenderer::ClearInternal(BufferColor | BufferDepth | BufferStencil);
     }
 }

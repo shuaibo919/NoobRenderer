@@ -11,13 +11,20 @@ namespace pluto
             friend class GLContext;
 
         public:
+            using Ptr = std::shared_ptr<GLTexture2D>;
             GLTexture2D(Properties *&&pProperties);
+            GLTexture2D(const std::string &path, Properties *&&pProperties);
             ~GLTexture2D();
 
         public:
             void *GetHandle() const override;
             void Bind(uint32_t slot = 0) const override;
             void Unbind(uint32_t slot = 0) const override;
+
+        protected:
+            uint8_t *LoadTextureData(const std::string &path);
+            uint32_t LoadTexture(uint8_t *data);
+            uint32_t mHandle;
         };
 
         class GLTexture2DArray final : public Texture2DArray
@@ -25,13 +32,18 @@ namespace pluto
             friend class GLContext;
 
         public:
+            using Ptr = std::shared_ptr<GLTexture2DArray>;
             GLTexture2DArray(Properties *&&pProperties);
+            GLTexture2DArray(const std::string &path, Properties *&&pProperties);
             ~GLTexture2DArray();
 
         public:
             void *GetHandle() const override;
             void Bind(uint32_t slot = 0) const override;
             void Unbind(uint32_t slot = 0) const override;
+
+        private:
+            uint32_t mHandle;
         };
 
         class GLTextureCube final : public TextureCube
@@ -39,13 +51,18 @@ namespace pluto
             friend class GLContext;
 
         public:
+            using Ptr = std::shared_ptr<GLTextureCube>;
             GLTextureCube(Properties *&&pProperties);
+            GLTextureCube(const std::string &path, Properties *&&pProperties);
             ~GLTextureCube();
 
         public:
             void *GetHandle() const override;
             void Bind(uint32_t slot = 0) const override;
             void Unbind(uint32_t slot = 0) const override;
+
+        private:
+            uint32_t mHandle;
         };
 
         class GLTexture3D final : public Texture3D
@@ -53,13 +70,18 @@ namespace pluto
             friend class GLContext;
 
         public:
+            using Ptr = std::shared_ptr<GLTexture3D>;
             GLTexture3D(Properties *&&pProperties);
+            GLTexture3D(const std::string &path, Properties *&&pProperties);
             ~GLTexture3D();
 
         public:
             void *GetHandle() const override;
             void Bind(uint32_t slot = 0) const override;
             void Unbind(uint32_t slot = 0) const override;
+
+        private:
+            uint32_t mHandle;
         };
     }
 }

@@ -31,7 +31,7 @@ namespace pluto
                 TextureWrap wrap;
                 uint16_t samples{1};
                 uint16_t zAxisSize{1};
-                TextureFlags flags{TextureFlags::Texture_CreateMips};
+                TextureFlags flags{TextureFlags::TextureCreateMips};
                 Texture::Type type{Texture::Type::Invalid};
                 bool srgb{false};
                 bool generateMipMaps{true};
@@ -43,7 +43,7 @@ namespace pluto
                 Texture::Builder &SetBase(uint16_t width, uint16_t height, uint16_t samples, RHIFormat format, uint16_t zAxisSize = 1);
                 Texture::Builder &SetFilter(TextureFilter minFilter, TextureFilter magFilter);
                 Texture::Builder &SetWrap(TextureWrap wrap);
-                Texture::Builder &SetAdancedOptions(TextureFlags flag = TextureFlags::Texture_CreateMips, bool srgb = true, bool mipmap = true, bool anisotropic = true);
+                Texture::Builder &SetAdancedOptions(TextureFlags flag = TextureFlags::TextureCreateMips, bool srgb = true, bool mipmap = true, bool anisotropic = true);
                 Texture::Ptr Create(Texture::Type type, std::shared_ptr<GraphicsContext> &pContext);
                 Texture::Ptr Create(Texture::Properties &desc, std::shared_ptr<GraphicsContext> &pContext);
                 Texture::Ptr Create(Texture::Type type, const std::string &path, std::shared_ptr<GraphicsContext> &pContext);

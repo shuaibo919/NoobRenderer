@@ -25,7 +25,7 @@ std::shared_ptr<GraphicsContext> GraphicsContext::Create(RenderAPI api, RenderDe
         break;
 #endif
 
-    case RenderAPI::NONE:
+    case RenderAPI::None:
         break;
 
     default:

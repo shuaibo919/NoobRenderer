@@ -1,22 +1,22 @@
 #pragma once
 #include "Graphics/RHI/Pipeline.h"
-#include "Graphics/RHI/Framebuffer.h"
-// #include "Graphics/RHI/BufferLayout.h"
 
 namespace pluto
 {
     namespace Graphics
     {
-        class GLRenderPass;
+        class Framebuffer;
+        class VertexBuffer;
         class CommandBuffer;
-        class RenderPass;
+        class GLRenderPass;
+        class GLShader;
 
         class GLPipeline : public Pipeline
         {
         public:
             GLPipeline(Properties *&&pProperties);
             ~GLPipeline();
-            void BindVertexArray();
+            void BindVertexArray(std::shared_ptr<VertexBuffer> vbo);
             void CreateFramebuffers();
 
         public:
@@ -25,9 +25,10 @@ namespace pluto
             void ClearRenderTargets(std::shared_ptr<CommandBuffer> commandBuffer) override;
 
         private:
-            std::shared_ptr<RenderPass> mRenderPass;
+            std::shared_ptr<GLShader> mShader{nullptr};
+            std::shared_ptr<GLRenderPass> mRenderPass{nullptr};
             std::vector<std::shared_ptr<Framebuffer>> mFramebuffers;
-            uint32_t mVertexArray = -1;
+            uint32_t mVertexArray;
         };
     }
 }

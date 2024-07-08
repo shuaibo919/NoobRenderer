@@ -15,13 +15,14 @@ namespace pluto
             struct Properties
             {
                 void *data{nullptr};
+                uint16_t indicesType;
                 uint32_t count{0};
-                BufferUsage usage{BufferUsage::STATIC};
+                BufferUsage usage{BufferUsage::Static};
             };
             struct Builder final : BuildBase<IndexBuffer::Properties, IndexBuffer>
             {
                 Builder() {}
-                IndexBuffer::Builder &SetIndicesData(void *data, uint32_t count);
+                IndexBuffer::Builder &SetIndicesData(void *data, uint32_t count, uint16_t indicesType = sizeof(uint16_t));
                 IndexBuffer::Builder &SetUsage(BufferUsage usage);
                 IndexBuffer::Ptr Create(std::shared_ptr<GraphicsContext> &pContext);
             };

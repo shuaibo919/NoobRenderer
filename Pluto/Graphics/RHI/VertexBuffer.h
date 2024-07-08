@@ -6,7 +6,7 @@ namespace pluto
 {
     namespace Graphics
     {
-        class VertexBuffer
+        class VertexBuffer : public std::enable_shared_from_this<VertexBuffer>
         {
             friend class GraphicsContext;
 
@@ -17,7 +17,7 @@ namespace pluto
                 void *data{nullptr};
                 uint32_t count{0};
                 std::bitset<16> usedAttributes;
-                BufferUsage usage{BufferUsage::STATIC};
+                BufferUsage usage{BufferUsage::Static};
                 std::array<VertexAttribute, VertexAttribute::MAX_VERTEX_COUNT> attributes{};
             };
             struct Builder final : BuildBase<VertexBuffer::Properties, VertexBuffer>
@@ -35,7 +35,11 @@ namespace pluto
                 VertexBuffer::Ptr Create(std::shared_ptr<GraphicsContext> &pContext);
             };
             virtual ~VertexBuffer();
-            virtual void Bind(CommandBuffer *commandBuffer, Pipeline *pipeline, uint8_t binding = 0) = 0;
+            VertexBuffer::Ptr Get()
+            {
+                return shared_from_this();
+            }
+            virtual void Bind(std::shared_ptr<CommandBuffer> commandBuffer, std::shared_ptr<Pipeline> pipeline, uint8_t binding = 0) = 0;
             virtual void Unbind() = 0;
 
         public:
@@ -45,7 +49,6 @@ namespace pluto
         protected:
             Properties *mProperties;
             VertexBuffer(Properties *&&pProperties);
-            virtual void DelayedBackendInitialize() = 0;
         };
     }
 }

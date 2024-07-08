@@ -22,12 +22,12 @@ namespace pluto
             bool Init(bool vsync) override;
 
             std::shared_ptr<Texture> GetCurrentImage() override;
-            std::shared_ptr<Texture> GetImage(uint32_t index) override { return nullptr; };
+            std::shared_ptr<Texture> GetImage(uint32_t index) override;
             uint32_t GetCurrentBufferIndex() const override;
-            uint32_t GetCurrentImageIndex() const override { return 0; };
+            uint32_t GetCurrentImageIndex() const override;
             std::shared_ptr<CommandBuffer> GetCurrentCommandBuffer() override;
             size_t GetSwapChainBufferCount() const override;
-            void SetVSync(bool vsync) override {}
+            void SetVSync(bool vsync) override;
 
         private:
             std::vector<std::shared_ptr<GLTexture2D>> mBuffers;

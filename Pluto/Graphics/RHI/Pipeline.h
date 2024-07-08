@@ -20,9 +20,9 @@ namespace pluto
             {
                 std::shared_ptr<Shader> shader;
 
-                CullMode cullMode = CullMode::BACK;
-                PolygonMode polygonMode = PolygonMode::FILL;
-                DrawType drawType = DrawType::TRIANGLE;
+                CullMode cullMode = CullMode::Back;
+                PolygonMode polygonMode = PolygonMode::Fill;
+                DrawType drawType = DrawType::Triangle;
                 BlendMode blendMode = BlendMode::None;
 
                 bool transparencyEnabled{false};
@@ -61,8 +61,6 @@ namespace pluto
 
         public:
             const Properties &GetProperties() const { return *mProperties; }
-            static void ClearCache();
-            static void DeleteUnusedCache();
 
             virtual void ClearRenderTargets(std::shared_ptr<CommandBuffer> commandBuffer) {}
 

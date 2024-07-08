@@ -2,6 +2,8 @@
 #include <string>
 #include <cstdint>
 #include <unordered_map>
+
+#include "Core/Utilities/LoadImage.h"
 namespace pluto
 {
     namespace utilities
