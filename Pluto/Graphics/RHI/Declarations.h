@@ -50,11 +50,11 @@ namespace pluto
         enum class TextureWrap : uint8_t
         {
             None = 0,
-            REPEAT,
-            CLAMP,
-            MIRRORED_REPEAT,
-            CLAMP_TO_EDGE,
-            CLAMP_TO_BORDER
+            Repeat,
+            Clmap,
+            MirroredRepeat,
+            ClampToedge,
+            ClampToBorder
         };
 
         enum class TextureFilter : uint8_t

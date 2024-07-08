@@ -95,15 +95,15 @@ namespace pluto
             {
                 switch (wrap)
                 {
-                case TextureWrap::CLAMP:
+                case TextureWrap::Clmap:
                     return GL_CLAMP;
-                case TextureWrap::CLAMP_TO_BORDER:
+                case TextureWrap::ClampToBorder:
                     return GL_CLAMP_TO_BORDER;
-                case TextureWrap::CLAMP_TO_EDGE:
+                case TextureWrap::ClampToedge:
                     return GL_CLAMP_TO_EDGE;
-                case TextureWrap::REPEAT:
+                case TextureWrap::Repeat:
                     return GL_REPEAT;
-                case TextureWrap::MIRRORED_REPEAT:
+                case TextureWrap::MirroredRepeat:
                     return GL_MIRRORED_REPEAT;
                 default:
                     return 0;

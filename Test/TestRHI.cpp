@@ -31,7 +31,7 @@ int main()
     auto texture1 = Texture::Builder()
                         .SetBase(10, 10, 1, RHIFormat::R16G16B16A16_Float)
                         .SetFilter(TextureFilter::Linear, TextureFilter::Linear)
-                        .SetWrap(TextureWrap::REPEAT)
+                        .SetWrap(TextureWrap::Repeat)
                         .Create(Texture::Type::Texture2D, renderSystem);
 
     while (!window->ShouldClose())
