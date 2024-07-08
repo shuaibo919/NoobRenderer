@@ -51,23 +51,23 @@ namespace pluto
             {
                 switch (format)
                 {
-                case RHIFormat::R8_Unorm:
+                case RHIFormat::R8Unorm:
                     return 8;
-                case RHIFormat::D16_Unorm:
+                case RHIFormat::Depth16Unorm:
                     return 16;
-                case RHIFormat::R8G8_Unorm:
+                case RHIFormat::R8G8Unorm:
                     return 16;
-                case RHIFormat::R8G8B8_Unorm:
+                case RHIFormat::R8G8B8Unorm:
                     return 24;
-                case RHIFormat::R16G16B16_Float:
+                case RHIFormat::R16G16B16Float:
                     return 48;
-                case RHIFormat::R32G32B32_Float:
+                case RHIFormat::R32G32B32Float:
                     return 96;
-                case RHIFormat::R8G8B8A8_Unorm:
+                case RHIFormat::R8G8B8A8Unorm:
                     return 32;
-                case RHIFormat::R16G16B16A16_Float:
+                case RHIFormat::R16G16B16A16Float:
                     return 64;
-                case RHIFormat::R32G32B32A32_Float:
+                case RHIFormat::R32G32B32A32Float:
                     return 128;
                 default:
                     return 32;
@@ -79,24 +79,24 @@ namespace pluto
                 switch (bits)
                 {
                 case 8:
-                    return RHIFormat::R8_Unorm;
+                    return RHIFormat::R8Unorm;
                 case 16:
-                    return RHIFormat::R8G8_Unorm;
+                    return RHIFormat::R8G8Unorm;
                 case 24:
-                    return RHIFormat::R8G8B8_Unorm;
+                    return RHIFormat::R8G8B8Unorm;
                 case 32:
-                    return RHIFormat::R8G8B8A8_Unorm;
+                    return RHIFormat::R8G8B8A8Unorm;
                 case 48:
-                    return RHIFormat::R16G16B16_Float;
+                    return RHIFormat::R16G16B16Float;
                 case 64:
-                    return RHIFormat::R16G16B16A16_Float;
+                    return RHIFormat::R16G16B16A16Float;
                 case 96:
-                    return RHIFormat::R32G32B32_Float;
+                    return RHIFormat::R32G32B32Float;
                 case 128:
-                    return RHIFormat::R32G32B32A32_Float;
+                    return RHIFormat::R32G32B32A32Float;
                 default:
 
-                    return RHIFormat::R8G8B8A8_Unorm;
+                    return RHIFormat::R8G8B8A8Unorm;
                 }
             }
 
@@ -136,34 +136,34 @@ namespace pluto
 
             constexpr inline bool IsDepthStencilFormat(RHIFormat format)
             {
-                return format == RHIFormat::D24_Unorm_S8_UInt || format == RHIFormat::D16_Unorm_S8_UInt || format == RHIFormat::D32_Float_S8_UInt;
+                return format == RHIFormat::Depth24UnormStencil8UInt || format == RHIFormat::Depth16UnormStencil8UInt || format == RHIFormat::Depth32FloatStencil8UInt;
             }
 
             constexpr inline bool IsDepthFormat(RHIFormat format)
             {
-                return format == RHIFormat::D16_Unorm || format == RHIFormat::D32_Float || format == RHIFormat::D24_Unorm_S8_UInt || format == RHIFormat::D16_Unorm_S8_UInt || format == RHIFormat::D32_Float_S8_UInt;
+                return format == RHIFormat::Depth16Unorm || format == RHIFormat::Depth32Float || format == RHIFormat::Depth24UnormStencil8UInt || format == RHIFormat::Depth16UnormStencil8UInt || format == RHIFormat::Depth32FloatStencil8UInt;
             }
 
             constexpr inline bool IsStencilFormat(RHIFormat format)
             {
-                return format == RHIFormat::D24_Unorm_S8_UInt || format == RHIFormat::D16_Unorm_S8_UInt || format == RHIFormat::D32_Float_S8_UInt;
+                return format == RHIFormat::Depth24UnormStencil8UInt || format == RHIFormat::Depth16UnormStencil8UInt || format == RHIFormat::Depth32FloatStencil8UInt;
             }
             constexpr inline uint8_t GetStrideFromFormat(const RHIFormat format)
             {
                 switch (format)
                 {
-                case RHIFormat::R8_Unorm:
-                case RHIFormat::D16_Unorm:
+                case RHIFormat::R8Unorm:
+                case RHIFormat::Depth16Unorm:
                     return 1;
-                case RHIFormat::R8G8_Unorm:
+                case RHIFormat::R8G8Unorm:
                     return 2;
-                case RHIFormat::R8G8B8_Unorm:
-                case RHIFormat::R16G16B16_Float:
-                case RHIFormat::R32G32B32_Float:
+                case RHIFormat::R8G8B8Unorm:
+                case RHIFormat::R16G16B16Float:
+                case RHIFormat::R32G32B32Float:
                     return 3;
-                case RHIFormat::R8G8B8A8_Unorm:
-                case RHIFormat::R16G16B16A16_Float:
-                case RHIFormat::R32G32B32A32_Float:
+                case RHIFormat::R8G8B8A8Unorm:
+                case RHIFormat::R16G16B16A16Float:
+                case RHIFormat::R32G32B32A32Float:
                     return 4;
                 default:
                     return 0;

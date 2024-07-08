@@ -29,7 +29,7 @@ int main()
 
     // test:Texture creation, way 1
     auto texture1 = Texture::Builder()
-                        .SetBase(10, 10, 1, RHIFormat::R16G16B16A16_Float)
+                        .SetBase(10, 10, 1, RHIFormat::R16G16B16A16Float)
                         .SetFilter(TextureFilter::Linear, TextureFilter::Linear)
                         .SetWrap(TextureWrap::Repeat)
                         .Create(Texture::Type::Texture2D, renderSystem);

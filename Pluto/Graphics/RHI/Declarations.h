@@ -73,42 +73,41 @@ namespace pluto
         enum class RHIFormat : uint8_t
         {
             None = 0,
-            R8_Unorm,
-            R8G8_Unorm,
-            R8G8B8_Unorm,
-            R8G8B8A8_Unorm,
+            R8Unorm,
+            R8G8Unorm,
+            R8G8B8Unorm,
+            R8G8B8A8Unorm,
 
-            R8_UInt,
+            R8UInt,
 
-            R11G11B10_Float,
-            R10G10B10A2_Unorm,
+            R11G11B10Float,
+            R10G10B10A2Unorm,
 
-            R32_Int,
-            R32G32_Int,
-            R32G32B32_Int,
-            R32G32B32A32_Int,
+            R32Int,
+            R32G32Int,
+            R32G32B32Int,
+            R32G32B32A32Int,
 
-            R32_UInt,
-            R32G32_UInt,
-            R32G32B32_UInt,
-            R32G32B32A32_UInt,
+            R32UInt,
+            R32G32UInt,
+            R32G32B32UInt,
+            R32G32B32A32UInt,
 
-            R16_Float,
-            R16G16_Float,
-            R16G16B16_Float,
-            R16G16B16A16_Float,
+            R16Float,
+            R16G16Float,
+            R16G16B16Float,
+            R16G16B16A16Float,
 
-            R32_Float,
-            R32G32_Float,
-            R32G32B32_Float,
-            R32G32B32A32_Float,
+            R32Float,
+            R32G32Float,
+            R32G32B32Float,
+            R32G32B32A32Float,
 
-            D16_Unorm,
-            D32_Float,
-            D16_Unorm_S8_UInt,
-            D24_Unorm_S8_UInt,
-            D32_Float_S8_UInt,
-            SCREEN
+            Depth16Unorm,
+            Depth32Float,
+            Depth16UnormStencil8UInt,
+            Depth24UnormStencil8UInt,
+            Depth32FloatStencil8UInt
         };
 
         enum class BufferUsage : uint8_t

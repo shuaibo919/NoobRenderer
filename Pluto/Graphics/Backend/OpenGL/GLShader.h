@@ -1,6 +1,6 @@
 #pragma once
 #include "Graphics/RHI/Shader.h"
-// #include "Graphics/RHI/BufferLayout.h"
+#include "Graphics/RHI/BufferLayout.hpp"
 #include "Graphics/Backend/OpenGL/GLUniformBuffer.h"
 
 #include <glm/ext/matrix_float3x3.hpp>
@@ -36,7 +36,7 @@ namespace pluto
             void BindPushConstants(std::shared_ptr<CommandBuffer> commandBuffer, std::shared_ptr<Pipeline> pipeline);
 
         protected:
-            void LoadFromData(const uint32_t *data, uint32_t size, ShaderType type, std::map<ShaderType, std::string> &sources);
+            void ReflectFromShaderData(const uint32_t *data, uint32_t size, ShaderType type, std::map<ShaderType, std::string> &sources);
             static uint32_t CompileAll(std::map<ShaderType, std::string> *sources, OpenGL::ShaderErrorInfo &info);
             static uint32_t CompileShader(ShaderType type, std::string source, uint32_t program, OpenGL::ShaderErrorInfo &info);
 
@@ -57,7 +57,7 @@ namespace pluto
             std::vector<spirv_cross::CompilerGLSL *> mShaderCompilers;
             std::vector<PushConstant> mPushConstants;
             std::vector<std::pair<GLUniformBuffer *, uint32_t>> mPushConstantsBuffers;
-
+            BufferLayout *mLayout;
             // Graphics::VertexInputDescription m_Layout;
         };
     }

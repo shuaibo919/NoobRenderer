@@ -55,19 +55,19 @@ namespace pluto
             {
                 switch (format)
                 {
-                case RHIFormat::R8_Unorm:
-                case RHIFormat::R8G8_Unorm:
-                case RHIFormat::R8G8B8_Unorm:
-                case RHIFormat::R8G8B8A8_Unorm:
-                case RHIFormat::R10G10B10A2_Unorm:
+                case RHIFormat::R8Unorm:
+                case RHIFormat::R8G8Unorm:
+                case RHIFormat::R8G8B8Unorm:
+                case RHIFormat::R8G8B8A8Unorm:
+                case RHIFormat::R10G10B10A2Unorm:
                     return GL_UNSIGNED_BYTE;
-                case RHIFormat::R16_Float:
-                case RHIFormat::R16G16_Float:
-                case RHIFormat::R11G11B10_Float:
-                case RHIFormat::R16G16B16_Float:
-                case RHIFormat::R16G16B16A16_Float:
-                case RHIFormat::R32G32B32_Float:
-                case RHIFormat::R32G32B32A32_Float:
+                case RHIFormat::R16Float:
+                case RHIFormat::R16G16Float:
+                case RHIFormat::R11G11B10Float:
+                case RHIFormat::R16G16B16Float:
+                case RHIFormat::R16G16B16A16Float:
+                case RHIFormat::R32G32B32Float:
+                case RHIFormat::R32G32B32A32Float:
                     return GL_FLOAT;
                 default:
                     return GL_UNSIGNED_BYTE;
@@ -113,33 +113,33 @@ namespace pluto
             {
                 switch (format)
                 {
-                case RHIFormat::R8_Unorm:
+                case RHIFormat::R8Unorm:
                     return GL_R8;
-                case RHIFormat::R8G8_Unorm:
+                case RHIFormat::R8G8Unorm:
                     return GL_RG8;
-                case RHIFormat::R8G8B8_Unorm:
+                case RHIFormat::R8G8B8Unorm:
                     return srgb ? GL_SRGB8 : GL_RGB8;
-                case RHIFormat::R8G8B8A8_Unorm:
+                case RHIFormat::R8G8B8A8Unorm:
                     return srgb ? GL_SRGB8_ALPHA8 : GL_RGBA8;
-                case RHIFormat::R11G11B10_Float:
+                case RHIFormat::R11G11B10Float:
                     return GL_R11F_G11F_B10F;
-                case RHIFormat::R10G10B10A2_Unorm:
+                case RHIFormat::R10G10B10A2Unorm:
                     return GL_RGB10_A2;
-                case RHIFormat::R16G16_Float:
+                case RHIFormat::R16G16Float:
                     return GL_RG16F;
-                case RHIFormat::R16G16B16_Float:
+                case RHIFormat::R16G16B16Float:
                     return GL_RGB16F;
-                case RHIFormat::R16G16B16A16_Float:
+                case RHIFormat::R16G16B16A16Float:
                     return GL_RGBA16F;
-                case RHIFormat::R32G32B32_Float:
+                case RHIFormat::R32G32B32Float:
                     return GL_RGB32F;
-                case RHIFormat::R32G32B32A32_Float:
+                case RHIFormat::R32G32B32A32Float:
                     return GL_RGBA32F;
-                case RHIFormat::D24_Unorm_S8_UInt:
+                case RHIFormat::Depth24UnormStencil8UInt:
                     return GL_DEPTH24_STENCIL8;
-                case RHIFormat::D32_Float:
+                case RHIFormat::Depth32Float:
                     return GL_DEPTH_COMPONENT32F;
-                case RHIFormat::D32_Float_S8_UInt:
+                case RHIFormat::Depth32FloatStencil8UInt:
                     return GL_DEPTH32F_STENCIL8;
                 default:
                     return 0;
