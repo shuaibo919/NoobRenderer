@@ -1,38 +1,48 @@
 #include "Graphics/RHI/Shader.h"
 #include "Graphics/RHI/GraphicsContext.h"
+
+/* Third */
+#include "nlohmann/json.hpp"
+
+using ShaderJson = nlohmann::json;
 using namespace pluto::Graphics;
+
+void to_json(ShaderJson &j, const ShaderType &p)
+{
+    switch (p)
+    {
+    case ShaderType::Vertex:
+        j = "Vertex";
+        break;
+    case ShaderType::Fragment:
+        j = "Fragment";
+        break;
+    case ShaderType::Geometry:
+        j = "Geometry";
+        break;
+    case ShaderType::Compute:
+        j = "Compute";
+    default:
+        break;
+    }
+    j = "Unkown";
+}
+void from_json(const ShaderJson &j, ShaderType &p)
+{
+    if (j == "Vertex")
+        p = ShaderType::Vertex;
+    else if (j == "Fragment")
+        p = ShaderType::Fragment;
+    else if (j == "Geometry")
+        p = ShaderType::Geometry;
+    else if (j == "Compute")
+        p = ShaderType::Compute;
+    p = ShaderType::Unkown;
+}
 
 Shader::Builder &Shader::Builder::SetFile(const std::string &filePath)
 {
     mProperties->filePath = filePath;
-    return *this;
-}
-
-Shader::Builder &Shader::Builder::SetVertData(uint32_t *vertData, uint32_t size)
-{
-    mProperties->vertData = vertData;
-    mProperties->vertDataSize = size;
-    return *this;
-}
-
-Shader::Builder &Shader::Builder::SetFragData(uint32_t *fragData, uint32_t size)
-{
-    mProperties->fragData = fragData;
-    mProperties->fragDataSize = size;
-    return *this;
-}
-
-Shader::Builder &Shader::Builder::SetGeomData(uint32_t *geomData, uint32_t size)
-{
-    mProperties->geomData = geomData;
-    mProperties->geomDataSize = size;
-    return *this;
-}
-
-Shader::Builder &Shader::Builder::SetCompData(uint32_t *compData, uint32_t size)
-{
-    mProperties->compData = compData;
-    mProperties->compDataSize = size;
     return *this;
 }
 

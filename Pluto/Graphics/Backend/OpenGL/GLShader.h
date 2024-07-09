@@ -20,6 +20,10 @@ namespace pluto
         {
             struct ShaderErrorInfo
             {
+                ShaderErrorInfo() = default;
+                std::string shader;
+                std::string message[6];
+                uint32_t line[6];
             };
         }
 
@@ -33,31 +37,24 @@ namespace pluto
 
         public:
             bool IsCompiled();
-            void BindPushConstants(std::shared_ptr<CommandBuffer> commandBuffer, std::shared_ptr<Pipeline> pipeline);
 
         protected:
-            void ReflectFromShaderData(const uint32_t *data, uint32_t size, ShaderType type, std::map<ShaderType, std::string> &sources);
-            static uint32_t CompileAll(std::map<ShaderType, std::string> *sources, OpenGL::ShaderErrorInfo &info);
-            static uint32_t CompileShader(ShaderType type, std::string source, uint32_t program, OpenGL::ShaderErrorInfo &info);
+            void SetUniform(const std::string &name, bool value);
+            void SetUniform(const std::string &name, int value);
+            void SetUniform(const std::string &name, unsigned int value);
+            void SetUniform(const std::string &name, float value);
+            void SetUniform(const std::string &name, glm::vec2 vec2);
+            void SetUniform(const std::string &name, glm::vec3 vec3);
+            void SetUniform(const std::string &name, glm::vec4 vec4);
+            void SetUniform(const std::string &name, glm::mat3 mat3);
+            void SetUniform(const std::string &name, glm::mat4 mat4);
 
         private:
             uint32_t mHandle;
             std::string mSource;
 
             std::vector<ShaderType> mShaderTypes;
-            std::map<uint32_t, DescriptorSetInfo> mDescriptorInfos;
-
-            bool CreateLocations();
-            bool SetUniformLocation(const std::string &szName, bool pc = false);
-
-            std::map<std::string, uint32_t> msUniformBlockLocations;
-            std::map<uint32_t, uint32_t> mSampledImageLocations;
-            std::map<uint32_t, uint32_t> mUniformLocations;
-
             std::vector<spirv_cross::CompilerGLSL *> mShaderCompilers;
-            std::vector<PushConstant> mPushConstants;
-            std::vector<std::pair<GLUniformBuffer *, uint32_t>> mPushConstantsBuffers;
-            BufferLayout *mLayout;
             // Graphics::VertexInputDescription m_Layout;
         };
     }
