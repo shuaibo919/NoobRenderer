@@ -35,3 +35,9 @@ add_subdirectory(PlutoEditor)
 if(${GENERATE_TESTS})
     add_subdirectory(Test)
 endif()
+
+add_custom_target(copy_asset ALL
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+    ${CMAKE_BEGIN_PATH}/Asset
+    ${CMAKE_BEGIN_PATH}/bin/${CMAKE_BUILD_TYPE}/Asset
+)
