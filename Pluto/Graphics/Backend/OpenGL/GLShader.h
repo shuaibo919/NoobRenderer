@@ -1,6 +1,5 @@
 #pragma once
 #include "Graphics/RHI/Shader.h"
-#include "Graphics/RHI/BufferLayout.hpp"
 #include "Graphics/Backend/OpenGL/GLUniformBuffer.h"
 
 #include <glm/ext/matrix_float3x3.hpp>
@@ -39,15 +38,15 @@ namespace pluto
             bool IsCompiled();
 
         protected:
-            void SetUniform(const std::string &name, bool value);
-            void SetUniform(const std::string &name, int value);
-            void SetUniform(const std::string &name, unsigned int value);
-            void SetUniform(const std::string &name, float value);
-            void SetUniform(const std::string &name, glm::vec2 vec2);
-            void SetUniform(const std::string &name, glm::vec3 vec3);
-            void SetUniform(const std::string &name, glm::vec4 vec4);
-            void SetUniform(const std::string &name, glm::mat3 mat3);
-            void SetUniform(const std::string &name, glm::mat4 mat4);
+            // void SetUniform(const std::string &name, bool value);
+            // void SetUniform(const std::string &name, int value);
+            // void SetUniform(const std::string &name, unsigned int value);
+            // void SetUniform(const std::string &name, float value);
+            // void SetUniform(const std::string &name, glm::vec2 vec2);
+            // void SetUniform(const std::string &name, glm::vec3 vec3);
+            // void SetUniform(const std::string &name, glm::vec4 vec4);
+            // void SetUniform(const std::string &name, glm::mat3 mat3);
+            // void SetUniform(const std::string &name, glm::mat4 mat4);
 
         private:
             uint32_t mHandle;

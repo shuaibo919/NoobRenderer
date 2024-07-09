@@ -7,12 +7,7 @@
 #include "Graphics/Backend/OpenGL/GL.h"
 #include "Graphics/Backend/OpenGL/GLDebug.h"
 #include "Graphics/Backend/OpenGL/GLUtilities.h"
-/* Third */
-#include "spirv_cross.hpp"
-#include "spirv_glsl.hpp"
-#include "nlohmann/json.hpp"
 
-using ShaderJson = nlohmann::json;
 using namespace pluto::Graphics;
 
 uint32_t CompileAll(std::map<ShaderType, std::pair<std::string, std::string>> &sources, OpenGL::ShaderErrorInfo &info);

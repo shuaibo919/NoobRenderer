@@ -11,7 +11,7 @@ namespace pluto
     {
         class Pipeline;
         class CommandBuffer;
-
+        using ShaderJson = nlohmann::json;
         class Shader : public Asset
         {
         public:

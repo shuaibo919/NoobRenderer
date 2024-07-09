@@ -14,6 +14,8 @@
 #include <type_traits>
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
+// Third
+#include "nlohmann/json.hpp"
 
 namespace pluto
 {

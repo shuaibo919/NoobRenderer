@@ -2,11 +2,13 @@
     "vertex": {
         "type": "Vertex",
         "name": "Test.vert",
-        "glsl": ""
+        "glsl": "",
+        "spirv": ""
     },
     "fragment": {
         "type": "Fragment",
         "name": "Test.frag",
-        "glsl": ""
+        "glsl": "",
+        "spirv": ""
     }
 }

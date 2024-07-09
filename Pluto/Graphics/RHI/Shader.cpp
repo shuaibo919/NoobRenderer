@@ -1,10 +1,6 @@
 #include "Graphics/RHI/Shader.h"
 #include "Graphics/RHI/GraphicsContext.h"
 
-/* Third */
-#include "nlohmann/json.hpp"
-
-using ShaderJson = nlohmann::json;
 using namespace pluto::Graphics;
 
 void to_json(ShaderJson &j, const ShaderType &p)
