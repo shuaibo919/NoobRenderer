@@ -14,6 +14,7 @@ namespace pluto
             std::shared_ptr<Framebuffer> CreateFrameBuffer(void *&&pPropeties);
             std::shared_ptr<IndexBuffer> CreateIndexBuffer(void *&&pPropeties);
             std::shared_ptr<VertexBuffer> CreateVertexBuffer(void *&&pPropeties);
+            std::shared_ptr<UniformBuffer> CreateUniformBuffer(void *&&pPropeties);
             std::shared_ptr<CommandBuffer> CreateCommandBuffer(void *&&pPropeties);
             std::shared_ptr<DescriptorSet> CreateDescriptorSet(void *&&pPropeties);
             std::shared_ptr<Texture> CreateTexture(uint16_t type, void *&&pPropeties);
@@ -50,6 +51,7 @@ namespace pluto
             std::shared_ptr<Framebuffer> CreateFrameBuffer(void *&&pPropeties) override;
             std::shared_ptr<IndexBuffer> CreateIndexBuffer(void *&&pPropeties) override;
             std::shared_ptr<VertexBuffer> CreateVertexBuffer(void *&&pPropeties) override;
+            std::shared_ptr<UniformBuffer> CreateUniformBuffer(void *&&pPropeties) override;
             std::shared_ptr<CommandBuffer> CreateCommandBuffer(void *&&pPropeties) override;
             std::shared_ptr<DescriptorSet> CreateDescriptorSet(void *&&pPropeties) override;
             std::shared_ptr<Texture> CreateTexture(uint16_t type, void *&&pPropeties) override;

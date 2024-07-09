@@ -6,7 +6,7 @@ namespace pluto
         namespace OpenGL
         {
 #ifdef PLUTO_DEBUG
-            bool CheckError(const char *function, const char *file, const int32_t line);
+            bool CheckError(const char *function, const char *file, const size_t line);
 #define GlCall(x)                       \
     while (glGetError() != GL_NO_ERROR) \
         ;                               \

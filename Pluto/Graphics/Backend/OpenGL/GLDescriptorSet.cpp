@@ -2,6 +2,7 @@
 #include "Graphics/Backend/OpenGL/GLDescriptorSet.h"
 /* Usage */
 #include "Graphics/Backend/OpenGL/GLShader.h"
+#include "Graphics/Backend/OpenGL/GLUniformBuffer.h"
 /* Common */
 #include "Graphics/Backend/OpenGL/GL.h"
 #include "Graphics/Backend/OpenGL/GLDebug.h"
@@ -16,3 +17,15 @@ GLDescriptorSet::GLDescriptorSet(GLDescriptorSet::Properties *&&pProperties)
 GLDescriptorSet::~GLDescriptorSet()
 {
 }
+
+// void GLDescriptorSet::Update(std::shared_ptr<CommandBuffer> buffer)
+// {
+//     for (auto &bufferInfo : mUniformBuffers)
+//     {
+//         if (bufferInfo.second.updated)
+//         {
+//             // bufferInfo.second.ubo->SetData(bufferInfo.second.LocalStorage.Data);
+//             // bufferInfo.second.HasUpdated = false;
+//         }
+//     }
+// }

@@ -14,6 +14,7 @@ namespace pluto
         class IndexBuffer;
         class VertexBuffer;
         class RenderDevice;
+        class UniformBuffer;
         class CommandBuffer;
         class DescriptorSet;
 
@@ -36,6 +37,7 @@ namespace pluto
             friend class IndexBuffer;
             friend class VertexBuffer;
             friend class RenderDevice;
+            friend class UniformBuffer;
             friend class CommandBuffer;
             friend class DescriptorSet;
 
@@ -67,6 +69,7 @@ namespace pluto
             virtual std::shared_ptr<Framebuffer> CreateFrameBuffer(void *&&pPropeties) = 0;
             virtual std::shared_ptr<IndexBuffer> CreateIndexBuffer(void *&&pPropeties) = 0;
             virtual std::shared_ptr<VertexBuffer> CreateVertexBuffer(void *&&pPropeties) = 0;
+            virtual std::shared_ptr<UniformBuffer> CreateUniformBuffer(void *&&pPropeties) = 0;
             virtual std::shared_ptr<CommandBuffer> CreateCommandBuffer(void *&&pPropeties) = 0;
             virtual std::shared_ptr<DescriptorSet> CreateDescriptorSet(void *&&pPropeties) = 0;
             virtual std::shared_ptr<Texture> CreateTexture(uint16_t type, void *&&pPropeties) = 0;

@@ -1,16 +1,20 @@
+/* OpenGL Context */
 #include "Graphics/Backend/OpenGL/GLContext.h"
+/* Usage */
+#include "Graphics/Backend/OpenGL/GLShader.h"
+#include "Graphics/Backend/OpenGL/GLTexture.h"
+#include "Graphics/Backend/OpenGL/GLPipeline.h"
+#include "Graphics/Backend/OpenGL/GLSwapChain.h"
+#include "Graphics/Backend/OpenGL/GLRenderPass.h"
+#include "Graphics/Backend/OpenGL/GLIndexBuffer.h"
+#include "Graphics/Backend/OpenGL/GLFramebuffer.h"
+#include "Graphics/Backend/OpenGL/GLVertexBuffer.h"
+#include "Graphics/Backend/OpenGL/GLCommandBuffer.h"
+#include "Graphics/Backend/OpenGL/GLUniformbuffer.h"
+#include "Graphics/Backend/OpenGL/GLDescriptorSet.h"
+/* Common */
 #include "Graphics/Backend/OpenGL/GL.h"
 #include "Graphics/Backend/OpenGL/GLDebug.h"
-#include "Graphics/Backend/OpenGL/GLVertexBuffer.h"
-#include "Graphics/Backend/OpenGL/GLIndexBuffer.h"
-#include "Graphics/Backend/OpenGL/GLCommandBuffer.h"
-#include "Graphics/Backend/OpenGL/GLRenderPass.h"
-#include "Graphics/Backend/OpenGL/GLPipeline.h"
-#include "Graphics/Backend/OpenGL/GLTexture.h"
-#include "Graphics/Backend/OpenGL/GLFramebuffer.h"
-#include "Graphics/Backend/OpenGL/GLShader.h"
-#include "Graphics/Backend/OpenGL/GLSwapChain.h"
-#include "Graphics/Backend/OpenGL/GLDescriptorSet.h"
 
 using namespace pluto::Graphics;
 
@@ -44,6 +48,11 @@ namespace pluto::Graphics::OpenGL
     CommandBuffer::Ptr CreateCommandBuffer(void *&&pPropeties)
     {
         return std::make_shared<GLCommandBuffer>(std::move((CommandBuffer::Properties *)pPropeties));
+    }
+
+    UniformBuffer::Ptr CreateUniformBuffer(void *&&pPropeties)
+    {
+        return std::make_shared<GLUniformBuffer>(std::move((UniformBuffer::Properties *)pPropeties));
     }
 
     SwapChain::Ptr CreateSwapChain(void *&&pPropeties)
@@ -173,6 +182,11 @@ std::shared_ptr<CommandBuffer> GLContext::CreateCommandBuffer(void *&&pPropeties
 std::shared_ptr<SwapChain> GLContext::CreateSwapChain(void *&&pPropeties)
 {
     return OpenGL::CreateSwapChain(std::forward<void *>(pPropeties));
+}
+
+std::shared_ptr<UniformBuffer> GLContext::CreateUniformBuffer(void *&&pPropeties)
+{
+    return OpenGL::CreateUniformBuffer(std::forward<void *>(pPropeties));
 }
 
 std::shared_ptr<Pipeline> GLContext::CreatePipeline(void *&&pPropeties)

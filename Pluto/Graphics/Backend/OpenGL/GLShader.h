@@ -38,20 +38,19 @@ namespace pluto
             bool IsCompiled();
 
         protected:
-            // void SetUniform(const std::string &name, bool value);
-            // void SetUniform(const std::string &name, int value);
-            // void SetUniform(const std::string &name, unsigned int value);
-            // void SetUniform(const std::string &name, float value);
-            // void SetUniform(const std::string &name, glm::vec2 vec2);
-            // void SetUniform(const std::string &name, glm::vec3 vec3);
-            // void SetUniform(const std::string &name, glm::vec4 vec4);
-            // void SetUniform(const std::string &name, glm::mat3 mat3);
-            // void SetUniform(const std::string &name, glm::mat4 mat4);
+            void SetUniform(const std::string &name, bool value);
+            void SetUniform(const std::string &name, int value);
+            void SetUniform(const std::string &name, unsigned int value);
+            void SetUniform(const std::string &name, float value);
+            void SetUniform(const std::string &name, glm::vec2 vec2);
+            void SetUniform(const std::string &name, glm::vec3 vec3);
+            void SetUniform(const std::string &name, glm::vec4 vec4);
+            void SetUniform(const std::string &name, glm::mat3 mat3);
+            void SetUniform(const std::string &name, glm::mat4 mat4);
 
         private:
+            bool mCompiled;
             uint32_t mHandle;
-            std::string mSource;
-
             std::vector<ShaderType> mShaderTypes;
             std::vector<spirv_cross::CompilerGLSL *> mShaderCompilers;
             // Graphics::VertexInputDescription m_Layout;

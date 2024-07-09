@@ -1,10 +1,19 @@
 #include "Graphics/RHI/GraphicsContext.h"
 #include "Graphics/RHI/RenderDevice.h"
 #include "Graphics/RHI/VertexBuffer.h"
+#include "Graphics/RHI/CommandBuffer.h"
+#include "Graphics/RHI/Pipeline.h"
 #include "Graphics/RHI/Texture.h"
+#include "Graphics/RHI/Shader.h"
 #include "Graphics/Window.h"
 #include "Graphics/Backend/OpenGL/GL.h"
 #include "Core/Log.hpp"
+
+float vertices[] = {
+    -0.5f, -0.5f, 0.0f,
+    0.5f, -0.5f, 0.0f,
+    0.0f, 0.5f, 0.0f};
+
 int main()
 {
     using namespace pluto;
@@ -20,26 +29,26 @@ int main()
         log<Info>("Window Created");
         log<Debug>("Window Created");
     }
-    // test:vertexBuffer creation
+
     auto vertexBuffer = VertexBuffer::Builder()
-                            .SetVertexData(nullptr, 0)
+                            .SetVertexData(vertices, 3)
                             .SetUsage(BufferUsage::Static)
                             .SetAttribute(VertexAttributeType::Position, 0, ElementType::Float3, 3, 0)
                             .Create(renderSystem);
 
-    // test:Texture creation, way 1
-    auto texture1 = Texture::Builder()
-                        .SetBase(10, 10, 1, RHIFormat::R16G16B16A16Float)
-                        .SetFilter(TextureFilter::Linear, TextureFilter::Linear)
-                        .SetWrap(TextureWrap::Repeat)
-                        .Create(Texture::Type::Texture2D, renderSystem);
+    auto cmdBuffer = CommandBuffer::Builder()
+                         .Create(renderSystem);
+
+    // auto shader = Shader::Builder()
+    //                   .SetFile("Asset/Shader/Test.shader.json")
+    //                   .Create(renderSystem);
 
     while (!window->ShouldClose())
     {
         window->PollEvents();
 
-        glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        {
+        }
 
         window->SwapBuffers();
     }

@@ -20,7 +20,7 @@ namespace pluto
             };
             virtual ~DescriptorSet();
 
-            // virtual void Update(std::shared_ptr<CommandBuffer> cmdBuffer = nullptr) = 0;
+            // virtual void Update(std::shared_ptr<CommandBuffer> buffer = nullptr) = 0;
             // virtual void SetDynamicOffset(uint32_t offset) = 0;
             // virtual uint32_t GetDynamicOffset() const = 0;
             // virtual void SetTexture(const std::string &name, Texture **texture, uint32_t textureCount, TextureType textureType = TextureType(0)) = 0;

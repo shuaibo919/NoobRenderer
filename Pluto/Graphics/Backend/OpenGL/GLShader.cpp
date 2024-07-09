@@ -18,7 +18,8 @@ GLShader::GLShader(GLShader::Properties *&&pProperties)
     if (!mProperties->filePath.empty())
     {
         std::string realpath = FileSystem::Instance().GetPhysicalPath(mProperties->filePath);
-        ShaderJson shaderDesc = ShaderJson::parse(FileSystem::Instance().ReadFile(realpath));
+        std::string jsonContent = FileSystem::Instance().ReadTextFile(realpath);
+        ShaderJson shaderDesc = ShaderJson::parse(jsonContent);
         std::map<ShaderType, std::pair<std::string, std::string>> sources;
         for (auto &shader : shaderDesc)
         {
@@ -29,6 +30,7 @@ GLShader::GLShader(GLShader::Properties *&&pProperties)
 
         OpenGL::ShaderErrorInfo error;
         mHandle = CompileAll(sources, error);
+        mCompiled = true;
     }
     else
     {
@@ -38,11 +40,57 @@ GLShader::GLShader(GLShader::Properties *&&pProperties)
 
 GLShader::~GLShader()
 {
+    glDeleteProgram(mHandle);
 }
 
 bool GLShader::IsCompiled()
 {
-    return false;
+    return mCompiled;
+}
+
+void GLShader::SetUniform(const std::string &name, bool value)
+{
+    GlCall(glUniform1i(glGetUniformLocation(mHandle, name.c_str()), static_cast<int>(value)));
+}
+
+void GLShader::SetUniform(const std::string &name, int value)
+{
+    GlCall(glUniform1i(glGetUniformLocation(mHandle, name.c_str()), value));
+}
+
+void GLShader::SetUniform(const std::string &name, unsigned int value)
+{
+    GlCall(glUniform1ui(glGetUniformLocation(mHandle, name.c_str()), value));
+}
+
+void GLShader::SetUniform(const std::string &name, float value)
+{
+    GlCall(glUniform1f(glGetUniformLocation(mHandle, name.c_str()), value));
+}
+
+void GLShader::SetUniform(const std::string &name, glm::vec2 vec2)
+{
+    GlCall(glUniform2fv(glGetUniformLocation(mHandle, name.c_str()), 1, glm::value_ptr(vec2)));
+}
+
+void GLShader::SetUniform(const std::string &name, glm::vec3 vec3)
+{
+    GlCall(glUniform3fv(glGetUniformLocation(mHandle, name.c_str()), 1, glm::value_ptr(vec3)));
+}
+
+void GLShader::SetUniform(const std::string &name, glm::vec4 vec4)
+{
+    GlCall(glUniform4fv(glGetUniformLocation(mHandle, name.c_str()), 1, glm::value_ptr(vec4)));
+}
+
+void GLShader::SetUniform(const std::string &name, glm::mat3 mat3)
+{
+    GlCall(glUniformMatrix3fv(glGetUniformLocation(mHandle, name.c_str()), 1, GL_FALSE, glm::value_ptr(mat3)));
+}
+
+void GLShader::SetUniform(const std::string &name, glm::mat4 mat4)
+{
+    GlCall(glUniformMatrix4fv(glGetUniformLocation(mHandle, name.c_str()), 1, GL_FALSE, glm::value_ptr(mat4)));
 }
 
 uint32_t CompileShader(ShaderType type, std::pair<std::string, std::string> &source, uint32_t program, OpenGL::ShaderErrorInfo &info)
@@ -94,6 +142,5 @@ uint32_t CompileAll(std::map<ShaderType, std::pair<std::string, std::string>> &s
 
     for (int z = 0; z < shaders.size(); z++)
         glDeleteShader(shaders[z]);
-
     return program;
 }
