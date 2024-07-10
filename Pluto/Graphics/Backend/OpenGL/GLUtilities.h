@@ -218,6 +218,18 @@ namespace pluto
                 }
                 return 0;
             }
+
+            inline constexpr uint32_t GetRendererBuffer(uint32_t buffer)
+            {
+                uint32_t result = 0;
+                if (buffer & RendererBufferType::RenderBufferColor)
+                    result |= GL_COLOR_BUFFER_BIT;
+                if (buffer & RendererBufferType::RenderBufferDepth)
+                    result |= GL_DEPTH_BUFFER_BIT;
+                if (buffer & RendererBufferType::RenderBufferStencil)
+                    result |= GL_STENCIL_BUFFER_BIT;
+                return result;
+            }
             // uint32_t FormatToGL(RHIFormat format, bool srgb = true);
             // uint32_t TextureWrapToGL(TextureWrap wrap);
             // uint32_t FormatToInternalFormat(uint32_t format);

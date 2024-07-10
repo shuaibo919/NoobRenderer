@@ -1,16 +1,13 @@
 #pragma once
 #include "Core/Base.hpp"
+#include "Graphics/RHI/RHIBase.h"
+#include "Graphics/RHI/Declarations.h"
 
 namespace pluto
 {
     namespace Graphics
     {
-        class RenderPass;
-        class Framebuffer;
-        class Pipeline;
-        class GraphicsContext;
-
-        class CommandBuffer : public std::enable_shared_from_this<CommandBuffer>
+        class CommandBuffer : public std::enable_shared_from_this<CommandBuffer>, public RHIBase
         {
         public:
             using Ptr = std::shared_ptr<CommandBuffer>;
@@ -45,7 +42,7 @@ namespace pluto
 
         protected:
             Properties *mProperties;
-            CommandBuffer(Properties *&&pProperties);
+            CommandBuffer(RenderContext *ctx, Properties *&&pProperties);
         };
     }
 }

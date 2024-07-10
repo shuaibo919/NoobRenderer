@@ -57,8 +57,8 @@ RenderPass::Ptr RenderPass::Builder::Create(std::shared_ptr<GraphicsContext> &pC
     return pContext->CreateRenderPass(std::move(mProperties));
 }
 
-RenderPass::RenderPass(Properties *&&pProperties)
-    : mProperties(pProperties)
+RenderPass::RenderPass(RenderContext *ctx, Properties *&&pProperties)
+    : mProperties(pProperties), RHIBase(ctx)
 {
 }
 

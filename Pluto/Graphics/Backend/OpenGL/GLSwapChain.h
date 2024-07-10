@@ -13,7 +13,7 @@ namespace pluto
             friend class GLContext;
 
         public:
-            GLSwapChain(Properties *&&pProperties);
+            GLSwapChain(RenderContext *ctx, Properties *&&pProperties);
             ~GLSwapChain();
             void OnResize(uint32_t width, uint32_t height);
 

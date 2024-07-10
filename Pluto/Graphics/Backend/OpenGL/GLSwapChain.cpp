@@ -10,8 +10,8 @@
 #include "Graphics/Backend/OpenGL/GLUtilities.h"
 
 using namespace pluto::Graphics;
-GLSwapChain::GLSwapChain(GLSwapChain::Properties *&&pProperties)
-    : SwapChain(std::move(pProperties))
+GLSwapChain::GLSwapChain(RenderContext *ctx, GLSwapChain::Properties *&&pProperties)
+    : SwapChain(ctx, std::move(pProperties))
 {
 }
 
@@ -26,7 +26,8 @@ void GLSwapChain::OnResize(uint32_t width, uint32_t height)
 
 bool GLSwapChain::Init(bool vsync)
 {
-    mCommand = std::dynamic_pointer_cast<GLCommandBuffer>(OpenGL::CreateCommandBuffer(new GLCommandBuffer::Properties()));
+    mCommand = std::dynamic_pointer_cast<GLCommandBuffer>(
+        OpenGL::CreateCommandBuffer(this->mRenderContext, new GLCommandBuffer::Properties()));
     return true;
 }
 

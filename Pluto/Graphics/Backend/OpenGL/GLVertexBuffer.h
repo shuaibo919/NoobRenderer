@@ -10,7 +10,7 @@ namespace pluto
             friend class GLContext;
 
         public:
-            GLVertexBuffer(VertexBuffer::Properties *&&pProperties);
+            GLVertexBuffer(RenderContext *ctx, VertexBuffer::Properties *&&pProperties);
             ~GLVertexBuffer();
 
         public:

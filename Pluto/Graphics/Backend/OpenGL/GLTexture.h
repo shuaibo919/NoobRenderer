@@ -12,8 +12,8 @@ namespace pluto
 
         public:
             using Ptr = std::shared_ptr<GLTexture2D>;
-            GLTexture2D(Properties *&&pProperties);
-            GLTexture2D(const std::string &path, Properties *&&pProperties);
+            GLTexture2D(RenderContext *ctx, Properties *&&pProperties);
+            GLTexture2D(RenderContext *ctx, const std::string &path, Properties *&&pProperties);
             ~GLTexture2D();
 
         public:
@@ -33,8 +33,8 @@ namespace pluto
 
         public:
             using Ptr = std::shared_ptr<GLTexture2DArray>;
-            GLTexture2DArray(Properties *&&pProperties);
-            GLTexture2DArray(const std::string &path, Properties *&&pProperties);
+            GLTexture2DArray(RenderContext *ctx, Properties *&&pProperties);
+            GLTexture2DArray(RenderContext *ctx, const std::string &path, Properties *&&pProperties);
             ~GLTexture2DArray();
 
         public:
@@ -52,8 +52,8 @@ namespace pluto
 
         public:
             using Ptr = std::shared_ptr<GLTextureCube>;
-            GLTextureCube(Properties *&&pProperties);
-            GLTextureCube(const std::string &path, Properties *&&pProperties);
+            GLTextureCube(RenderContext *ctx, Properties *&&pProperties);
+            GLTextureCube(RenderContext *ctx, const std::string &path, Properties *&&pProperties);
             ~GLTextureCube();
 
         public:
@@ -71,8 +71,8 @@ namespace pluto
 
         public:
             using Ptr = std::shared_ptr<GLTexture3D>;
-            GLTexture3D(Properties *&&pProperties);
-            GLTexture3D(const std::string &path, Properties *&&pProperties);
+            GLTexture3D(RenderContext *ctx, Properties *&&pProperties);
+            GLTexture3D(RenderContext *ctx, const std::string &path, Properties *&&pProperties);
             ~GLTexture3D();
 
         public:

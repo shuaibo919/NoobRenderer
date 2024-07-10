@@ -14,10 +14,10 @@ namespace pluto
         class GLPipeline : public Pipeline
         {
         public:
-            GLPipeline(Properties *&&pProperties);
+            GLPipeline(RenderContext *ctx, Properties *&&pProperties);
             ~GLPipeline();
             void BindVertexArray(std::shared_ptr<VertexBuffer> vbo);
-            void CreateFramebuffers();
+            void Preparation();
 
         public:
             void Bind(std::shared_ptr<CommandBuffer> commandBuffer, uint32_t layer) override;

@@ -9,8 +9,8 @@
 #include "Graphics/Backend/OpenGL/GLUtilities.h"
 
 using namespace pluto::Graphics;
-GLVertexBuffer::GLVertexBuffer(VertexBuffer::Properties *&&pProperties)
-    : VertexBuffer(std::move(pProperties))
+GLVertexBuffer::GLVertexBuffer(RenderContext *ctx, VertexBuffer::Properties *&&pProperties)
+    : VertexBuffer(ctx, std::move(pProperties))
 {
     GlCall(glGenBuffers(1, &mHandle));
     GlCall(glBindBuffer(GL_ARRAY_BUFFER, mHandle));

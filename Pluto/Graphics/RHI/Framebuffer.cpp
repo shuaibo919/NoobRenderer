@@ -40,12 +40,14 @@ Framebuffer::Builder &Framebuffer::Builder::SetAttachment(std::shared_ptr<Textur
     mProperties->attachmentTypes.push_back(type);
     return *this;
 }
+
 Framebuffer::Ptr Framebuffer::Builder::Create(std::shared_ptr<GraphicsContext> &pContext)
 {
     return pContext->CreateFrameBuffer(std::move(mProperties));
 }
-Framebuffer::Framebuffer(Properties *&&pProperties)
-    : mProperties(pProperties)
+
+Framebuffer::Framebuffer(RenderContext *ctx, Properties *&&pProperties)
+    : mProperties(pProperties), RHIBase(ctx)
 {
 }
 

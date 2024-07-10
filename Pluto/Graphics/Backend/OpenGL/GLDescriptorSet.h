@@ -12,7 +12,7 @@ namespace pluto
             friend class GLContext;
 
         public:
-            GLDescriptorSet(GLDescriptorSet::Properties *&&pProperties);
+            GLDescriptorSet(RenderContext *ctx, GLDescriptorSet::Properties *&&pProperties);
             ~GLDescriptorSet();
 
         public:

@@ -1,12 +1,13 @@
 #pragma once
 #include "Core/Base.hpp"
+#include "Graphics/RHI/RHIBase.h"
 #include "Graphics/RHI/Declarations.h"
 
 namespace pluto
 {
     namespace Graphics
     {
-        class VertexBuffer : public std::enable_shared_from_this<VertexBuffer>
+        class VertexBuffer : public std::enable_shared_from_this<VertexBuffer>, public RHIBase
         {
             friend class GraphicsContext;
 
@@ -48,7 +49,7 @@ namespace pluto
 
         protected:
             Properties *mProperties;
-            VertexBuffer(Properties *&&pProperties);
+            VertexBuffer(RenderContext *ctx, Properties *&&pProperties);
         };
     }
 }

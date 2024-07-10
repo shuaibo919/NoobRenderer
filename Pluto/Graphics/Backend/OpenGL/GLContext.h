@@ -7,18 +7,18 @@ namespace pluto
     {
         namespace OpenGL
         {
-            std::shared_ptr<Shader> CreateShader(void *&&pPropeties);
-            std::shared_ptr<Pipeline> CreatePipeline(void *&&pPropeties);
-            std::shared_ptr<SwapChain> CreateSwapChain(void *&&pPropeties);
-            std::shared_ptr<RenderPass> CreateRenderPass(void *&&pPropeties);
-            std::shared_ptr<Framebuffer> CreateFrameBuffer(void *&&pPropeties);
-            std::shared_ptr<IndexBuffer> CreateIndexBuffer(void *&&pPropeties);
-            std::shared_ptr<VertexBuffer> CreateVertexBuffer(void *&&pPropeties);
-            std::shared_ptr<UniformBuffer> CreateUniformBuffer(void *&&pPropeties);
-            std::shared_ptr<CommandBuffer> CreateCommandBuffer(void *&&pPropeties);
-            std::shared_ptr<DescriptorSet> CreateDescriptorSet(void *&&pPropeties);
-            std::shared_ptr<Texture> CreateTexture(uint16_t type, void *&&pPropeties);
-            std::shared_ptr<Texture> CreateTexture(uint16_t type, const std::string &path, void *&&pPropeties);
+            std::shared_ptr<Shader> CreateShader(RenderContext *ctx, void *&&pPropeties);
+            std::shared_ptr<Pipeline> CreatePipeline(RenderContext *ctx, void *&&pPropeties);
+            std::shared_ptr<SwapChain> CreateSwapChain(RenderContext *ctx, void *&&pPropeties);
+            std::shared_ptr<RenderPass> CreateRenderPass(RenderContext *ctx, void *&&pPropeties);
+            std::shared_ptr<Framebuffer> CreateFrameBuffer(RenderContext *ctx, void *&&pPropeties);
+            std::shared_ptr<IndexBuffer> CreateIndexBuffer(RenderContext *ctx, void *&&pPropeties);
+            std::shared_ptr<VertexBuffer> CreateVertexBuffer(RenderContext *ctx, void *&&pPropeties);
+            std::shared_ptr<UniformBuffer> CreateUniformBuffer(RenderContext *ctx, void *&&pPropeties);
+            std::shared_ptr<CommandBuffer> CreateCommandBuffer(RenderContext *ctx, void *&&pPropeties);
+            std::shared_ptr<DescriptorSet> CreateDescriptorSet(RenderContext *ctx, void *&&pPropeties);
+            std::shared_ptr<Texture> CreateTexture(uint16_t type, RenderContext *ctx, void *&&pPropeties);
+            std::shared_ptr<Texture> CreateTexture(uint16_t type, const std::string &path, RenderContext *ctx, void *&&pPropeties);
         }
         class GLContext : public GraphicsContext
         {

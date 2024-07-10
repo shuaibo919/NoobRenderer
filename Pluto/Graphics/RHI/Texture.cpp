@@ -58,8 +58,8 @@ Texture::Ptr Texture::Builder::Create(const std::string &path, Texture::Properti
     return pContext->CreateTexture(static_cast<uint16_t>(desc.type), path, std::move(mProperties));
 }
 
-Texture::Texture(Properties *&&pProperties)
-    : mProperties(pProperties)
+Texture::Texture(RenderContext *ctx, Properties *&&pProperties)
+    : mProperties(pProperties), RHIBase(ctx)
 {
 }
 Texture::~Texture()
@@ -68,29 +68,29 @@ Texture::~Texture()
         delete mProperties;
 }
 
-Texture2D::Texture2D(Properties *&&pProperties)
-    : Texture(std::move(pProperties))
+Texture2D::Texture2D(RenderContext *ctx, Properties *&&pProperties)
+    : Texture(ctx, std::move(pProperties))
 {
 }
 
 Texture2D::~Texture2D() = default;
 
-Texture2DArray::Texture2DArray(Properties *&&pProperties)
-    : Texture(std::move(pProperties))
+Texture2DArray::Texture2DArray(RenderContext *ctx, Properties *&&pProperties)
+    : Texture(ctx, std::move(pProperties))
 {
 }
 
 Texture2DArray::~Texture2DArray() = default;
 
-TextureCube::TextureCube(Properties *&&pProperties)
-    : Texture(std::move(pProperties))
+TextureCube::TextureCube(RenderContext *ctx, Properties *&&pProperties)
+    : Texture(ctx, std::move(pProperties))
 {
 }
 
 TextureCube::~TextureCube() = default;
 
-Texture3D::Texture3D(Properties *&&pProperties)
-    : Texture(std::move(pProperties))
+Texture3D::Texture3D(RenderContext *ctx, Properties *&&pProperties)
+    : Texture(ctx, std::move(pProperties))
 {
 }
 

@@ -12,7 +12,7 @@ namespace pluto
             friend class GLContext;
 
         public:
-            GLUniformBuffer(UniformBuffer::Properties *&&pProperties);
+            GLUniformBuffer(RenderContext *ctx, UniformBuffer::Properties *&&pProperties);
             ~GLUniformBuffer();
 
         public:

@@ -31,7 +31,7 @@ namespace pluto
             friend class GLContext;
 
         public:
-            GLShader(GLShader::Properties *&&pProperties);
+            GLShader(RenderContext *ctx, GLShader::Properties *&&pProperties);
             ~GLShader();
 
         public:

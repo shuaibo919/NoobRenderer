@@ -10,7 +10,7 @@ int main(int argc, char *argv[])
 {
     const char *shader_directory = argv[1];
     const char *output_directory = argv[2];
-    const std::string mapping[4] = {"Vertex", "Fragment", "Geometry", "Compute"};
+    const std::string mapping[4] = {"Vertex", "Fragment", "Geometry", "Compute"}; // this relative order is important
     LoadShaderFiles::Init();
     std::cout << "Preprocess shader files in: " << shader_directory << std::endl;
     std::cout << "Output shader files in: " << output_directory << std::endl;
@@ -29,7 +29,7 @@ int main(int argc, char *argv[])
             auto content = GetContent(shader_names[i], shader_directory);
             if (content.empty())
                 continue;
-            j[mapping[i]]["type"] = mapping[i];
+            j[mapping[i]]["type"] = i;
             j[mapping[i]]["name"] = shader_names[i];
             j[mapping[i]]["glsl"] = content;
             j[mapping[i]]["spirv"] = GetSpirv(content); // todo

@@ -5,10 +5,12 @@ DescriptorSet::Ptr DescriptorSet::Builder::Create(std::shared_ptr<GraphicsContex
 {
     return pContext->CreateDescriptorSet(std::move(mProperties));
 }
-DescriptorSet::DescriptorSet(Properties *&&pProperties)
-    : mProperties(pProperties)
+
+DescriptorSet::DescriptorSet(RenderContext *ctx, Properties *&&pProperties)
+    : mProperties(pProperties), RHIBase(ctx)
 {
 }
+
 DescriptorSet::~DescriptorSet()
 {
     if (mProperties != nullptr)

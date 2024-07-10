@@ -8,8 +8,8 @@
 #include "Graphics/Backend/OpenGL/GLUtilities.h"
 
 using namespace pluto::Graphics;
-GLFramebuffer::GLFramebuffer(GLFramebuffer::Properties *&&pProperties)
-    : Framebuffer(std::move(pProperties)), mColorAttachmentCount(0)
+GLFramebuffer::GLFramebuffer(RenderContext *ctx, GLFramebuffer::Properties *&&pProperties)
+    : Framebuffer(ctx, std::move(pProperties)), mColorAttachmentCount(0)
 {
 
     if (pProperties->screenUse)

@@ -169,6 +169,24 @@ namespace pluto
                     return 0;
                 }
             }
+
+            constexpr inline const char *GetShaderTypeString(ShaderType type)
+            {
+                switch (type)
+                {
+                case ShaderType::Vertex:
+                    return "Vertex";
+                case ShaderType::Fragment:
+                    return "Fragment";
+                case ShaderType::Geometry:
+                    return "Geometry";
+                case ShaderType::Compute:
+                    return "Compute";
+                case ShaderType::Unkown:
+                    return "Unkown";
+                }
+                return "Unkown";
+            }
             // uint32_t FormatToGL(RHIFormat format, bool srgb = true);
             // uint32_t TextureWrapToGL(TextureWrap wrap);
             // uint32_t FormatToInternalFormat(uint32_t format);

@@ -7,8 +7,8 @@ UniformBuffer::Ptr pluto::Graphics::UniformBuffer::Builder::Create(std::shared_p
     return pContext->CreateUniformBuffer(std::move(mProperties));
 }
 
-UniformBuffer::UniformBuffer(Properties *&&pProperties)
-    : mProperties(pProperties)
+UniformBuffer::UniformBuffer(RenderContext *ctx, Properties *&&pProperties)
+    : mProperties(pProperties), RHIBase(ctx)
 {
 }
 

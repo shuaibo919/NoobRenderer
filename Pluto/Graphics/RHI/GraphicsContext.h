@@ -25,9 +25,9 @@ namespace pluto
             None, // Unsupported
         };
 
+        class RenderContext;
         class GraphicsContext
         {
-
             friend class Shader;
             friend class Texture;
             friend class Pipeline;
@@ -45,6 +45,7 @@ namespace pluto
             virtual ~GraphicsContext();
 
             RenderAPI GetRenderAPI() { return mRenderAPI; }
+            void SetMainSwapChain(std::shared_ptr<SwapChain> swapChain) { mSwapChain = swapChain; };
 
             virtual void Init() = 0;
             virtual void Present() = 0;
@@ -60,9 +61,12 @@ namespace pluto
 
         protected:
             RenderAPI mRenderAPI{RenderAPI::None};
+            std::shared_ptr<SwapChain> mSwapChain{nullptr};
+            RenderContext *mRenderContext{nullptr};
 
         protected:
-            virtual std::shared_ptr<Shader> CreateShader(void *&&pPropeties) = 0;
+            virtual std::shared_ptr<Shader>
+            CreateShader(void *&&pPropeties) = 0;
             virtual std::shared_ptr<Pipeline> CreatePipeline(void *&&pPropeties) = 0;
             virtual std::shared_ptr<SwapChain> CreateSwapChain(void *&&pPropeties) = 0;
             virtual std::shared_ptr<RenderPass> CreateRenderPass(void *&&pPropeties) = 0;

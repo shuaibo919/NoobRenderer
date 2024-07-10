@@ -7,8 +7,8 @@
 
 using namespace pluto::Graphics;
 
-GLIndexBuffer::GLIndexBuffer(GLIndexBuffer::Properties *&&pProperties)
-    : IndexBuffer(std::move(pProperties))
+GLIndexBuffer::GLIndexBuffer(RenderContext *ctx, GLIndexBuffer::Properties *&&pProperties)
+    : IndexBuffer(ctx, std::move(pProperties))
 {
     GlCall(glGenBuffers(1, &mHandle));
     GlCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mHandle));

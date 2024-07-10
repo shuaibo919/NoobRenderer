@@ -1,4 +1,6 @@
 #pragma once
+#include "Core/Base.hpp"
+#include "Graphics/RHI/RHIBase.h"
 #include "Graphics/RHI/Declarations.h"
 #define MAX_FRAMES_FLIGHT 3
 #define MAX_ELEMENTS_PER_SET 32
@@ -7,7 +9,7 @@ namespace pluto
     class Window;
     namespace Graphics
     {
-        class SwapChain
+        class SwapChain : public RHIBase
         {
         public:
             using Ptr = std::shared_ptr<SwapChain>;
@@ -15,13 +17,13 @@ namespace pluto
             {
                 uint16_t width{0};
                 uint16_t height{0};
-                std::shared_ptr<Window> window;
+                Window *window;
             };
             struct Builder final : BuildBase<SwapChain::Properties, SwapChain>
             {
                 Builder() {}
                 SwapChain::Builder &SetBase(uint16_t width, uint16_t height);
-                SwapChain::Builder &SetWindow(std::shared_ptr<Window> &Window);
+                SwapChain::Builder &SetWindow(Window *window);
                 SwapChain::Ptr Create(std::shared_ptr<GraphicsContext> &pContext);
             };
             virtual ~SwapChain();
@@ -41,7 +43,7 @@ namespace pluto
 
         protected:
             Properties *mProperties;
-            SwapChain(Properties *&&pProperties);
+            SwapChain(RenderContext *ctx, Properties *&&pProperties);
         };
     }
 }

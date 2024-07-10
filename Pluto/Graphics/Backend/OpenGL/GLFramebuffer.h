@@ -10,7 +10,7 @@ namespace pluto
             friend class GLContext;
 
         public:
-            GLFramebuffer(GLFramebuffer::Properties *&&pProperties);
+            GLFramebuffer(RenderContext *ctx, GLFramebuffer::Properties *&&pProperties);
             ~GLFramebuffer();
 
         public:

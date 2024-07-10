@@ -1,4 +1,6 @@
 #pragma once
+#include "Core/Base.hpp"
+#include "Graphics/RHI/RHIBase.h"
 #include "Graphics/RHI/Declarations.h"
 
 namespace spirv_cross
@@ -12,7 +14,7 @@ namespace pluto
         class Pipeline;
         class CommandBuffer;
         using ShaderJson = nlohmann::json;
-        class Shader : public Asset
+        class Shader : public Asset, public RHIBase
         {
         public:
             static const Shader *sCurrently;
@@ -41,7 +43,7 @@ namespace pluto
 
         protected:
             Properties *mProperties;
-            Shader(Properties *&&pProperties);
+            Shader(RenderContext *ctx, Properties *&&pProperties);
         };
     }
 }

@@ -20,8 +20,9 @@ int main()
     using namespace pluto::Graphics;
     RenderDevice::Init();
     RenderDevice::Create();
-    auto renderSystem = GraphicsContext::Create(RenderAPI::OPENGL, RenderDevice::Get());
-    auto window = Window::Create(renderSystem, 300, 100, "Test");
+    auto ctx = GraphicsContext::Create(RenderAPI::OPENGL, RenderDevice::Get());
+    auto window = Window::Create(ctx, 300, 100, "Test");
+    ctx->SetMainSwapChain(window->GetSwapChain());
     // test logger
     if (window != nullptr)
     {
@@ -34,20 +35,36 @@ int main()
                             .SetVertexData(vertices, 3)
                             .SetUsage(BufferUsage::Static)
                             .SetAttribute(VertexAttributeType::Position, 0, ElementType::Float3, 3, 0)
-                            .Create(renderSystem);
+                            .Create(ctx);
 
     auto cmdBuffer = CommandBuffer::Builder()
-                         .Create(renderSystem);
+                         .Create(ctx);
 
-    // auto shader = Shader::Builder()
-    //                   .SetFile("Asset/Shader/Test.shader.json")
-    //                   .Create(renderSystem);
+    auto shader = Shader::Builder()
+                      .SetFile("Asset/Shader/Test.shader.json")
+                      .Create(ctx);
+
+    auto colorTarget = Texture::Builder()
+                           .SetBase(300, 100, 1, RHIFormat::R16G16B16A16Float)
+                           .SetFilter(TextureFilter::Linear, TextureFilter::Linear)
+                           .SetWrap(TextureWrap::ClampToedge)
+                           .Create(Texture::Type::Texture2D, ctx);
+
+    auto pipeline = Pipeline::Builder()
+                        .SetClearColor(1.0f, 0.3f, 0.3f, 1.0f)
+                        .SetShader(shader)
+                        .SetDepthOptions(false, false)
+                        .SetDrawType(DrawType::Triangle)
+                        .SetColorTarget(std::move(colorTarget), AttachmentType::Color)
+                        .SetClearTargets(true)
+                        .Create(ctx);
 
     while (!window->ShouldClose())
     {
         window->PollEvents();
-
         {
+            pipeline->Bind(cmdBuffer);
+            pipeline->End(cmdBuffer);
         }
 
         window->SwapBuffers();

@@ -8,8 +8,8 @@
 #include "Graphics/Backend/OpenGL/GLUtilities.h"
 
 using namespace pluto::Graphics;
-GLUniformBuffer::GLUniformBuffer(UniformBuffer::Properties *&&pProperties)
-    : UniformBuffer(std::move(pProperties))
+GLUniformBuffer::GLUniformBuffer(RenderContext *ctx, UniformBuffer::Properties *&&pProperties)
+    : UniformBuffer(ctx, std::move(pProperties))
 {
     GlCall(glGenBuffers(1, &mHandle));
 }

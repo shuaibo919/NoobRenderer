@@ -5,8 +5,8 @@ CommandBuffer::Ptr pluto::Graphics::CommandBuffer::Builder::Create(std::shared_p
 {
     return pContext->CreateCommandBuffer(std::move(mProperties));
 }
-CommandBuffer::CommandBuffer(Properties *&&pProperties)
-    : mProperties(pProperties)
+CommandBuffer::CommandBuffer(RenderContext *ctx, Properties *&&pProperties)
+    : mProperties(pProperties), RHIBase(ctx)
 {
 }
 CommandBuffer::~CommandBuffer()

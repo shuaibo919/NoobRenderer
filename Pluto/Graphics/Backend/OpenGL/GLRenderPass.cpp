@@ -2,14 +2,15 @@
 #include "Graphics/Backend/OpenGL/GLRenderPass.h"
 /* Usage */
 #include "Graphics/Backend/OpenGL/GLFramebuffer.h"
+#include "Graphics/Backend/OpenGL/GLRenderContext.h"
 /* Common */
 #include "Graphics/Backend/OpenGL/GL.h"
 #include "Graphics/Backend/OpenGL/GLDebug.h"
 #include "Graphics/Backend/OpenGL/GLUtilities.h"
 
 using namespace pluto::Graphics;
-GLRenderPass::GLRenderPass(GLRenderPass::Properties *&&pProperties)
-    : RenderPass(std::move(pProperties))
+GLRenderPass::GLRenderPass(RenderContext *ctx, GLRenderPass::Properties *&&pProperties)
+    : RenderPass(ctx, std::move(pProperties))
 {
 }
 
@@ -32,8 +33,10 @@ void GLRenderPass::BeginRenderPass(std::shared_ptr<CommandBuffer> &commandBuffer
 
     if (mProperties->clear)
     {
-        // reset state
-        // :todo
+        dynamic_cast<GLRenderContext *>(mRenderContext)->Clear(RendererBufferType::RenderBufferColor | RendererBufferType::RenderBufferDepth | RendererBufferType::RenderBufferStencil);
+        // GLRenderer::ClearInternal(RENDERER_BUFFER_COLOUR | RENDERER_BUFFER_DEPTH | RENDERER_BUFFER_STENCIL);
+        //  reset state
+        //  :todo
     }
 }
 void GLRenderPass::EndRenderPass(std::shared_ptr<CommandBuffer> &commandBuffer)

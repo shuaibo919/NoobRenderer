@@ -1,5 +1,6 @@
 #include "Graphics/RHI/Pipeline.h"
 #include "Graphics/RHI/GraphicsContext.h"
+#include "Graphics/RHI/Texture.h"
 #include "Core/Utilities.h"
 
 using namespace pluto::Graphics;
@@ -49,9 +50,10 @@ Pipeline::Builder &Pipeline::Builder::SetDepthOptions(bool depthTest, bool depth
     return *this;
 }
 
-Pipeline::Builder &Pipeline::Builder::SetColourTarget(std::shared_ptr<Texture> &pTexture)
+Pipeline::Builder &Pipeline::Builder::SetColorTarget(std::shared_ptr<Texture> &&pTexture, AttachmentType type)
 {
-    mProperties->colourTargets.fill(pTexture);
+    mProperties->colorTargets.push_back(std::forward<std::shared_ptr<Texture>>(pTexture));
+    mProperties->attachmentTypes.push_back(type);
     return *this;
 }
 
@@ -93,12 +95,37 @@ Pipeline::Ptr Pipeline::Builder::Create(std::shared_ptr<GraphicsContext> &pConte
     return pContext->CreatePipeline(std::move(mProperties));
 }
 
-Pipeline::Pipeline(Properties *&&pProperties)
-    : mProperties(pProperties)
+Pipeline::Pipeline(RenderContext *ctx, Properties *&&pProperties)
+    : mProperties(pProperties), RHIBase(ctx)
 {
 }
 Pipeline::~Pipeline()
 {
     if (mProperties != nullptr)
         delete mProperties;
+}
+uint32_t Pipeline::GetWidth()
+{
+    if (mProperties->swapchainTarget)
+    {
+    }
+
+    if (mProperties->colorTargets[0] != nullptr)
+    {
+        return mProperties->mipIndex > 0 ? mProperties->colorTargets[0]->GetWidth(mProperties->mipIndex) : mProperties->colorTargets[0]->GetWidth();
+    }
+    return 0;
+}
+
+uint32_t Pipeline::GetHeight()
+{
+    if (mProperties->swapchainTarget)
+    {
+    }
+
+    if (mProperties->colorTargets[0] != nullptr)
+    {
+        return mProperties->mipIndex > 0 ? mProperties->colorTargets[0]->GetWidth(mProperties->mipIndex) : mProperties->colorTargets[0]->GetWidth();
+    }
+    return 0;
 }

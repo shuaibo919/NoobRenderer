@@ -9,17 +9,17 @@ SwapChain::Builder &SwapChain::Builder::SetBase(uint16_t width, uint16_t height)
     mProperties->height = height;
     return *this;
 }
-SwapChain::Builder &SwapChain::Builder::SetWindow(std::shared_ptr<Window> &Window)
+SwapChain::Builder &SwapChain::Builder::SetWindow(Window *window)
 {
-    mProperties->window = Window;
+    mProperties->window = window;
     return *this;
 }
 SwapChain::Ptr SwapChain::Builder::Create(std::shared_ptr<GraphicsContext> &pContext)
 {
     return pContext->CreateSwapChain(mProperties);
 }
-SwapChain::SwapChain(Properties *&&pProperties)
-    : mProperties(pProperties)
+SwapChain::SwapChain(RenderContext *ctx, Properties *&&pProperties)
+    : mProperties(pProperties), RHIBase(ctx)
 {
 }
 SwapChain::~SwapChain()

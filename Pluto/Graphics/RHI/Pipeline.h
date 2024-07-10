@@ -1,4 +1,6 @@
 #pragma once
+#include "Core/Base.hpp"
+#include "Graphics/RHI/RHIBase.h"
 #include "Graphics/RHI/Declarations.h"
 
 namespace pluto
@@ -6,7 +8,7 @@ namespace pluto
     namespace Graphics
     {
         class GraphicsContext;
-        class Pipeline
+        class Pipeline : public RHIBase
         {
             friend class CommandBuffer;
             friend class GLCommandBuffer;
@@ -15,7 +17,6 @@ namespace pluto
 
         public:
             using Ptr = std::shared_ptr<Pipeline>;
-            const static uint8_t MaxRenderTargets = 8;
             struct Properties
             {
                 std::shared_ptr<Shader> shader;
@@ -32,7 +33,8 @@ namespace pluto
                 bool DepthTest{true};
                 bool DepthWrite{true};
 
-                std::array<std::shared_ptr<Texture>, Pipeline::MaxRenderTargets> colourTargets{};
+                std::vector<std::shared_ptr<Texture>> colorTargets;
+                std::vector<Graphics::AttachmentType> attachmentTypes;
                 std::shared_ptr<Texture> resolveTexture = nullptr;
                 float clearColor[4]{0.2f, 0.2f, 0.2f, 1.0f};
                 float lineWidth{1.0f};
@@ -49,7 +51,7 @@ namespace pluto
                 Pipeline::Builder &SetSwapchainTarget(bool enabled);
                 Pipeline::Builder &SetClearTargets(bool enabled);
                 Pipeline::Builder &SetDepthOptions(bool depthTest, bool depthWrite);
-                Pipeline::Builder &SetColourTarget(std::shared_ptr<Texture> &pTexture);
+                Pipeline::Builder &SetColorTarget(std::shared_ptr<Texture> &&pTexture, AttachmentType type);
                 Pipeline::Builder &SetResolveTarget(std::shared_ptr<Texture> &pTexture);
                 Pipeline::Builder &SetClearColor(float r, float g, float b, float a = 1.0f);
                 Pipeline::Builder &SetLineWidth(float width);
@@ -61,16 +63,17 @@ namespace pluto
 
         public:
             const Properties &GetProperties() const { return *mProperties; }
-
+            uint32_t GetWidth();
+            uint32_t GetHeight();
             virtual void ClearRenderTargets(std::shared_ptr<CommandBuffer> commandBuffer) {}
 
-        protected:
+        public:
             virtual void Bind(std::shared_ptr<CommandBuffer> commandBuffer, uint32_t layer = 0) = 0;
             virtual void End(std::shared_ptr<CommandBuffer> commandBuffer) {}
 
         protected:
             Properties *mProperties;
-            Pipeline(Properties *&&pProperties);
+            Pipeline(RenderContext *ctx, Properties *&&pProperties);
         };
     }
 }

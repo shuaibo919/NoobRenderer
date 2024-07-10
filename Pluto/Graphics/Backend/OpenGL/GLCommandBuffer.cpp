@@ -2,8 +2,8 @@
 #include "Graphics/Backend/OpenGL/GLPipeline.h"
 using namespace pluto::Graphics;
 
-GLCommandBuffer::GLCommandBuffer(Properties *&&pProperties)
-    : primary(false), CommandBuffer(std::move(pProperties))
+GLCommandBuffer::GLCommandBuffer(RenderContext *ctx, Properties *&&pProperties)
+    : primary(false), CommandBuffer(ctx, std::move(pProperties))
 {
 }
 

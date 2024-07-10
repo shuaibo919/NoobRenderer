@@ -36,4 +36,6 @@ std::shared_ptr<GraphicsContext> GraphicsContext::Create(RenderAPI api, RenderDe
 
 GraphicsContext::~GraphicsContext()
 {
+    if (mRenderContext != nullptr)
+        delete mRenderContext;
 }

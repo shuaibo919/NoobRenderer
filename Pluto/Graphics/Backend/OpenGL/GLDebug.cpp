@@ -3,7 +3,7 @@
 #include "Core/Log.hpp"
 
 #ifdef PLUTO_DEBUG
-bool pluto::Graphics::OpenGL::CheckError(const char *function, const char *file, const size_t line)
+bool pluto::Graphics::OpenGL::CheckError(const char *function, const char *file, const int line)
 {
     GLenum err(glGetError());
     bool Error = true;

@@ -28,14 +28,14 @@ GLTexture2D::~GLTexture2D()
     GlCall(glDeleteTextures(1, &mHandle));
 }
 
-GLTexture2D::GLTexture2D(Properties *&&pProperties)
-    : Texture2D(std::move(pProperties))
+GLTexture2D::GLTexture2D(RenderContext *ctx, Properties *&&pProperties)
+    : Texture2D(ctx, std::move(pProperties))
 {
     mHandle = LoadTexture(nullptr);
 }
 
-GLTexture2D::GLTexture2D(const std::string &path, Properties *&&pProperties)
-    : Texture2D(std::move(pProperties))
+GLTexture2D::GLTexture2D(RenderContext *ctx, const std::string &path, Properties *&&pProperties)
+    : Texture2D(ctx, std::move(pProperties))
 {
     uint8_t *data = LoadTextureData(path);
     mHandle = LoadTexture(data);
@@ -104,13 +104,13 @@ GLTexture2DArray::~GLTexture2DArray()
 {
 }
 
-GLTexture2DArray::GLTexture2DArray(Properties *&&pProperties)
-    : Texture2DArray(std::move(pProperties))
+GLTexture2DArray::GLTexture2DArray(RenderContext *ctx, Properties *&&pProperties)
+    : Texture2DArray(ctx, std::move(pProperties))
 {
 }
 
-GLTexture2DArray::GLTexture2DArray(const std::string &path, Properties *&&pProperties)
-    : Texture2DArray(std::move(pProperties))
+GLTexture2DArray::GLTexture2DArray(RenderContext *ctx, const std::string &path, Properties *&&pProperties)
+    : Texture2DArray(ctx, std::move(pProperties))
 {
     // mProperties.
 }
@@ -132,13 +132,13 @@ GLTextureCube::~GLTextureCube()
 {
 }
 
-GLTextureCube::GLTextureCube(Properties *&&pProperties)
-    : TextureCube(std::move(pProperties))
+GLTextureCube::GLTextureCube(RenderContext *ctx, Properties *&&pProperties)
+    : TextureCube(ctx, std::move(pProperties))
 {
 }
 
-GLTextureCube::GLTextureCube(const std::string &path, Properties *&&pProperties)
-    : GLTextureCube(std::move(pProperties))
+GLTextureCube::GLTextureCube(RenderContext *ctx, const std::string &path, Properties *&&pProperties)
+    : GLTextureCube(ctx, std::move(pProperties))
 {
     // mProperties.
 }
@@ -160,12 +160,12 @@ GLTexture3D::~GLTexture3D()
 {
 }
 
-GLTexture3D::GLTexture3D(Properties *&&pProperties)
-    : Texture3D(std::move(pProperties))
+GLTexture3D::GLTexture3D(RenderContext *ctx, Properties *&&pProperties)
+    : Texture3D(ctx, std::move(pProperties))
 {
 }
 
-GLTexture3D::GLTexture3D(const std::string &path, Properties *&&pProperties)
-    : Texture3D(std::move(pProperties))
+GLTexture3D::GLTexture3D(RenderContext *ctx, const std::string &path, Properties *&&pProperties)
+    : Texture3D(ctx, std::move(pProperties))
 {
 }

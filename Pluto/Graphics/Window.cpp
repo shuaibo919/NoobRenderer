@@ -1,9 +1,9 @@
 #include "Graphics/Window.h"
-
-#include "Core/Log.hpp"
+/* Usage */
 #include "Graphics/Backend/OpenGL/GLContext.h"
-// #include "Graphics/Backend/Vulkan/XXX.h"  // TODO
-
+/* Common */
+#include "Core/Log.hpp"
+/* Third */
 #include "GLFW/glfw3.h"
 using namespace pluto;
 
@@ -70,12 +70,18 @@ Window::Window(std::shared_ptr<pluto::Graphics::GraphicsContext> &graphicsContex
     default:
         break;
     }
+    mSwapChain = Graphics::SwapChain::Builder()
+                     .SetBase(mWidth, mHeight)
+                     .SetWindow(this)
+                     .Create(mGraphicsContext);
 }
+
 Window::~Window()
 {
     Terminate();
     delete mImpl;
 }
+
 int Window::ShouldClose()
 {
     if (mImpl->mWindow == nullptr)

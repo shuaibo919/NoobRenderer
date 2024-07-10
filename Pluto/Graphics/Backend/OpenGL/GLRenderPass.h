@@ -11,7 +11,7 @@ namespace pluto
             friend class GLContext;
 
         public:
-            GLRenderPass(GLRenderPass::Properties *&&pProperties);
+            GLRenderPass(RenderContext *ctx, GLRenderPass::Properties *&&pProperties);
             ~GLRenderPass();
 
         public:

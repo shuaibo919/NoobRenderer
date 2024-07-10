@@ -181,9 +181,9 @@ namespace pluto
 
         enum RendererBufferType : uint8_t
         {
-            BufferColor,
-            BufferDepth,
-            BufferStencil
+            RenderBufferColor = 1 << 0,
+            RenderBufferDepth = 1 << 1,
+            RenderBufferStencil = 1 << 2
         };
 
         enum class DrawType : uint8_t

@@ -10,10 +10,10 @@
 
 using namespace pluto::Graphics;
 
-uint32_t CompileAll(std::map<ShaderType, std::pair<std::string, std::string>> &sources, OpenGL::ShaderErrorInfo &info);
+uint32_t CompileAll(std::map<ShaderType, std::pair<std::string, std::string>> &sources);
 
-GLShader::GLShader(GLShader::Properties *&&pProperties)
-    : Shader(std::move(pProperties))
+GLShader::GLShader(RenderContext *ctx, GLShader::Properties *&&pProperties)
+    : Shader(ctx, std::move(pProperties))
 {
     if (!mProperties->filePath.empty())
     {
@@ -28,8 +28,7 @@ GLShader::GLShader(GLShader::Properties *&&pProperties)
             mProperties->types.push_back(type);
         }
 
-        OpenGL::ShaderErrorInfo error;
-        mHandle = CompileAll(sources, error);
+        mHandle = CompileAll(sources);
         mCompiled = true;
     }
     else
@@ -105,21 +104,37 @@ uint32_t CompileShader(ShaderType type, std::pair<std::string, std::string> &sou
     GlCall(glGetShaderiv(shader, GL_COMPILE_STATUS, &result));
     if (result == GL_FALSE)
     {
-        pluto::log<pluto::Error>("OpenGL Shader [%s]: Compilation failed", source.first.c_str());
+        GLint length;
+        GlCall(glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &length));
+        std::vector<char> error(length);
+        GlCall(glGetShaderInfoLog(shader, length, &length, error.data()));
+        std::string errorMessage(error.data(), length);
+        int32_t lineNumber;
+        sscanf(error.data(), "%*s %*d:%d", &lineNumber);
+        auto id_type = static_cast<uint32_t>(type);
+        info.message[id_type] = "Shader compilation failed: ";
+        info.message[id_type] += std::string("Failed to compile") + Utilities::GetShaderTypeString(type) + " shader!\n";
+
+        info.line[id_type] = lineNumber;
+        info.message[id_type] += errorMessage;
+        GlCall(glDeleteShader(shader));
+
+        pluto::log<pluto::Error>("OpenGL Shader [%s]: Compilation failed \n %s", source.first.c_str(), info.message[id_type].c_str());
         return 0;
     }
     return shader;
 }
 
-uint32_t CompileAll(std::map<ShaderType, std::pair<std::string, std::string>> &sources, OpenGL::ShaderErrorInfo &info)
+uint32_t CompileAll(std::map<ShaderType, std::pair<std::string, std::string>> &sources)
 {
+    OpenGL::ShaderErrorInfo error;
     uint32_t program = glCreateProgram();
     std::vector<GLuint> shaders;
     std::string glVersion;
 
-    for (auto source : sources)
+    for (auto &source : sources)
     {
-        shaders.push_back(CompileShader(source.first, source.second, program, info));
+        shaders.push_back(CompileShader(source.first, source.second, program, error));
     }
 
     for (unsigned int shader : shaders)

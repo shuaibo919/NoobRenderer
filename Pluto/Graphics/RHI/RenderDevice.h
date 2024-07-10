@@ -1,5 +1,7 @@
 #pragma once
 #include "Core/Base.hpp"
+#include "Graphics/RHI/RHIBase.h"
+#include "Graphics/RHI/Declarations.h"
 
 namespace pluto
 {

@@ -9,8 +9,8 @@
 #include "Graphics/Backend/OpenGL/GLUtilities.h"
 
 using namespace pluto::Graphics;
-GLDescriptorSet::GLDescriptorSet(GLDescriptorSet::Properties *&&pProperties)
-    : DescriptorSet(std::move(pProperties))
+GLDescriptorSet::GLDescriptorSet(RenderContext *ctx, GLDescriptorSet::Properties *&&pProperties)
+    : DescriptorSet(ctx, std::move(pProperties))
 {
 }
 

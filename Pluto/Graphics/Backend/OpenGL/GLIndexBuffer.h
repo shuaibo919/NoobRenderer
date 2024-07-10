@@ -10,7 +10,7 @@ namespace pluto
             friend class GLContext;
 
         public:
-            GLIndexBuffer(IndexBuffer::Properties *&&pProperties);
+            GLIndexBuffer(RenderContext *ctx, IndexBuffer::Properties *&&pProperties);
             ~GLIndexBuffer();
 
             void Bind(CommandBuffer *commandBuffer) const override;

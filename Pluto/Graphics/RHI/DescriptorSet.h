@@ -1,4 +1,6 @@
 #pragma once
+#include "Core/Base.hpp"
+#include "Graphics/RHI/RHIBase.h"
 #include "Graphics/RHI/Declarations.h"
 
 namespace pluto
@@ -6,7 +8,8 @@ namespace pluto
     struct Buffer;
     namespace Graphics
     {
-        class DescriptorSet
+        class CommandBuffer;
+        class DescriptorSet : public RHIBase
         {
         public:
             using Ptr = std::shared_ptr<DescriptorSet>;
@@ -36,7 +39,7 @@ namespace pluto
 
         protected:
             Properties *mProperties;
-            DescriptorSet(Properties *&&pProperties);
+            DescriptorSet(RenderContext *ctx, Properties *&&pProperties);
         };
     }
 }

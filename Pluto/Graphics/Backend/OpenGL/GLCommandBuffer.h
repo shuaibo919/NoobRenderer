@@ -8,7 +8,7 @@ namespace pluto
         class GLCommandBuffer : public CommandBuffer
         {
         public:
-            GLCommandBuffer(Properties *&&pProperties);
+            GLCommandBuffer(RenderContext *ctx, Properties *&&pProperties);
             ~GLCommandBuffer();
 
         public:

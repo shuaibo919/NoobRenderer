@@ -1,13 +1,13 @@
 #pragma once
 #include "Core/Base.hpp"
+#include "Graphics/RHI/RHIBase.h"
 #include "Graphics/RHI/Declarations.h"
 
 namespace pluto
 {
     namespace Graphics
     {
-        class GraphicsContext;
-        class Texture : public Asset
+        class Texture : public Asset, public RHIBase
         {
             friend class GraphicsContext;
 
@@ -60,10 +60,12 @@ namespace pluto
             // SET_ASSET_TYPE(AssetType::Texture);
             Identity GetIdentity() const { return mIdentity; }
             const Properties &GetProperties() const { return *mProperties; }
+            uint32_t GetWidth(uint32_t mip = 0) const { return mProperties->width >> mip; }
+            uint32_t GetHeight(uint32_t mip = 0) const { return mProperties->height >> mip; }
 
         protected:
             Properties *mProperties;
-            Texture(Properties *&&pProperties);
+            Texture(RenderContext *ctx, Properties *&&pProperties);
             Identity mIdentity{0};
         };
 
@@ -73,7 +75,7 @@ namespace pluto
             virtual ~Texture2D();
 
         protected:
-            Texture2D(Properties *&&pProperties);
+            Texture2D(RenderContext *ctx, Properties *&&pProperties);
         };
 
         class Texture2DArray : public Texture
@@ -82,7 +84,7 @@ namespace pluto
             virtual ~Texture2DArray();
 
         protected:
-            Texture2DArray(Properties *&&pProperties);
+            Texture2DArray(RenderContext *ctx, Properties *&&pProperties);
         };
 
         class TextureCube : public Texture
@@ -91,7 +93,7 @@ namespace pluto
             virtual ~TextureCube();
 
         protected:
-            TextureCube(Properties *&&pProperties);
+            TextureCube(RenderContext *ctx, Properties *&&pProperties);
         };
 
         class Texture3D : public Texture
@@ -100,7 +102,7 @@ namespace pluto
             virtual ~Texture3D();
 
         protected:
-            Texture3D(Properties *&&pProperties);
+            Texture3D(RenderContext *ctx, Properties *&&pProperties);
         };
 
     }

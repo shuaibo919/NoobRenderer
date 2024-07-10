@@ -1,12 +1,13 @@
 #pragma once
 #include "Core/Base.hpp"
+#include "Graphics/RHI/RHIBase.h"
 #include "Graphics/RHI/Declarations.h"
 
 namespace pluto
 {
     namespace Graphics
     {
-        class Framebuffer
+        class Framebuffer : public RHIBase
         {
             friend class GraphicsContext;
 
@@ -44,7 +45,7 @@ namespace pluto
 
         protected:
             Properties *mProperties;
-            Framebuffer(Properties *&&pProperties);
+            Framebuffer(RenderContext *ctx, Properties *&&pProperties);
         };
     }
 }
