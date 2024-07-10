@@ -40,6 +40,8 @@ namespace pluto
             friend class UniformBuffer;
             friend class CommandBuffer;
             friend class DescriptorSet;
+            friend class GLRenderContext;
+            friend class VKRenderContext;
 
         public:
             virtual ~GraphicsContext();

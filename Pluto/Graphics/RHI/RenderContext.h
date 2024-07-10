@@ -6,6 +6,7 @@ namespace pluto
 {
     namespace Graphics
     {
+        class SwapChain;
         class RenderContext
         {
         public:
@@ -27,6 +28,9 @@ namespace pluto
             virtual void Draw(std::shared_ptr<CommandBuffer>, DrawType type, uint32_t count, DataType datayType, void *indices) const = 0;
             virtual void Dispatch(std::shared_ptr<CommandBuffer>, uint32_t workGroupSizeX, uint32_t workGroupSizeY, uint32_t workGroupSizeZ) = 0;
             virtual void DrawSplashScreen(std::shared_ptr<Texture> texture) = 0;
+
+            virtual std::shared_ptr<SwapChain> GetSwapChain() = 0;
+
             virtual uint32_t GetGPUCount() const { return 1; }
             virtual bool SupportsCompute() { return false; }
             virtual RHIFormat GetDepthFormat() { return RHIFormat::Depth32Float; };

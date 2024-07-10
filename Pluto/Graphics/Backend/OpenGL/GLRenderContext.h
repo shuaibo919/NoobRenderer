@@ -6,10 +6,11 @@ namespace pluto
 {
     namespace Graphics
     {
+        class GLContext;
         class GLRenderContext : public RenderContext
         {
         public:
-            GLRenderContext();
+            GLRenderContext(GLContext *ctx);
             ~GLRenderContext();
             void Clear(uint32_t buffer);
 
@@ -31,6 +32,11 @@ namespace pluto
             uint32_t GetGPUCount() const override;
             bool SupportsCompute() override;
             RHIFormat GetDepthFormat() override;
+
+            std::shared_ptr<SwapChain> GetSwapChain() override;
+
+        private:
+            GLContext *mContext;
         };
     }
 }

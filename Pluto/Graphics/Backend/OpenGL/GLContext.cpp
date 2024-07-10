@@ -123,7 +123,7 @@ namespace pluto::Graphics::OpenGL
 
 GLContext::GLContext()
 {
-    mRenderContext = new GLRenderContext();
+    mRenderContext = new GLRenderContext(this);
     mRenderAPI = RenderAPI::OPENGL;
 }
 

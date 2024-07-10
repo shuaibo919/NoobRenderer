@@ -13,15 +13,16 @@ using namespace pluto::Graphics;
 GLSwapChain::GLSwapChain(RenderContext *ctx, GLSwapChain::Properties *&&pProperties)
     : SwapChain(ctx, std::move(pProperties))
 {
+    // GL has no swapchain, so we just create a empty implementation
 }
 
 GLSwapChain::~GLSwapChain()
 {
-    for (auto &buffer : mBuffers)
-        buffer.reset();
 }
 void GLSwapChain::OnResize(uint32_t width, uint32_t height)
 {
+    mProperties->width = width;
+    mProperties->height = height;
 }
 
 bool GLSwapChain::Init(bool vsync)
@@ -33,7 +34,7 @@ bool GLSwapChain::Init(bool vsync)
 
 Texture::Ptr GLSwapChain::GetCurrentImage()
 {
-    return nullptr; // swapChainBuffers[0];
+    return nullptr;
 }
 std::shared_ptr<Texture> GLSwapChain::GetImage(uint32_t index)
 {

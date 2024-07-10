@@ -55,6 +55,7 @@ int main()
                         .SetShader(shader)
                         .SetDepthOptions(false, false)
                         .SetDrawType(DrawType::Triangle)
+                        .SetSwapchainTarget(true)
                         .SetColorTarget(std::move(colorTarget), AttachmentType::Color)
                         .SetClearTargets(true)
                         .Create(ctx);

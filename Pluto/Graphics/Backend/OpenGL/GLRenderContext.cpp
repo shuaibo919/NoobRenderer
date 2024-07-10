@@ -1,7 +1,7 @@
 /* OpenGL RenderPass */
 #include "Graphics/Backend/OpenGL/GLRenderContext.h"
 /* Usage */
-
+#include "Graphics/Backend/OpenGL/GLContext.h"
 /* Common */
 #include "Graphics/Backend/OpenGL/GL.h"
 #include "Graphics/Backend/OpenGL/GLDebug.h"
@@ -9,7 +9,8 @@
 
 using namespace pluto::Graphics;
 
-GLRenderContext::GLRenderContext()
+GLRenderContext::GLRenderContext(GLContext *ctx)
+    : mContext(ctx), RenderContext()
 {
 }
 
@@ -50,4 +51,8 @@ bool GLRenderContext::SupportsCompute()
 RHIFormat GLRenderContext::GetDepthFormat()
 {
     return RHIFormat::Depth32Float;
+}
+std::shared_ptr<SwapChain> GLRenderContext::GetSwapChain()
+{
+    return mContext->mSwapChain;
 }

@@ -18,7 +18,6 @@ namespace pluto
             void OnResize(uint32_t width, uint32_t height);
 
         public:
-            // bool Init(bool vsync, Window *window) override { return Init(vsync); };
             bool Init(bool vsync) override;
 
             std::shared_ptr<Texture> GetCurrentImage() override;
@@ -30,7 +29,6 @@ namespace pluto
             void SetVSync(bool vsync) override;
 
         private:
-            std::vector<std::shared_ptr<GLTexture2D>> mBuffers;
             std::shared_ptr<GLCommandBuffer> mCommand{nullptr};
             uint32_t mCurrentBuffer{0};
         };

@@ -33,10 +33,7 @@ void GLRenderPass::BeginRenderPass(std::shared_ptr<CommandBuffer> &commandBuffer
 
     if (mProperties->clear)
     {
-        dynamic_cast<GLRenderContext *>(mRenderContext)->Clear(RendererBufferType::RenderBufferColor | RendererBufferType::RenderBufferDepth | RendererBufferType::RenderBufferStencil);
-        // GLRenderer::ClearInternal(RENDERER_BUFFER_COLOUR | RENDERER_BUFFER_DEPTH | RENDERER_BUFFER_STENCIL);
-        //  reset state
-        //  :todo
+        static_cast<GLRenderContext *>(mRenderContext)->Clear(RendererBufferType::RenderBufferColor | RendererBufferType::RenderBufferDepth | RendererBufferType::RenderBufferStencil);
     }
 }
 void GLRenderPass::EndRenderPass(std::shared_ptr<CommandBuffer> &commandBuffer)

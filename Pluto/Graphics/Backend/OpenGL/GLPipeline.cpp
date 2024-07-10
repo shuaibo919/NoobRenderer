@@ -2,6 +2,7 @@
 #include "Graphics/Backend/OpenGL/GLPipeline.h"
 /* Usage */
 #include "Graphics/Backend/OpenGL/GLContext.h"
+#include "Graphics/Backend/OpenGL/GLRenderContext.h"
 #include "Graphics/Backend/OpenGL/GLVertexBuffer.h"
 #include "Graphics/Backend/OpenGL/GLTexture.h"
 #include "Graphics/Backend/OpenGL/GLDescriptorSet.h"
@@ -27,6 +28,7 @@ GLPipeline::~GLPipeline()
 {
     glDeleteVertexArrays(1, &mVertexArray);
 }
+
 void GLPipeline::BindVertexArray(std::shared_ptr<VertexBuffer> vbo)
 {
     GlCall(glBindVertexArray(static_cast<GLuint>(mVertexArray)));
@@ -52,11 +54,12 @@ void GLPipeline::Preparation()
 {
     std::vector<AttachmentType> attachmentTypes;
     std::vector<std::shared_ptr<Texture>> attachments;
+    auto pRenderContext = static_cast<GLRenderContext *>(mRenderContext);
 
     if (mProperties->swapchainTarget)
     {
-        log<Critical>("Not Implemented");
-        // attachmentTypes.push_back(AttachmentType::Color);
+        attachmentTypes.push_back(AttachmentType::Color);
+        attachments.push_back(nullptr);
     }
     else
     {
@@ -85,22 +88,35 @@ void GLPipeline::Preparation()
     frameBufferProperties->attachmentTypes = mProperties->attachmentTypes;
     if (mProperties->swapchainTarget)
     {
-        log<Critical>("Not Implemented");
+        for (uint32_t i = 0; i < pRenderContext->GetSwapChain()->GetSwapChainBufferCount(); i++)
+        {
+            frameBufferProperties->screenUse = true;
+            attachments[0] = pRenderContext->GetSwapChain()->GetImage(i);
+            frameBufferProperties->attachments = attachments;
+
+            mFramebuffers.emplace_back(
+                OpenGL::CreateFrameBuffer(this->mRenderContext, new Framebuffer::Properties(*frameBufferProperties)));
+        }
     }
     else
     {
         frameBufferProperties->attachments = attachments;
         frameBufferProperties->screenUse = false;
         frameBufferProperties->layer = 0;
-        mFramebuffers.push_back(std::dynamic_pointer_cast<GLFramebuffer>(OpenGL::CreateFrameBuffer(this->mRenderContext, std::move(frameBufferProperties))));
+        mFramebuffers.emplace_back(
+            OpenGL::CreateFrameBuffer(this->mRenderContext, std::move(frameBufferProperties)));
+        frameBufferProperties = nullptr;
     }
+    delete frameBufferProperties;
 }
 void GLPipeline::Bind(std::shared_ptr<CommandBuffer> commandBuffer, uint32_t layer)
 {
-    Framebuffer::Ptr framebuffer;
+    auto pRenderContext = static_cast<GLRenderContext *>(mRenderContext);
+    Framebuffer::Ptr framebuffer{nullptr};
     if (mProperties->swapchainTarget)
     {
-        log<Critical>("Not Implemented");
+
+        framebuffer = mFramebuffers[pRenderContext->GetSwapChain()->GetCurrentBufferIndex()];
     }
     else
     {
@@ -166,9 +182,10 @@ void GLPipeline::End(std::shared_ptr<CommandBuffer> commandBuffer)
 }
 void GLPipeline::ClearRenderTargets(std::shared_ptr<CommandBuffer> commandBuffer)
 {
-    for (auto framebuffer : mFramebuffers)
+    auto pRenderContext = static_cast<GLRenderContext *>(mRenderContext);
+    for (auto &framebuffer : mFramebuffers)
     {
-        // framebuffer.As<GLFramebuffer>()->Bind();
-        // GLRenderer::ClearInternal(RenderBufferColor | RenderBufferDepth | RenderBufferStencil);
+        static_cast<GLFramebuffer *>(framebuffer.get())->Bind();
+        pRenderContext->Clear(RenderBufferColor | RenderBufferDepth | RenderBufferStencil);
     }
 }

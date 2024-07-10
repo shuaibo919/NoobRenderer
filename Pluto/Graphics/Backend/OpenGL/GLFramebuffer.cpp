@@ -14,6 +14,7 @@ GLFramebuffer::GLFramebuffer(RenderContext *ctx, GLFramebuffer::Properties *&&pP
 
     if (pProperties->screenUse)
     {
+        mHandle = 0;
         GlCall(glBindFramebuffer(GL_FRAMEBUFFER, 0));
     }
     else
@@ -51,8 +52,10 @@ GLFramebuffer::GLFramebuffer(RenderContext *ctx, GLFramebuffer::Properties *&&pP
 
 GLFramebuffer::~GLFramebuffer()
 {
-    if (!mProperties->screenUse)
+    if (!mProperties->screenUse) 
+    {
         GlCall(glDeleteFramebuffers(1, &mHandle));
+    }
 }
 
 void GLFramebuffer::Bind() const
