@@ -115,7 +115,6 @@ void GLPipeline::Bind(std::shared_ptr<CommandBuffer> commandBuffer, uint32_t lay
     Framebuffer::Ptr framebuffer{nullptr};
     if (mProperties->swapchainTarget)
     {
-
         framebuffer = mFramebuffers[pRenderContext->GetSwapChain()->GetCurrentBufferIndex()];
     }
     else

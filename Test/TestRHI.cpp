@@ -64,9 +64,7 @@ int main()
     {
         window->PollEvents();
         {
-            pipeline->Bind(cmdBuffer);
-            pipeline->End(cmdBuffer);
-        }
+                }
 
         window->SwapBuffers();
     }

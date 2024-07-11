@@ -11,10 +11,8 @@ using namespace pluto::Graphics;
 GLFramebuffer::GLFramebuffer(RenderContext *ctx, GLFramebuffer::Properties *&&pProperties)
     : Framebuffer(ctx, std::move(pProperties)), mColorAttachmentCount(0)
 {
-
     if (pProperties->screenUse)
     {
-        mHandle = 0;
         GlCall(glBindFramebuffer(GL_FRAMEBUFFER, 0));
     }
     else
@@ -52,7 +50,7 @@ GLFramebuffer::GLFramebuffer(RenderContext *ctx, GLFramebuffer::Properties *&&pP
 
 GLFramebuffer::~GLFramebuffer()
 {
-    if (!mProperties->screenUse) 
+    if (!mProperties->screenUse)
     {
         GlCall(glDeleteFramebuffers(1, &mHandle));
     }
@@ -64,7 +62,9 @@ void GLFramebuffer::Bind() const
     GlCall(glViewport(0, 0, mProperties->width, mProperties->height));
 
     if (!mProperties->screenUse)
+    {
         GlCall(glDrawBuffers(static_cast<GLsizei>(mAttachmentChannels.size()), mAttachmentChannels.data()));
+    }
 }
 void GLFramebuffer::UnBind() const
 {

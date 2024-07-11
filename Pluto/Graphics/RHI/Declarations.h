@@ -313,26 +313,6 @@ namespace pluto
             DescriptorLayoutInfo *layoutInfo;
         };
 
-        struct Descriptor
-        {
-            Texture **textures;
-            Texture *texture;
-            UniformBuffer *buffer;
-
-            uint32_t offset;
-            uint32_t size;
-            uint32_t binding;
-            uint32_t textureCount = 1;
-            uint32_t mipLevel = 0;
-            std::string name;
-
-            // TextureType textureType;
-            DescriptorType type = DescriptorType::ImageSampler;
-            ShaderType shaderType;
-
-            std::vector<BufferMemberInfo> mMembers;
-        };
-
         enum class CubeFace : uint8_t
         {
             PositiveX = 0,
@@ -369,6 +349,26 @@ namespace pluto
             {
                 memcpy(data, value, size);
             }
+        };
+
+        struct Descriptor
+        {
+            Texture **textures;
+            Texture *texture;
+            UniformBuffer *buffer;
+
+            uint32_t offset;
+            uint32_t size;
+            uint32_t binding;
+            uint32_t textureCount = 1;
+            uint32_t mipLevel = 0;
+            std::string name;
+
+            AttachmentType attachmentType;
+            DescriptorType descType = DescriptorType::ImageSampler;
+            ShaderType shaderType;
+
+            std::vector<BufferMemberInfo> mMembers;
         };
 
         struct DescriptorSetInfo

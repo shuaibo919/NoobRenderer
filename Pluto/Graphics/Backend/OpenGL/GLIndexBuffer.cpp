@@ -23,7 +23,6 @@ GLIndexBuffer::~GLIndexBuffer()
 void GLIndexBuffer::Bind(CommandBuffer *commandBuffer) const
 {
     GlCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mHandle));
-    // update_state()
 }
 
 void GLIndexBuffer::Unbind() const

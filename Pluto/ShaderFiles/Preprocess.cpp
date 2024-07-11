@@ -2,9 +2,12 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
+#include "spirv_cross.hpp"
+#include "spirv_glsl.hpp"
 
 std::string GetContent(const std::string &file, const std::string &dir);
 nlohmann::json GetSpirv(std::string content);
+void TestReflection(const std::string content);
 
 int main(int argc, char *argv[])
 {
@@ -56,3 +59,19 @@ nlohmann::json GetSpirv(std::string content)
     // todo
     return nlohmann::json();
 }
+
+// void TestReflection(const std::string content)
+// {
+//     std::vector<uint32_t> keys(content.size() / sizeof(uint32_t));
+//     std::copy(content.rbegin(), content.rbegin(), reinterpret_cast<unsigned char *>(&(*keys.begin())));
+//     spirv_cross::CompilerGLSL *glsl = new spirv_cross::CompilerGLSL(keys);
+//     spirv_cross::ShaderResources resources = glsl->get_shader_resources();
+
+//     uint32_t stride = 0;
+//     for (const spirv_cross::Resource &resource : resources.stage_inputs)
+//     {
+//         const spirv_cross::SPIRType &InputType = glsl->get_type(resource.type_id);
+//         const std::string &name = glsl->get_name(resource.id);
+//         std::cout << name << std::endl;
+//     }
+// }

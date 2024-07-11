@@ -53,7 +53,7 @@ namespace pluto
             uint32_t mHandle;
             std::vector<ShaderType> mShaderTypes;
             std::vector<spirv_cross::CompilerGLSL *> mShaderCompilers;
-            // Graphics::VertexInputDescription m_Layout;
+            DescriptorSetInfo *mShaderReflectInfo;
         };
     }
 }
