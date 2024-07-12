@@ -76,6 +76,19 @@ std::string GetGlslcShaderType(std::string type)
     return "";
 }
 
+pluto::Graphics::ShaderType GetShaderType(std::string type)
+{
+    if (type == "Vertex")
+        return pluto::Graphics::ShaderType::Vertex;
+    if (type == "Fragment")
+        return pluto::Graphics::ShaderType::Fragment;
+    if (type == "Geometry")
+        return pluto::Graphics::ShaderType::Geometry;
+    if (type == "Compute")
+        return pluto::Graphics::ShaderType::Compute;
+    return pluto::Graphics::ShaderType::Unkown;
+}
+
 std::vector<uint32_t> CompileToSpirv(std::string exec, std::string name, std::string type, std::string shaderfile, std::string output_directory)
 {
     std::string stype = GetGlslcShaderType(type);
@@ -189,7 +202,7 @@ nlohmann::json ReflectFromSpirv(std::vector<uint32_t> spv, std::string type, std
         tmp_j["set"] = set;
         tmp_j["binding"] = binding;
         tmp_j["name"] = resource.name;
-        tmp_j["shaderType"] = type;
+        tmp_j["shaderType"] = GetShaderType(type);
         SampledImages.push_back(tmp_j);
     }
     j["SampledImages"] = SampledImages;
@@ -210,7 +223,7 @@ nlohmann::json ReflectFromSpirv(std::vector<uint32_t> spv, std::string type, std
         tmp_j["set"] = set;
         tmp_j["binding"] = binding;
         tmp_j["name"] = uniform_buffer.name;
-        tmp_j["shaderType"] = type;
+        tmp_j["shaderType"] = GetShaderType(type);
         tmp_j["offset"] = 0;
         tmp_j["members"] = nlohmann::json();
         for (int i = 0; i < memberCount; ++i)

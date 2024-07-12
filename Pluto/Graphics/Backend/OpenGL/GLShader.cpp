@@ -26,6 +26,7 @@ GLShader::GLShader(RenderContext *ctx, GLShader::Properties *&&pProperties)
             auto type = shader["type"].get<ShaderType>();
             sources.insert({type, {shader["name"].get<std::string>(), shader["glsl"].get<std::string>()}});
             mProperties->types.push_back(type);
+            ReadReflectInfo(shader["reflection"], type);
         }
 
         mHandle = CompileAll(sources);
@@ -45,6 +46,76 @@ GLShader::~GLShader()
 bool GLShader::IsCompiled()
 {
     return mCompiled;
+}
+
+void GLShader::ReadReflectInfo(ShaderJson &info, ShaderType type)
+{
+
+    for (auto &vertexInput : info["VertexInput"])
+    {
+        auto inputType = static_cast<ShaderDataType>(vertexInput);
+    }
+
+    for (auto &resource : info["SampledImages"])
+    {
+        auto &descriptorInfo = mShaderReflectInfo[resource["set"].get<uint32_t>()];
+        auto &descriptor = descriptorInfo.descriptors.emplace_back();
+        descriptor.binding = resource["binding"].get<uint32_t>();
+        descriptor.name = resource["name"].get<std::string>();
+        descriptor.shaderType = static_cast<ShaderType>(resource["shaderType"].get<uint8_t>());
+        descriptor.descType = DescriptorType::ImageSampler;
+    }
+
+    for (auto &uniform_buffer : info["UniformBuffers"])
+    {
+        auto &descriptorInfo = mShaderReflectInfo[uniform_buffer["set"].get<uint32_t>()];
+        auto &descriptor = descriptorInfo.descriptors.emplace_back();
+        descriptor.offset = 0;
+        descriptor.buffer = nullptr;
+        descriptor.descType = DescriptorType::UniformBuffer;
+        descriptor.name = uniform_buffer["name"].get<std::string>();
+        descriptor.binding = uniform_buffer["binding"].get<uint32_t>();
+        descriptor.shaderType = static_cast<ShaderType>(uniform_buffer["shaderType"].get<uint8_t>());
+        for (auto &json_member : uniform_buffer["members"])
+        {
+            auto &member = descriptor.mMembers.emplace_back();
+            member.size = json_member["size"].get<uint32_t>();
+            member.offset = json_member["offset"].get<uint32_t>();
+            member.type = static_cast<ShaderDataType>(json_member["type"].get<uint8_t>());
+            member.fullName = json_member["fullname"].get<std::string>();
+            member.name = json_member["name"].get<std::string>();
+        }
+    }
+
+    for (auto &pushConstant : info["PushConstants"])
+    {
+        // Todo
+    }
+
+    int imageCount[16] = {0};
+    int bufferCount[16] = {0};
+
+    for (int i = 0; i < mShaderReflectInfo.size(); i++)
+    {
+        auto &descriptorInfo = mShaderReflectInfo[i];
+        for (auto &descriptor : descriptorInfo.descriptors)
+        {
+            if (descriptor.descType == DescriptorType::ImageSampler)
+            {
+                imageCount[i]++;
+
+                if (i > 0)
+                    descriptor.binding = descriptor.binding + imageCount[i - 1];
+            }
+            else if (descriptor.descType == DescriptorType::UniformBuffer)
+            {
+                bufferCount[i]++;
+
+                if (i > 0)
+                    descriptor.binding = descriptor.binding + bufferCount[i - 1];
+            }
+        }
+    }
 }
 
 void GLShader::SetUniform(const std::string &name, bool value)

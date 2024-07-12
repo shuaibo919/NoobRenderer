@@ -53,7 +53,8 @@ namespace pluto
             uint32_t mHandle;
             std::vector<ShaderType> mShaderTypes;
             std::vector<spirv_cross::CompilerGLSL *> mShaderCompilers;
-            DescriptorSetInfo *mShaderReflectInfo;
+            std::map<uint32_t, DescriptorSetInfo> mShaderReflectInfo;
+            void ReadReflectInfo(ShaderJson &info, ShaderType type);
         };
     }
 }
