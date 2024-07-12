@@ -1,5 +1,5 @@
 set(TARGET_NAME Test)
-message("Generate Test File Enabled")
+message(STATUS "Generate Test File Enabled")
 
 file(GLOB TEST_SRC ${CMAKE_CURRENT_SOURCE_DIR}/*.cpp)
 
@@ -9,5 +9,5 @@ foreach(_var ${TEST_SRC})
     target_link_libraries(${app_name} PUBLIC ${PLUTO_ENGINE_NAME})
     target_include_directories(${app_name} PUBLIC ${CMAKE_BEGIN_PATH}/Pluto)
     add_dependencies(${app_name} ${PLUTO_ENGINE_NAME})
-    message("Test ${app_name} Generated!")
+    message(STATUS "Test ${app_name} Generated!")
 endforeach()

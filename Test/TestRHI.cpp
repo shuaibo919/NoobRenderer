@@ -64,7 +64,7 @@ int main()
     {
         window->PollEvents();
         {
-                }
+        }
 
         window->SwapBuffers();
     }

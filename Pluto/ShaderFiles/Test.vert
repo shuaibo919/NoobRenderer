@@ -1,13 +1,21 @@
-#version 410 core
-layout (location = 0) in vec3 aPos;
-layout (location = 1) in vec3 aNormal;
-layout (location = 2) in vec2 aTexCoord;
+#version 450 core
 
-out vec2 TexCoords;
-uniform mat4 mvp;
+layout(binding = 0) uniform UniformBufferObject {
+    mat4 model;
+    mat4 view;
+    mat4 proj;
+}ubo;
 
-void main()
-{
-    TexCoords = aTexCoord;
-    gl_Position = mvp * vec4(aPos, 1.0);
+layout(location = 0) in vec2 inPosition;
+layout(location = 1) in vec3 inColor;
+
+layout(location = 0) out vec3 fragColor;
+
+out gl_PerVertex {
+    vec4 gl_Position;
+};
+
+void main() {
+    gl_Position = ubo.proj * ubo.view * ubo.model * vec4(inPosition, 0.0, 1.0);
+    fragColor = inColor;
 }

@@ -113,7 +113,7 @@ uint32_t CompileShader(ShaderType type, std::pair<std::string, std::string> &sou
         sscanf(error.data(), "%*s %*d:%d", &lineNumber);
         auto id_type = static_cast<uint32_t>(type);
         info.message[id_type] = "Shader compilation failed: ";
-        info.message[id_type] += std::string("Failed to compile") + Utilities::GetShaderTypeString(type) + " shader!\n";
+        info.message[id_type] += std::string("Failed to compile ") + Utilities::GetShaderTypeString(type) + " shader!\n";
 
         info.line[id_type] = lineNumber;
         info.message[id_type] += errorMessage;
