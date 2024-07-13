@@ -64,10 +64,9 @@ namespace pluto
             Nearest
         };
 
-        enum class TextureType
+        enum class TextureUsage
         {
             None,
-            XX
         };
 
         enum class RHIFormat : uint8_t
@@ -353,14 +352,12 @@ namespace pluto
 
         struct Descriptor
         {
-            Texture **textures;
-            Texture *texture;
-            UniformBuffer *buffer;
+            std::shared_ptr<Texture> texture;
+            std::shared_ptr<UniformBuffer> ubo;
 
             uint32_t offset;
             uint32_t size;
             uint32_t binding;
-            uint32_t textureCount = 1;
             uint32_t mipLevel = 0;
             std::string name;
 

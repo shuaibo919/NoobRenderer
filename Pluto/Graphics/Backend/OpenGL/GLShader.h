@@ -6,11 +6,6 @@
 #include <glm/ext/matrix_float4x4.hpp>
 #include <map>
 
-namespace spirv_cross
-{
-    class CompilerGLSL;
-}
-
 namespace pluto
 {
     namespace Graphics
@@ -36,8 +31,8 @@ namespace pluto
 
         public:
             bool IsCompiled();
+            const uint32_t GetHandle() const { return mHandle; };
 
-        protected:
             void SetUniform(const std::string &name, bool value);
             void SetUniform(const std::string &name, int value);
             void SetUniform(const std::string &name, unsigned int value);
@@ -51,10 +46,6 @@ namespace pluto
         private:
             bool mCompiled;
             uint32_t mHandle;
-            std::vector<ShaderType> mShaderTypes;
-            std::vector<spirv_cross::CompilerGLSL *> mShaderCompilers;
-            std::map<uint32_t, DescriptorSetInfo> mShaderReflectInfo;
-            void ReadReflectInfo(ShaderJson &info, ShaderType type);
         };
     }
 }

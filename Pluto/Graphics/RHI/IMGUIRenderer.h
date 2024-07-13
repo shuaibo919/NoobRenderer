@@ -8,7 +8,7 @@ namespace pluto
         struct ImGuiTextureID
         {
             Texture *texture;
-            TextureType type;
+            TextureUsage type;
             uint32_t level;
             uint32_t mip;
         };
@@ -26,7 +26,7 @@ namespace pluto
             virtual void Clear() {}
             virtual bool Implemented() const = 0;
             virtual void RebuildFontTexture() = 0;
-            virtual ImGuiTextureID *AddTexture(Texture *texture, TextureType type = TextureType::None, uint32_t level = 0, uint32_t mip = 0);
+            virtual ImGuiTextureID *AddTexture(Texture *texture, TextureUsage type = TextureUsage::None, uint32_t level = 0, uint32_t mip = 0);
 
         protected:
             static ImGuiRenderer *(*CreateFunc)(uint32_t, uint32_t, bool);

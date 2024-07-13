@@ -26,6 +26,7 @@ namespace pluto
                 std::string name;
                 std::string filePath;
                 std::vector<ShaderType> types;
+                std::map<uint32_t, DescriptorSetInfo> reflectInfo;
             };
             struct Builder final : BuildBase<Shader::Properties, RenderPass>
             {
@@ -37,9 +38,13 @@ namespace pluto
             virtual void Unbind() const {};
 
             virtual ~Shader();
-
             virtual bool IsCompiled() = 0;
-            ShaderDataType ConvertSPIRV(const spirv_cross::SPIRType type);
+
+        public:
+            const Properties &GetProperties() const { return *mProperties; }
+
+        protected:
+            void Shader::ReadReflectInfo(ShaderJson &info, ShaderType type);
 
         protected:
             Properties *mProperties;

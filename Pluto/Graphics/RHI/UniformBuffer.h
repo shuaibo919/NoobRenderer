@@ -12,6 +12,7 @@ namespace pluto
             friend class GraphicsContext;
 
         public:
+            static const uint32_t Empty = 0;
             using Ptr = std::shared_ptr<UniformBuffer>;
             struct Properties
             {
@@ -26,7 +27,7 @@ namespace pluto
             virtual ~UniformBuffer();
 
         public:
-            virtual void Init(uint32_t size, const void *data) = 0;
+            virtual void ReInit(uint32_t size, const void *data) = 0;
             virtual void SetData(uint32_t size, const void *data) = 0;
             virtual void SetDynamicData(uint32_t size, uint32_t typeSize, const void *data) = 0;
 

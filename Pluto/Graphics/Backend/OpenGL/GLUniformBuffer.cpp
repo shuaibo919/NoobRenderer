@@ -12,6 +12,11 @@ GLUniformBuffer::GLUniformBuffer(RenderContext *ctx, UniformBuffer::Properties *
     : UniformBuffer(ctx, std::move(pProperties))
 {
     GlCall(glGenBuffers(1, &mHandle));
+    if (mProperties->size != UniformBuffer::Empty)
+    {
+        glBindBuffer(GL_UNIFORM_BUFFER, mHandle);
+        glBufferData(GL_UNIFORM_BUFFER, mProperties->size, mProperties->data, GL_DYNAMIC_DRAW);
+    }
 }
 
 GLUniformBuffer::~GLUniformBuffer()
@@ -19,7 +24,7 @@ GLUniformBuffer::~GLUniformBuffer()
     GlCall(glDeleteBuffers(1, &mHandle));
 }
 
-void GLUniformBuffer::Init(uint32_t size, const void *data)
+void GLUniformBuffer::ReInit(uint32_t size, const void *data)
 {
     mProperties->data = (uint8_t *)data;
     mProperties->size = size;
