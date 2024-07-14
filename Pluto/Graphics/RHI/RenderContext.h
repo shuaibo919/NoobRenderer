@@ -34,6 +34,9 @@ namespace pluto
             virtual uint32_t GetGPUCount() const { return 1; }
             virtual bool SupportsCompute() { return false; }
             virtual RHIFormat GetDepthFormat() { return RHIFormat::Depth32Float; };
+
+        protected:
+            std::string mTitle;
         };
     }
 }

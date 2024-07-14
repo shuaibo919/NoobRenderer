@@ -146,7 +146,7 @@ std::shared_ptr<UniformBuffer> GLDescriptorSet::GetUniformBuffer(const std::stri
     return nullptr;
 }
 
-void GLDescriptorSet::Bind(uint32_t offset = 0)
+void GLDescriptorSet::Bind(uint32_t offset)
 {
     auto glshader = std::static_pointer_cast<GLShader>(mProperties->shader);
     glshader->Bind();
@@ -167,9 +167,18 @@ void GLDescriptorSet::Bind(uint32_t offset = 0)
             if (ubo == nullptr)
                 break;
 
-            uint8_t *data;
-            uint32_t size;
-            // Todo here
+            uint8_t *data = ubo->GetProperties().data;
+            uint32_t size = ubo->GetSize();
+            if (ubo->GetDynamic())
+            {
+                data = ubo->GetProperties().data + offset;
+                size = ubo->GetDynamicSize();
+            }
+
+            auto bufferHandle = ubo->GetHandle();
+            auto slot = descriptor.binding;
+            GlCall(glBindBufferBase(GL_UNIFORM_BUFFER, slot, bufferHandle));
+            GlCall(glBindBufferRange(GL_UNIFORM_BUFFER, slot, bufferHandle, offset, size));
         }
     }
 }
@@ -188,7 +197,7 @@ void GLDescriptorSet::ReleaseUboInfoData(GLDescriptorSet::UniformBufferInfo &inf
         delete[] info.data;
 }
 
-void GLDescriptorSet::WrtieUboInfoData(UniformBufferInfo &info, void *data, uint32_t size, uint32_t offset = 0)
+void GLDescriptorSet::WrtieUboInfoData(UniformBufferInfo &info, void *data, uint32_t size, uint32_t offset)
 {
     memcpy((uint8_t *)info.data + offset, data, size);
 }

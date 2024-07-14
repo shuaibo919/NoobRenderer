@@ -81,3 +81,23 @@ void GLUniformBuffer::SetDynamicData(uint32_t size, uint32_t typeSize, const voi
 void GLUniformBuffer::Bind()
 {
 }
+
+bool GLUniformBuffer::GetDynamic() const
+{
+    return mDynamic;
+}
+
+uint32_t GLUniformBuffer::GetSize() const
+{
+    return mProperties->size;
+}
+
+uint32_t GLUniformBuffer::GetHandle() const
+{
+    return mHandle;
+}
+
+uint32_t GLUniformBuffer::GetDynamicSize() const
+{
+    return mDynamicSize;
+}

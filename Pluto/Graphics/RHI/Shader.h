@@ -44,7 +44,7 @@ namespace pluto
             const Properties &GetProperties() const { return *mProperties; }
 
         protected:
-            void Shader::ReadReflectInfo(ShaderJson &info, ShaderType type);
+            void ReadReflectInfo(ShaderJson &info, ShaderType type);
 
         protected:
             Properties *mProperties;

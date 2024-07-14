@@ -67,7 +67,7 @@ void GLRenderContext::BindDescriptorSets(std::shared_ptr<Pipeline> pipeline, std
 
 const std::string &GLRenderContext::GetTitle() const
 {
-    return "";
+    return mTitle;
 }
 
 void GLRenderContext::DrawIndexed(std::shared_ptr<CommandBuffer>, DrawType type, uint32_t count, uint32_t start) const

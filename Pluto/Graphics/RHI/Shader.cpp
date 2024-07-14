@@ -48,7 +48,7 @@ void Shader::ReadReflectInfo(ShaderJson &info, ShaderType type)
         auto &descriptorInfo = mProperties->reflectInfo[uniform_buffer["set"].get<uint32_t>()];
         auto &descriptor = descriptorInfo.descriptors.emplace_back();
         descriptor.offset = 0;
-        descriptor.buffer = nullptr;
+        descriptor.ubo = nullptr;
         descriptor.descType = DescriptorType::UniformBuffer;
         descriptor.name = uniform_buffer["name"].get<std::string>();
         descriptor.binding = uniform_buffer["binding"].get<uint32_t>();
