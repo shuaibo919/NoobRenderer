@@ -1,5 +1,7 @@
 ## NoobRenderer
 
+This branch will no longer be updated, new branch in [here](https://github.com/shuaibo919/NoobRenderer/tree/pluto)
+
 NoobRenderer is a personal rendering project that I've been working on! It's based on C++ and OpenGL. This project is essentially my playground for learning and experimenting with OpenGL and various classical graphics algorithms. As such, it's a work in progress and may have many flaws.
 
 ### Build
