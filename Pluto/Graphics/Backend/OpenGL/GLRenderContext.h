@@ -36,6 +36,13 @@ namespace pluto
             std::shared_ptr<SwapChain> GetSwapChain() override;
 
         private:
+            struct GLObject
+            {
+                uint32_t handle;
+                bool valid{false};
+            };
+            GLObject mCurrentVertexHandle;
+            GLObject mCurrentIndiceHandle;
             GLContext *mContext;
         };
     }

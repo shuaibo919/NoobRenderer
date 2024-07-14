@@ -5,6 +5,7 @@
 #include "Graphics/Backend/OpenGL/GLSwapChain.h"
 #include "Graphics/Backend/OpenGL/GLRenderPass.h"
 #include "Graphics/Backend/OpenGL/GLCommandBuffer.h"
+#include "Graphics/Backend/OpenGL/GLDescriptorSet.h"
 /* Common */
 #include "Graphics/Backend/OpenGL/GL.h"
 #include "Graphics/Backend/OpenGL/GLDebug.h"
@@ -51,6 +52,15 @@ void GLRenderContext::OnResize(uint32_t width, uint32_t height)
 
 void GLRenderContext::ClearRenderTarget(std::shared_ptr<Texture> texture, AttachmentType type, std::shared_ptr<CommandBuffer> commandBuffer, glm::vec4 clearColor)
 {
+    if (texture == nullptr)
+    {
+        GlCall(glBindFramebuffer(GL_FRAMEBUFFER, 0));
+        this->Clear(RenderBufferColor | RenderBufferDepth | RenderBufferStencil);
+        return;
+    }
+    // Todo
+
+    this->Clear(RenderBufferColor | RenderBufferDepth | RenderBufferStencil);
 }
 
 void GLRenderContext::Present()
@@ -63,6 +73,13 @@ void GLRenderContext::Present(std::shared_ptr<CommandBuffer> commandBuffer)
 
 void GLRenderContext::BindDescriptorSets(std::shared_ptr<Pipeline> pipeline, std::shared_ptr<CommandBuffer> commandBuffer, uint32_t dynamicOffset, std::vector<std::shared_ptr<DescriptorSet>> descriptorSets)
 {
+    for (auto &descriptorSet : descriptorSets)
+    {
+        if (descriptorSet != nullptr)
+        {
+            std::static_pointer_cast<GLDescriptorSet>(descriptorSet)->Bind(dynamicOffset);
+        }
+    }
 }
 
 const std::string &GLRenderContext::GetTitle() const
@@ -72,10 +89,30 @@ const std::string &GLRenderContext::GetTitle() const
 
 void GLRenderContext::DrawIndexed(std::shared_ptr<CommandBuffer>, DrawType type, uint32_t count, uint32_t start) const
 {
+    if (!mCurrentVertexHandle.valid)
+    {
+        // Todo
+    }
+
+    if (!mCurrentIndiceHandle.valid)
+    {
+        // Todo
+    }
+    GlCall(glDrawElements(GLUtilities::GetDrawType(type), count, GLUtilities::GetDataType(DataType::UnsignedInt), nullptr));
 }
 
 void GLRenderContext::Draw(std::shared_ptr<CommandBuffer>, DrawType type, uint32_t count, DataType datayType, void *indices) const
 {
+    if (!mCurrentVertexHandle.valid)
+    {
+        // Todo
+    }
+
+    if (!mCurrentIndiceHandle.valid)
+    {
+        // Todo
+    }
+    GlCall(glDrawArrays(GLUtilities::GetDrawType(type), 0, count));
 }
 
 void GLRenderContext::Dispatch(std::shared_ptr<CommandBuffer>, uint32_t workGroupSizeX, uint32_t workGroupSizeY, uint32_t workGroupSizeZ)

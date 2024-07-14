@@ -48,6 +48,7 @@ namespace pluto
 
             RenderAPI GetRenderAPI() { return mRenderAPI; }
             void SetMainSwapChain(std::shared_ptr<SwapChain> swapChain) { mSwapChain = swapChain; };
+            RenderContext *GetRenderContext() const { return mRenderContext; }
 
             virtual void Init() = 0;
             virtual void Present() = 0;

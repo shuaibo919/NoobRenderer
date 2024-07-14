@@ -33,9 +33,9 @@ namespace pluto
             {
                 std::shared_ptr<UniformBuffer> ubo;
                 std::vector<BufferMemberInfo> members;
-                uint8_t *data;
-                uint32_t size;
-                bool updated;
+                uint8_t *data{nullptr};
+                uint32_t size{0};
+                bool updated{false};
             };
 
         private:

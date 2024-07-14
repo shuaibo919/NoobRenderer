@@ -51,6 +51,23 @@ namespace pluto
                 }
                 return GL_FLOAT;
             }
+
+            inline constexpr GLenum GetDataType(DataType dataType)
+            {
+                switch (dataType)
+                {
+                case DataType::Float:
+                    return GL_FLOAT;
+                case DataType::UnsignedInt:
+                    return GL_UNSIGNED_INT;
+                case DataType::UnsignedByte:
+                    return GL_UNSIGNED_BYTE;
+                default:
+                    break;
+                }
+                return 0;
+            }
+
             inline constexpr GLenum GetDataType(RHIFormat format)
             {
                 switch (format)
@@ -230,16 +247,23 @@ namespace pluto
                     result |= GL_STENCIL_BUFFER_BIT;
                 return result;
             }
-            // uint32_t FormatToGL(RHIFormat format, bool srgb = true);
-            // uint32_t TextureWrapToGL(TextureWrap wrap);
-            // uint32_t FormatToInternalFormat(uint32_t format);
-            // uint32_t StencilTypeToGL(const StencilType type);
-            // uint32_t GetGLTypefromFormat(RHIFormat format);
 
-            // uint32_t RendererBufferToGL(uint32_t buffer);
-            // uint32_t RendererBlendFunctionToGL(RendererBlendFunction function);
-            // uint32_t DataTypeToGL(DataType dataType);
-            // uint32_t DrawTypeToGL(DrawType drawType);
+            inline constexpr GLenum GetDrawType(DrawType drawType)
+            {
+                switch (drawType)
+                {
+                case DrawType::Point:
+                    return GL_POINTS;
+                case DrawType::Lines:
+                    return GL_LINES;
+                case DrawType::Triangle:
+                    return GL_TRIANGLES;
+                default:
+
+                    break;
+                }
+                return 0;
+            }
         }
     }
 }

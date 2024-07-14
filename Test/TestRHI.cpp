@@ -2,6 +2,7 @@
 #include "Graphics/RHI/RenderDevice.h"
 #include "Graphics/RHI/VertexBuffer.h"
 #include "Graphics/RHI/CommandBuffer.h"
+#include "Graphics/RHI/DescriptorSet.h"
 #include "Graphics/RHI/Pipeline.h"
 #include "Graphics/RHI/Texture.h"
 #include "Graphics/RHI/Shader.h"
@@ -59,6 +60,10 @@ int main()
                         .SetColorTarget(std::move(colorTarget), AttachmentType::Color)
                         .SetClearTargets(true)
                         .Create(ctx);
+
+    auto descriptorSet = DescriptorSet::Builder()
+                             .SetBindingLayout(shader, 0)
+                             .Create(ctx);
 
     while (!window->ShouldClose())
     {
