@@ -230,7 +230,7 @@ nlohmann::json ReflectFromSpirv(std::vector<uint32_t> spv, std::string type, std
         {
             nlohmann::json member;
             auto type = glsl->get_type(bufferType.member_types[i]);
-            const auto &memberName = glsl->get_member_name(bufferType.self, i);
+            std::string memberName = glsl->get_member_name(bufferType.self, i);
             auto size = glsl->get_declared_struct_member_size(bufferType, i);
             auto offset = glsl->type_struct_member_offset(bufferType, i);
             std::string uniformName = uniform_buffer.name + "." + memberName;

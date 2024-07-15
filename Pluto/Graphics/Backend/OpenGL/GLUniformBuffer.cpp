@@ -78,10 +78,6 @@ void GLUniformBuffer::SetDynamicData(uint32_t size, uint32_t typeSize, const voi
     }
 }
 
-void GLUniformBuffer::Bind()
-{
-}
-
 bool GLUniformBuffer::GetDynamic() const
 {
     return mDynamic;

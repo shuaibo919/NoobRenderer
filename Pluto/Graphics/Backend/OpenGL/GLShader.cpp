@@ -43,6 +43,24 @@ GLShader::~GLShader()
     glDeleteProgram(mHandle);
 }
 
+void GLShader::Bind() const
+{
+    if (Shader::sCurrently != this)
+    {
+        GlCall(glUseProgram(mHandle));
+        Shader::sCurrently = this;
+    }
+}
+
+void GLShader::Unbind() const
+{
+    if (Shader::sCurrently == this)
+    {
+        GlCall(glUseProgram(0));
+        Shader::sCurrently = nullptr;
+    }
+}
+
 bool GLShader::IsCompiled()
 {
     return mCompiled;

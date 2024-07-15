@@ -1,4 +1,5 @@
 #include "Graphics/RHI/GraphicsContext.h"
+#include "Graphics/RHI/RenderContext.h"
 #include "Graphics/RHI/RenderDevice.h"
 #include "Graphics/RHI/VertexBuffer.h"
 #include "Graphics/RHI/CommandBuffer.h"
@@ -14,6 +15,13 @@ float vertices[] = {
     -0.5f, -0.5f, 0.0f,
     0.5f, -0.5f, 0.0f,
     0.0f, 0.5f, 0.0f};
+
+struct UniformDataMat4
+{
+    std::string name;
+    std::string blockname;
+    glm::mat4 data;
+};
 
 int main()
 {
@@ -65,10 +73,37 @@ int main()
                              .SetBindingLayout(shader, 0)
                              .Create(ctx);
 
+    auto rctx = ctx->GetRenderContext();
+
+    UniformDataMat4 model;
+    model.name = "model";
+    model.blockname = "UniformBufferObject";
+    model.data = glm::mat4(1.0f);
+
+    UniformDataMat4 view;
+    view.name = "model";
+    view.blockname = "UniformBufferObject";
+    view.data = glm::mat4(1.0f);
+
+    UniformDataMat4 projection;
+    projection.name = "model";
+    projection.blockname = "UniformBufferObject";
+    projection.data = glm::mat4(1.0f);
+    descriptorSet->SetUniform(model.name, model.blockname, glm::value_ptr<float>(model.data));
+    descriptorSet->SetUniform(view.name, view.blockname, glm::value_ptr<float>(view.data));
+    descriptorSet->SetUniform(projection.name, projection.blockname, glm::value_ptr<float>(projection.data));
+
     while (!window->ShouldClose())
     {
         window->PollEvents();
         {
+            cmdBuffer->BeginRecording();
+            cmdBuffer->BindPipeline(pipeline);
+            pipeline->ClearRenderTargets(cmdBuffer);
+            rctx->BindDescriptorSet(pipeline, cmdBuffer, 0, descriptorSet);
+            pipeline->End(cmdBuffer);
+
+            cmdBuffer->EndRecording();
         }
 
         window->SwapBuffers();

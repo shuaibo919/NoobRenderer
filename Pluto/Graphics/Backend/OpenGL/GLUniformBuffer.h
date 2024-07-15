@@ -20,7 +20,6 @@ namespace pluto
             void SetData(uint32_t size, const void *data) override;
             void SetDynamicData(uint32_t size, uint32_t typeSize, const void *data) override;
 
-            void Bind();
             bool GetDynamic() const;
             uint32_t GetSize() const;
             uint32_t GetHandle() const;

@@ -82,6 +82,14 @@ void GLRenderContext::BindDescriptorSets(std::shared_ptr<Pipeline> pipeline, std
     }
 }
 
+void GLRenderContext::BindDescriptorSet(std::shared_ptr<Pipeline> pipeline, std::shared_ptr<CommandBuffer> commandBuffer, uint32_t dynamicOffset, std::shared_ptr<DescriptorSet> descriptorSet)
+{
+    if (descriptorSet != nullptr)
+    {
+        std::static_pointer_cast<GLDescriptorSet>(descriptorSet)->Bind(dynamicOffset);
+    }
+}
+
 const std::string &GLRenderContext::GetTitle() const
 {
     return mTitle;

@@ -21,6 +21,7 @@ namespace pluto
 
             virtual void Present() = 0;
             virtual void Present(std::shared_ptr<CommandBuffer> commandBuffer) = 0;
+            virtual void BindDescriptorSet(std::shared_ptr<Pipeline> pipeline, std::shared_ptr<CommandBuffer> commandBuffer, uint32_t dynamicOffset, std::shared_ptr<DescriptorSet> descriptorSet) = 0;
             virtual void BindDescriptorSets(std::shared_ptr<Pipeline> pipeline, std::shared_ptr<CommandBuffer> commandBuffer, uint32_t dynamicOffset, std::vector<std::shared_ptr<DescriptorSet>> descriptorSets) = 0;
 
             virtual const std::string &GetTitle() const = 0;

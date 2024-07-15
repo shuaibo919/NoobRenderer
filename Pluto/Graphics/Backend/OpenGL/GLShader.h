@@ -30,6 +30,9 @@ namespace pluto
             ~GLShader();
 
         public:
+            void Bind() const override;
+            void Unbind() const override;
+
             bool IsCompiled();
             const uint32_t GetHandle() const { return mHandle; };
 

@@ -178,7 +178,7 @@ void GLDescriptorSet::Bind(uint32_t offset)
             auto bufferHandle = ubo->GetHandle();
             auto slot = descriptor.binding;
             GlCall(glBindBufferBase(GL_UNIFORM_BUFFER, slot, bufferHandle));
-            GlCall(glBindBufferRange(GL_UNIFORM_BUFFER, slot, bufferHandle, offset, size));
+            // GlCall(glBindBufferRange(GL_UNIFORM_BUFFER, slot, bufferHandle, offset, size));
         }
     }
 }
