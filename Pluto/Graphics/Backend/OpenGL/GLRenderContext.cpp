@@ -24,13 +24,10 @@ GLRenderContext::~GLRenderContext()
 
 void GLRenderContext::Init()
 {
-    GlCall(glEnable(GL_DEPTH_TEST));
-    GlCall(glEnable(GL_STENCIL_TEST));
-    GlCall(glEnable(GL_CULL_FACE));
-    GlCall(glEnable(GL_BLEND));
-    GlCall(glDepthFunc(GL_LEQUAL));
-    GlCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
-    GlCall(glBlendEquation(GL_FUNC_ADD));
+    GlCall(glDisable(GL_DEPTH_TEST));
+    GlCall(glDisable(GL_STENCIL_TEST));
+    GlCall(glDisable(GL_CULL_FACE));
+    GlCall(glDisable(GL_BLEND));
 }
 
 void GLRenderContext::Clear(uint32_t buffer)
