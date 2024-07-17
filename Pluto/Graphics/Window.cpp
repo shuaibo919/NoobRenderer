@@ -31,7 +31,6 @@ struct Window::WindowImpl
             log<Error>("Failed to initialize GLAD");
             return nullptr;
         }
-        glfwSetInputMode(wImpl->mWindow, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
         return wImpl;
     }
     static Window::WindowImpl *CreateVulkanWindow(unsigned int width, unsigned int height, const char *title)

@@ -139,6 +139,7 @@ void GLContext::OnImGui()
 
 void GLContext::Init()
 {
+    mRenderContext->Init();
 }
 
 std::shared_ptr<GraphicsContext> GLContext::Create()

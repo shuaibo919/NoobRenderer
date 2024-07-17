@@ -31,6 +31,7 @@ int main()
     RenderDevice::Create();
     auto ctx = GraphicsContext::Create(RenderAPI::OPENGL, RenderDevice::Get());
     auto window = Window::Create(ctx, 600, 600, "Test");
+    ctx->Init();
     ctx->SetMainSwapChain(window->GetSwapChain());
     auto vertexBuffer = VertexBuffer::Builder()
                             .SetVertexData(vertices, 3, sizeof(vertices))
@@ -50,7 +51,7 @@ int main()
                          .Create(ctx);
 
     auto pipeline = Pipeline::Builder()
-                        .SetClearColor(0.0f, 0.0f, 0.0f, 1.0f)
+                        .SetClearColor(0.2f, 0.2f, 0.2f, 1.0f)
                         .SetDepthOptions(false, false)
                         .SetShader(shader)
                         .SetDrawType(DrawType::Triangle)
@@ -86,19 +87,22 @@ int main()
 
     while (!window->ShouldClose())
     {
-        window->PollEvents();
         {
             cmdBuffer->BeginRecording();
             cmdBuffer->BindPipeline(pipeline);
             rctx->BindDescriptorSet(pipeline, cmdBuffer, 0, descriptorSet);
             vertexBuffer->Bind(cmdBuffer, pipeline, 0);
-            glDrawArrays(GL_TRIANGLES, 0, 3);
+            {
+                // next step:  rtx wrapper
+                glDrawArrays(GL_TRIANGLES, 0, 3);
+            }
             vertexBuffer->Unbind();
 
             pipeline->End(cmdBuffer);
 
             cmdBuffer->EndRecording();
         }
+        window->PollEvents();
         window->SwapBuffers();
     }
     window->Terminate();
