@@ -10,6 +10,22 @@ namespace pluto
         class GLRenderContext : public RenderContext
         {
         public:
+            struct State
+            {
+                /* Depth Setting */
+                bool EnableDepthTest{false};
+                bool EnableDepthWrite{false};
+                /* Cull Setting */
+                bool EnableCull{false};
+                CullMode CtxCullMode{CullMode::Back};
+                /* Blend Mode */
+                bool EnableBlend{false};
+                BlendMode CtxBlendMode{BlendMode::None};
+                /* Stencil Mode */
+                bool EnableStencil{false};
+                StencilType CtxStencilType{StencilType::None};
+            };
+            State state;
             GLRenderContext(GLContext *ctx);
             ~GLRenderContext();
             void Clear(uint32_t buffer);

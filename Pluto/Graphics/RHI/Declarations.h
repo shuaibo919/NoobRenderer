@@ -199,7 +199,8 @@ namespace pluto
             Keep,
             Replace,
             Zero,
-            Always
+            Always,
+            None
         };
 
         enum class RenderMode : uint8_t

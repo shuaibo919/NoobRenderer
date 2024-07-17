@@ -88,6 +88,20 @@ namespace pluto
         }
     }
 
+    template <typename T, typename F1, typename F2>
+    static inline void update_state(T &state, T const &expected, F1 func, F2 eFunc) noexcept
+    {
+        if (state != expected) [[likely]]
+        {
+            state = expected;
+            func();
+        }
+        else
+        {
+            eFunc();
+        }
+    }
+
     /// @brief 子系统 虚函数:Init(),Update()
     class SubSystem : public std::enable_shared_from_this<SubSystem>
     {
