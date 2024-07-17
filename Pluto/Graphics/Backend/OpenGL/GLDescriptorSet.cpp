@@ -78,15 +78,15 @@ void GLDescriptorSet::SetTexture(const std::string &name, std::shared_ptr<Textur
 
 void GLDescriptorSet::SetUniform(const std::string &bufferName, const std::string &uniformName, void *data)
 {
-    auto itr = mUniformBuffers.find(bufferName);
-    if (itr != mUniformBuffers.end())
+    if (mUniformBuffers.find(bufferName) != mUniformBuffers.end())
     {
-        for (auto &member : itr->second.members)
+        auto &itr = mUniformBuffers[bufferName];
+        for (auto &member : itr.members)
         {
             if (member.name == uniformName)
             {
-                this->WrtieUboInfoData(itr->second, data, member.size, member.offset);
-                itr->second.updated = true;
+                this->WrtieUboInfoData(itr, data, member.size, member.offset);
+                itr.updated = true;
                 return;
             }
         }
@@ -95,15 +95,15 @@ void GLDescriptorSet::SetUniform(const std::string &bufferName, const std::strin
 
 void GLDescriptorSet::SetUniform(const std::string &bufferName, const std::string &uniformName, void *data, uint32_t size)
 {
-    auto itr = mUniformBuffers.find(bufferName);
-    if (itr != mUniformBuffers.end())
+    if (mUniformBuffers.find(bufferName) != mUniformBuffers.end())
     {
-        for (auto &member : itr->second.members)
+        auto &itr = mUniformBuffers[bufferName];
+        for (auto &member : itr.members)
         {
             if (member.name == uniformName)
             {
-                this->WrtieUboInfoData(itr->second, data, size, member.offset);
-                itr->second.updated = true;
+                this->WrtieUboInfoData(itr, data, size, member.offset);
+                itr.updated = true;
                 return;
             }
         }
@@ -112,11 +112,11 @@ void GLDescriptorSet::SetUniform(const std::string &bufferName, const std::strin
 
 void GLDescriptorSet::SetUniformBufferData(const std::string &bufferName, void *data)
 {
-    auto itr = mUniformBuffers.find(bufferName);
-    if (itr != mUniformBuffers.end())
+    if (mUniformBuffers.find(bufferName) != mUniformBuffers.end())
     {
-        this->WrtieUboInfoData(itr->second, data, itr->second.size, 0);
-        itr->second.updated = true;
+        auto &itr = mUniformBuffers[bufferName];
+        this->WrtieUboInfoData(itr, data, itr.size, 0);
+        itr.updated = true;
         return;
     }
 }

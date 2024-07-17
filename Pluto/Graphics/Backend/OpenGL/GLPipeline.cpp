@@ -123,7 +123,8 @@ void GLPipeline::Bind(std::shared_ptr<CommandBuffer> commandBuffer, uint32_t lay
     }
 
     mRenderPass->BeginRenderPass(commandBuffer, mProperties->clearColor, framebuffer, Graphics::Inline);
-    mProperties->shader->Bind();
+    if (mProperties->shader != nullptr)
+        mProperties->shader->Bind();
 
     if (mProperties->transparencyEnabled)
     {
@@ -149,8 +150,6 @@ void GLPipeline::Bind(std::shared_ptr<CommandBuffer> commandBuffer, uint32_t lay
     else
         glDisable(GL_BLEND);
 
-    glEnable(GL_CULL_FACE);
-
     switch (mProperties->cullMode)
     {
     case CullMode::Back:
@@ -165,9 +164,21 @@ void GLPipeline::Bind(std::shared_ptr<CommandBuffer> commandBuffer, uint32_t lay
     case CullMode::None:
         glDisable(GL_CULL_FACE);
         break;
+    default:
+        glEnable(GL_CULL_FACE);
+        break;
     }
 
     glFrontFace(GL_CCW);
+
+    if (mProperties->DepthTest)
+    {
+        glEnable(GL_DEPTH_TEST);
+    }
+    else
+    {
+        glDisable(GL_DEPTH_TEST);
+    }
 
     if (mProperties->lineWidth != 1.0f)
         glLineWidth(mProperties->lineWidth);

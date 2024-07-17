@@ -30,7 +30,7 @@ int main()
     RenderDevice::Init();
     RenderDevice::Create();
     auto ctx = GraphicsContext::Create(RenderAPI::OPENGL, RenderDevice::Get());
-    auto window = Window::Create(ctx, 300, 100, "Test");
+    auto window = Window::Create(ctx, 300, 600, "Test");
     ctx->SetMainSwapChain(window->GetSwapChain());
     // test logger
     if (window != nullptr)
@@ -41,9 +41,9 @@ int main()
     }
 
     auto vertexBuffer = VertexBuffer::Builder()
-                            .SetVertexData(vertices, 3)
+                            .SetVertexData(vertices, 3, sizeof(vertices))
                             .SetUsage(BufferUsage::Static)
-                            .SetAttribute(VertexAttributeType::Position, 0, ElementType::Float3, 3, 0)
+                            .SetAttribute(VertexAttributeType::Position, 0, ElementType::Float3, 0, 3 * sizeof(float))
                             .Create(ctx);
 
     auto cmdBuffer = CommandBuffer::Builder()
@@ -81,17 +81,18 @@ int main()
     model.data = glm::mat4(1.0f);
 
     UniformDataMat4 view;
-    view.name = "model";
+    view.name = "view";
     view.blockname = "UniformBufferObject";
     view.data = glm::mat4(1.0f);
 
     UniformDataMat4 projection;
-    projection.name = "model";
+    projection.name = "projection";
     projection.blockname = "UniformBufferObject";
     projection.data = glm::mat4(1.0f);
-    descriptorSet->SetUniform(model.name, model.blockname, glm::value_ptr<float>(model.data));
-    descriptorSet->SetUniform(view.name, view.blockname, glm::value_ptr<float>(view.data));
-    descriptorSet->SetUniform(projection.name, projection.blockname, glm::value_ptr<float>(projection.data));
+    descriptorSet->SetUniform(model.blockname, model.name, glm::value_ptr<float>(model.data));
+    descriptorSet->SetUniform(view.blockname, view.name, glm::value_ptr<float>(view.data));
+    descriptorSet->SetUniform(projection.blockname, projection.name, glm::value_ptr<float>(projection.data));
+    descriptorSet->Update();
 
     while (!window->ShouldClose())
     {
@@ -101,6 +102,12 @@ int main()
             cmdBuffer->BindPipeline(pipeline);
             pipeline->ClearRenderTargets(cmdBuffer);
             rctx->BindDescriptorSet(pipeline, cmdBuffer, 0, descriptorSet);
+
+            vertexBuffer->Bind(cmdBuffer, pipeline, 0);
+            glDisable(GL_DEPTH_TEST);
+            glDrawArrays(GL_TRIANGLES, 0, 3);
+            vertexBuffer->Unbind();
+
             pipeline->End(cmdBuffer);
 
             cmdBuffer->EndRecording();

@@ -16,6 +16,7 @@ namespace pluto
         public:
             void Bind(std::shared_ptr<CommandBuffer> commandBuffer, std::shared_ptr<Pipeline> pipeline, uint8_t binding = 0) override;
             void Unbind() override;
+            const uint32_t GetHandle() const { return mHandle; };
 
         private:
             uint32_t mHandle;

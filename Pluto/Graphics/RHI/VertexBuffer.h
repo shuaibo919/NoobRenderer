@@ -17,6 +17,7 @@ namespace pluto
             {
                 void *data{nullptr};
                 uint32_t count{0};
+                uint16_t vetexSize{0};
                 std::bitset<16> usedAttributes;
                 BufferUsage usage{BufferUsage::Static};
                 std::array<VertexAttribute, VertexAttribute::MAX_VERTEX_COUNT> attributes{};
@@ -24,13 +25,13 @@ namespace pluto
             struct Builder final : BuildBase<VertexBuffer::Properties, VertexBuffer>
             {
                 Builder() {}
-                VertexBuffer::Builder &SetVertexData(void *data, uint32_t count);
+                VertexBuffer::Builder &SetVertexData(void *data, uint32_t count, uint32_t totalSize);
                 VertexBuffer::Builder &SetUsage(BufferUsage usage);
                 VertexBuffer::Builder &SetAttribute(VertexAttributeType attribute,
                                                     uint8_t bufferIndex,
                                                     ElementType attributeType,
                                                     uint32_t byteOffset,
-                                                    uint8_t byteStride,
+                                                    uint16_t byteStride,
                                                     bool normalized = false);
 
                 VertexBuffer::Ptr Create(std::shared_ptr<GraphicsContext> &pContext);

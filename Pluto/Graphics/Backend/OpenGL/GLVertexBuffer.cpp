@@ -14,7 +14,7 @@ GLVertexBuffer::GLVertexBuffer(RenderContext *ctx, VertexBuffer::Properties *&&p
 {
     GlCall(glGenBuffers(1, &mHandle));
     GlCall(glBindBuffer(GL_ARRAY_BUFFER, mHandle));
-    GlCall(glBufferData(GL_ARRAY_BUFFER, mProperties->count, mProperties->data, GLUtilities::GetBufferUsage(mProperties->usage)));
+    GlCall(glBufferData(GL_ARRAY_BUFFER, mProperties->vetexSize, mProperties->data, GLUtilities::GetBufferUsage(mProperties->usage)));
     GlCall(glBindBuffer(GL_ARRAY_BUFFER, 0));
 }
 

@@ -1,5 +1,6 @@
 /* OpenGL Shader */
 #include "Graphics/Backend/OpenGL/GLShader.h"
+#include "Graphics/RHI/Shader.h"
 /* Usage */
 #include "Core/FileSystem.h"
 #include "Core/Utilities.h"
@@ -13,7 +14,7 @@ using namespace pluto::Graphics;
 uint32_t CompileAll(std::map<ShaderType, std::pair<std::string, std::string>> &sources);
 
 GLShader::GLShader(RenderContext *ctx, GLShader::Properties *&&pProperties)
-    : Shader(ctx, std::move(pProperties))
+    : Shader(ctx, std::move(pProperties)), mCompiled(false), mHandle(0)
 {
     if (!mProperties->filePath.empty())
     {
@@ -45,19 +46,19 @@ GLShader::~GLShader()
 
 void GLShader::Bind() const
 {
-    if (Shader::sCurrently != this)
+    if (this->sCurrently != this)
     {
         GlCall(glUseProgram(mHandle));
-        Shader::sCurrently = this;
+        this->sCurrently = const_cast<GLShader*>(this);
     }
 }
 
 void GLShader::Unbind() const
 {
-    if (Shader::sCurrently == this)
+    if (this->sCurrently == this)
     {
         GlCall(glUseProgram(0));
-        Shader::sCurrently = nullptr;
+        this->sCurrently = const_cast<GLShader*>(this);
     }
 }
 

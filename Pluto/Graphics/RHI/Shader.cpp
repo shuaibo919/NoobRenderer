@@ -49,6 +49,7 @@ void Shader::ReadReflectInfo(ShaderJson &info, ShaderType type)
         auto &descriptor = descriptorInfo.descriptors.emplace_back();
         descriptor.offset = 0;
         descriptor.ubo = nullptr;
+        descriptor.size = 0;
         descriptor.descType = DescriptorType::UniformBuffer;
         descriptor.name = uniform_buffer["name"].get<std::string>();
         descriptor.binding = uniform_buffer["binding"].get<uint32_t>();
@@ -57,6 +58,7 @@ void Shader::ReadReflectInfo(ShaderJson &info, ShaderType type)
         {
             auto &member = descriptor.mMembers.emplace_back();
             member.size = json_member["size"].get<uint32_t>();
+            descriptor.size += member.size;
             member.offset = json_member["offset"].get<uint32_t>();
             member.type = static_cast<ShaderDataType>(json_member["type"].get<uint8_t>());
             member.fullName = json_member["fullname"].get<std::string>();

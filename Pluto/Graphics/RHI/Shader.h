@@ -17,9 +17,6 @@ namespace pluto
         class Shader : public Asset, public RHIBase
         {
         public:
-            static const Shader *sCurrently;
-
-        public:
             using Ptr = std::shared_ptr<Shader>;
             struct Properties
             {
@@ -42,6 +39,9 @@ namespace pluto
 
         public:
             const Properties &GetProperties() const { return *mProperties; }
+
+        protected:
+            inline static Shader *sCurrently{nullptr};
 
         protected:
             void ReadReflectInfo(ShaderJson &info, ShaderType type);
