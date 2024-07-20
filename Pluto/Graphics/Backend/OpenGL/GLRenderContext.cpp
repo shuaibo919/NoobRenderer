@@ -13,6 +13,31 @@
 
 using namespace pluto::Graphics;
 
+namespace OpenGL
+{
+    void Enable(GLenum cap)
+    {
+        glEnable(cap);
+    }
+    void Disable(GLenum cap)
+    {
+        glDisable(cap);
+    }
+    void BlendFunction(GLenum sfactor, GLenum dfactor)
+    {
+        glBlendFunc(sfactor, dfactor);
+    }
+    void FrantFace(GLenum mode)
+    {
+        glFrontFace(mode);
+    }
+    void LineWidth(GLfloat width)
+    {
+        glLineWidth(width);
+    }
+    // todo:
+}
+
 GLRenderContext::GLRenderContext(GLContext *ctx)
     : mContext(ctx), RenderContext()
 {

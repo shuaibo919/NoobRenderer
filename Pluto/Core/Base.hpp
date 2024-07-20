@@ -17,6 +17,8 @@
 // Third
 #include "nlohmann/json.hpp"
 
+#define FuncWrapper(x) [&]() { x; }
+
 namespace pluto
 {
     template <typename T>
@@ -79,7 +81,7 @@ namespace pluto
     };
 
     template <typename T, typename F>
-    static inline void update_state(T &state, T const &expected, F func) noexcept
+    static inline void update_state(T &state, T const expected, F func) noexcept
     {
         if (state != expected) [[likely]]
         {
@@ -89,7 +91,7 @@ namespace pluto
     }
 
     template <typename T, typename F1, typename F2>
-    static inline void update_state(T &state, T const &expected, F1 func, F2 eFunc) noexcept
+    static inline void update_state(T &state, T const expected, F1 func, F2 eFunc) noexcept
     {
         if (state != expected) [[likely]]
         {

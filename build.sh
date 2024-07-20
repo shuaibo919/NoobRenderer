@@ -1,3 +1,2 @@
-cd build
-cmake ..
-cmake --build . -j32
+cmake -S . -B build
+cmake --build build -j32

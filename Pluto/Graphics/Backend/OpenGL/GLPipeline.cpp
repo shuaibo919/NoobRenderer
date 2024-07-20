@@ -126,59 +126,29 @@ void GLPipeline::Bind(std::shared_ptr<CommandBuffer> commandBuffer, uint32_t lay
     if (mProperties->shader != nullptr)
         mProperties->shader->Bind();
 
-    if (mProperties->transparencyEnabled)
-    {
-        glEnable(GL_BLEND);
-        glBlendEquation(GL_FUNC_ADD);
-        if (mProperties->blendMode == BlendMode::SrcAlphaOneMinusSrcAlpha)
-        {
-            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        }
-        else if (mProperties->blendMode == BlendMode::ZeroSrcColor)
-        {
-            glBlendFunc(GL_ZERO, GL_SRC_COLOR);
-        }
-        else if (mProperties->blendMode == BlendMode::OneZero)
-        {
-            glBlendFunc(GL_ONE, GL_ZERO);
-        }
-        else
-        {
-            glBlendFunc(GL_NONE, GL_NONE);
-        }
-    }
-    else
-        glDisable(GL_BLEND);
+    update_state(pRenderContext->state.EnableBlend, mProperties->transparencyEnabled,
+                 FuncWrapper(glEnable(GL_BLEND)), FuncWrapper(glDisable(GL_BLEND)));
 
-    switch (mProperties->cullMode)
+    if (pRenderContext->state.EnableBlend)
     {
-    case CullMode::Back:
-        glCullFace(GL_BACK);
-        break;
-    case CullMode::Front:
-        glCullFace(GL_FRONT);
-        break;
-    case CullMode::FrontAndBack:
-        glCullFace(GL_FRONT_AND_BACK);
-        break;
-    case CullMode::None:
-        glDisable(GL_CULL_FACE);
-        break;
-    default:
-        glEnable(GL_CULL_FACE);
-        break;
+        update_state(pRenderContext->state.CtxBlendMode, mProperties->blendMode, FuncWrapper(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)));
+        update_state(pRenderContext->state.CtxBlendMode, mProperties->blendMode, FuncWrapper(glBlendFunc(GL_ZERO, GL_SRC_COLOR)));
+        update_state(pRenderContext->state.CtxBlendMode, mProperties->blendMode, FuncWrapper(glBlendFunc(GL_ONE, GL_ZERO)));
+        update_state(pRenderContext->state.CtxBlendMode, mProperties->blendMode, FuncWrapper(glBlendFunc(GL_NONE, GL_NONE)));
     }
 
-    glFrontFace(GL_CCW);
+    update_state(pRenderContext->state.EnableCull, mProperties->cullMode != CullMode::None, FuncWrapper(glEnable(GL_CULL_FACE)), FuncWrapper(glDisable(GL_CULL_FACE)));
 
-    if (mProperties->DepthTest)
+    if (pRenderContext->state.EnableCull)
     {
-        glEnable(GL_DEPTH_TEST);
+        update_state(pRenderContext->state.CtxCullMode, mProperties->cullMode, FuncWrapper(glCullFace(GL_BACK)));
+        update_state(pRenderContext->state.CtxCullMode, mProperties->cullMode, FuncWrapper(glCullFace(GL_FRONT)));
+        update_state(pRenderContext->state.CtxCullMode, mProperties->cullMode, FuncWrapper(glCullFace(GL_FRONT_AND_BACK)));
     }
-    else
-    {
-        glDisable(GL_DEPTH_TEST);
-    }
+
+    update_state(pRenderContext->state.EnableDepthTest, mProperties->DepthTest, FuncWrapper(glEnable(GL_DEPTH_TEST)), FuncWrapper(glDisable(GL_DEPTH_TEST)));
+
+    // todo more states
 
     if (mProperties->lineWidth != 1.0f)
         glLineWidth(mProperties->lineWidth);

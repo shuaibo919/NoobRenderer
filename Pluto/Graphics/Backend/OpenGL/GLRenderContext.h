@@ -25,6 +25,7 @@ namespace pluto
                 bool EnableStencil{false};
                 StencilType CtxStencilType{StencilType::None};
             };
+
             State state;
             GLRenderContext(GLContext *ctx);
             ~GLRenderContext();

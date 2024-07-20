@@ -88,7 +88,8 @@ int main()
     while (!window->ShouldClose())
     {
         {
-            cmdBuffer->BeginRecording();
+
+            pipeline->Bind(cmdBuffer);
             cmdBuffer->BindPipeline(pipeline);
             rctx->BindDescriptorSet(pipeline, cmdBuffer, 0, descriptorSet);
             vertexBuffer->Bind(cmdBuffer, pipeline, 0);
@@ -99,8 +100,6 @@ int main()
             vertexBuffer->Unbind();
 
             pipeline->End(cmdBuffer);
-
-            cmdBuffer->EndRecording();
         }
         window->PollEvents();
         window->SwapBuffers();
