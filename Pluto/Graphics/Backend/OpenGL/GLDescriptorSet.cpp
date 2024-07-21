@@ -35,9 +35,11 @@ GLDescriptorSet::GLDescriptorSet(RenderContext *ctx, GLDescriptorSet::Properties
             mUniformBuffers.emplace(descriptor.name, info);
             if (!descriptor.name.empty())
             {
-                auto slot = descriptor.binding;
-                auto loc = glGetUniformBlockIndex(glshader->GetHandle(), descriptor.name.c_str());
+                unsigned int slot = descriptor.binding;
+                unsigned int loc = glGetUniformBlockIndex(glshader->GetHandle(), descriptor.name.c_str());
                 GlCall(glUniformBlockBinding(glshader->GetHandle(), loc, slot));
+                auto bufferHandle = std::static_pointer_cast<GLUniformBuffer>(descriptor.ubo)->GetHandle();
+                GlCall(glBindBufferRange(GL_UNIFORM_BUFFER, slot, bufferHandle, 0, descriptor.size));
             }
         }
     }
@@ -91,6 +93,7 @@ void GLDescriptorSet::SetUniform(const std::string &bufferName, const std::strin
             }
         }
     }
+    log<Error>("GLDescriptorSet::SetUniform: Buffer %s-%s not found", bufferName.c_str(), uniformName.c_str());
 }
 
 void GLDescriptorSet::SetUniform(const std::string &bufferName, const std::string &uniformName, void *data, uint32_t size)
@@ -160,26 +163,21 @@ void GLDescriptorSet::Bind(uint32_t offset)
                 glshader->SetUniform(descriptor.name, descriptor.binding);
             }
         }
-        else
-        {
-            auto ubo = std::static_pointer_cast<GLUniformBuffer>(descriptor.ubo);
+        // else
+        // {
+        //     auto ubo = std::static_pointer_cast<GLUniformBuffer>(descriptor.ubo);
+        //     if (ubo == nullptr)
+        //         break;
+        //     uint32_t size = ubo->GetSize();
+        //     if (ubo->GetDynamic())
+        //     {
+        //         size = ubo->GetDynamicSize();
+        //     }
 
-            if (ubo == nullptr)
-                break;
-
-            uint8_t *data = ubo->GetProperties().data;
-            uint32_t size = ubo->GetSize();
-            if (ubo->GetDynamic())
-            {
-                data = ubo->GetProperties().data + offset;
-                size = ubo->GetDynamicSize();
-            }
-
-            auto bufferHandle = ubo->GetHandle();
-            auto slot = descriptor.binding;
-            GlCall(glBindBufferBase(GL_UNIFORM_BUFFER, slot, bufferHandle));
-            // GlCall(glBindBufferRange(GL_UNIFORM_BUFFER, slot, bufferHandle, offset, size));
-        }
+        //     auto bufferHandle = ubo->GetHandle();
+        //     auto slot = descriptor.binding;
+        //     GlCall(glBindBufferRange(GL_UNIFORM_BUFFER, slot, bufferHandle, offset, size));
+        // }
     }
 }
 

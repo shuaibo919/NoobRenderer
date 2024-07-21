@@ -1,6 +1,7 @@
 /* OpenGL VertexBuffer */
 #include "Graphics/Backend/OpenGL/GLVertexBuffer.h"
 /* Usage */
+#include "Graphics/Backend/OpenGL/GLRenderContext.h"
 #include "Graphics/Backend/OpenGL/GLCommandBuffer.h"
 #include "Graphics/Backend/OpenGL/GLPipeline.h"
 /* Common */
@@ -25,6 +26,9 @@ GLVertexBuffer::~GLVertexBuffer()
 
 void GLVertexBuffer::Bind(std::shared_ptr<CommandBuffer> commandBuffer, std::shared_ptr<Pipeline> pipeline, uint8_t binding)
 {
+    auto pRenderContext = static_cast<GLRenderContext *>(mRenderContext);
+    pRenderContext->CurrentVertexHandle.handle = mHandle;
+    pRenderContext->CurrentVertexHandle.valid = true;
     GlCall(glBindBuffer(GL_ARRAY_BUFFER, mHandle));
 
     if (pipeline != nullptr)
@@ -33,5 +37,8 @@ void GLVertexBuffer::Bind(std::shared_ptr<CommandBuffer> commandBuffer, std::sha
 
 void GLVertexBuffer::Unbind()
 {
+    auto pRenderContext = static_cast<GLRenderContext *>(mRenderContext);
+    pRenderContext->CurrentVertexHandle.handle = 0;
+    pRenderContext->CurrentVertexHandle.valid = false;
     GlCall(glBindBuffer(GL_ARRAY_BUFFER, 0));
 }

@@ -26,7 +26,7 @@ namespace pluto
 
             virtual const std::string &GetTitle() const = 0;
             virtual void DrawIndexed(std::shared_ptr<CommandBuffer>, DrawType type, uint32_t count, uint32_t start) const = 0;
-            virtual void Draw(std::shared_ptr<CommandBuffer>, DrawType type, uint32_t count, DataType datayType, void *indices) const = 0;
+            virtual void Draw(std::shared_ptr<CommandBuffer>, DrawType type, uint32_t count) const = 0;
             virtual void Dispatch(std::shared_ptr<CommandBuffer>, uint32_t workGroupSizeX, uint32_t workGroupSizeY, uint32_t workGroupSizeZ) = 0;
             virtual void DrawSplashScreen(std::shared_ptr<Texture> texture) = 0;
 

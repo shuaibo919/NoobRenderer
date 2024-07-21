@@ -24,38 +24,38 @@ GLUniformBuffer::~GLUniformBuffer()
     GlCall(glDeleteBuffers(1, &mHandle));
 }
 
-void GLUniformBuffer::ReInit(uint32_t size, const void *data)
+void GLUniformBuffer::ReInit(uint32_t size, void *data)
 {
-    mProperties->data = (uint8_t *)data;
+    mProperties->data = (void *)data;
     mProperties->size = size;
     glBindBuffer(GL_UNIFORM_BUFFER, mHandle);
     glBufferData(GL_UNIFORM_BUFFER, mProperties->size, mProperties->data, GL_DYNAMIC_DRAW);
 }
 
-void GLUniformBuffer::SetData(uint32_t size, const void *data)
+void GLUniformBuffer::SetData(uint32_t size, void *data)
 {
-    mProperties->data = (uint8_t *)data;
+    mProperties->data = data;
     GLvoid *p = nullptr;
 
     glBindBuffer(GL_UNIFORM_BUFFER, mHandle);
 
     if (size != mProperties->size)
     {
-        p = glMapBuffer(GL_UNIFORM_BUFFER, GL_WRITE_ONLY);
         mProperties->size = size;
-
+        p = glMapBuffer(GL_UNIFORM_BUFFER, GL_WRITE_ONLY);
         memcpy(p, mProperties->data, mProperties->size);
         glUnmapBuffer(GL_UNIFORM_BUFFER);
     }
     else
     {
-        glBufferSubData(GL_UNIFORM_BUFFER, 0, mProperties->size, mProperties->data);
+        glBufferSubData(GL_UNIFORM_BUFFER, 0, mProperties->size, data);
     }
+    glBindBuffer(GL_UNIFORM_BUFFER, 0);
 }
 
-void GLUniformBuffer::SetDynamicData(uint32_t size, uint32_t typeSize, const void *data)
+void GLUniformBuffer::SetDynamicData(uint32_t size, uint32_t typeSize, void *data)
 {
-    mProperties->data = (uint8_t *)data;
+    mProperties->data = data;
     mProperties->size = size;
     mDynamic = true;
     mDynamicSize = typeSize;
@@ -76,6 +76,7 @@ void GLUniformBuffer::SetDynamicData(uint32_t size, uint32_t typeSize, const voi
     {
         glBufferSubData(GL_UNIFORM_BUFFER, 0, mProperties->size, mProperties->data);
     }
+    glBindBuffer(GL_UNIFORM_BUFFER, 0);
 }
 
 bool GLUniformBuffer::GetDynamic() const

@@ -16,20 +16,21 @@ namespace pluto
             using Ptr = std::shared_ptr<UniformBuffer>;
             struct Properties
             {
-                uint8_t *data;
+                void *data{nullptr};
                 uint32_t size;
             };
             struct Builder final : BuildBase<UniformBuffer::Properties, UniformBuffer>
             {
                 Builder() {}
+                UniformBuffer::Builder &SetSize(uint32_t size);
                 UniformBuffer::Ptr Create(std::shared_ptr<GraphicsContext> &pContext);
             };
             virtual ~UniformBuffer();
 
         public:
-            virtual void ReInit(uint32_t size, const void *data) = 0;
-            virtual void SetData(uint32_t size, const void *data) = 0;
-            virtual void SetDynamicData(uint32_t size, uint32_t typeSize, const void *data) = 0;
+            virtual void ReInit(uint32_t size, void *data) = 0;
+            virtual void SetData(uint32_t size, void *data) = 0;
+            virtual void SetDynamicData(uint32_t size, uint32_t typeSize, void *data) = 0;
 
         public:
             const Properties &GetProperties() const { return *mProperties; }

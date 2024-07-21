@@ -1,16 +1,14 @@
-#include "Graphics/RHI/GraphicsContext.h"
-#include "Graphics/RHI/RenderContext.h"
-#include "Graphics/RHI/RenderDevice.h"
-#include "Graphics/RHI/VertexBuffer.h"
 #include "Graphics/RHI/Pipeline.h"
 #include "Graphics/RHI/Texture.h"
-#include "Graphics/Backend/OpenGL/GLVertexBuffer.h"
-#include "Graphics/Window.h"
-#include "Graphics/RHI/Shader.h"
-#include "Graphics/Backend/OpenGL/GL.h"
-#include "Core/Log.hpp"
+#include "Graphics/RHI/RenderDevice.h"
+#include "Graphics/RHI/VertexBuffer.h"
 #include "Graphics/RHI/CommandBuffer.h"
 #include "Graphics/RHI/DescriptorSet.h"
+#include "Graphics/RHI/RenderContext.h"
+#include "Graphics/RHI/GraphicsContext.h"
+#include "Graphics/RHI/Shader.h"
+#include "Graphics/Window.h"
+#include "Core/Log.hpp"
 
 float vertices[] = {
     -0.5f, -0.5f, 0.0f,
@@ -23,6 +21,7 @@ struct UniformDataMat4
     std::string blockname;
     glm::mat4 data;
 };
+
 int main()
 {
     using namespace pluto;
@@ -40,7 +39,7 @@ int main()
                             .Create(ctx);
 
     auto shader = Shader::Builder()
-                      .SetFile("Asset/Shader/Test.shader.json")
+                      .SetFile("Asset/Shader/TestTriangle.shader.json")
                       .Create(ctx);
     auto colorTarget = Texture::Builder()
                            .SetBase(600, 600, 1, RHIFormat::R16G16B16A16Float)
@@ -64,7 +63,7 @@ int main()
                              .SetBindingLayout(shader, 0)
                              .Create(ctx);
 
-    auto rctx = ctx->GetRenderContext();
+    auto context = ctx->GetRenderContext();
 
     UniformDataMat4 model;
     model.name = "model";
@@ -77,12 +76,13 @@ int main()
     view.data = glm::mat4(1.0f);
 
     UniformDataMat4 projection;
-    projection.name = "projection";
+    projection.name = "proj";
     projection.blockname = "UniformBufferObject";
     projection.data = glm::mat4(1.0f);
-    descriptorSet->SetUniform(model.blockname, model.name, glm::value_ptr<float>(model.data));
-    descriptorSet->SetUniform(view.blockname, view.name, glm::value_ptr<float>(view.data));
-    descriptorSet->SetUniform(projection.blockname, projection.name, glm::value_ptr<float>(projection.data));
+
+    descriptorSet->SetUniform(projection.blockname, projection.name, &projection.data);
+    descriptorSet->SetUniform(model.blockname, model.name, &model.data);
+    descriptorSet->SetUniform(view.blockname, view.name, &view.data);
     descriptorSet->Update();
 
     while (!window->ShouldClose())
@@ -91,14 +91,10 @@ int main()
 
             pipeline->Bind(cmdBuffer);
             cmdBuffer->BindPipeline(pipeline);
-            rctx->BindDescriptorSet(pipeline, cmdBuffer, 0, descriptorSet);
+            context->BindDescriptorSet(pipeline, cmdBuffer, 0, descriptorSet);
             vertexBuffer->Bind(cmdBuffer, pipeline, 0);
-            {
-                // next step:  rtx wrapper
-                glDrawArrays(GL_TRIANGLES, 0, 3);
-            }
+            context->Draw(cmdBuffer, DrawType::Triangle, 3);
             vertexBuffer->Unbind();
-
             pipeline->End(cmdBuffer);
         }
         window->PollEvents();

@@ -16,9 +16,9 @@ namespace pluto
             ~GLUniformBuffer();
 
         public:
-            void ReInit(uint32_t size, const void *data) override;
-            void SetData(uint32_t size, const void *data) override;
-            void SetDynamicData(uint32_t size, uint32_t typeSize, const void *data) override;
+            void ReInit(uint32_t size, void *data) override;
+            void SetData(uint32_t size, void *data) override;
+            void SetDynamicData(uint32_t size, uint32_t typeSize, void *data) override;
 
             bool GetDynamic() const;
             uint32_t GetSize() const;

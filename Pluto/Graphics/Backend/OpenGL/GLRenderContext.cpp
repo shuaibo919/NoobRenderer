@@ -13,31 +13,6 @@
 
 using namespace pluto::Graphics;
 
-namespace OpenGL
-{
-    void Enable(GLenum cap)
-    {
-        glEnable(cap);
-    }
-    void Disable(GLenum cap)
-    {
-        glDisable(cap);
-    }
-    void BlendFunction(GLenum sfactor, GLenum dfactor)
-    {
-        glBlendFunc(sfactor, dfactor);
-    }
-    void FrantFace(GLenum mode)
-    {
-        glFrontFace(mode);
-    }
-    void LineWidth(GLfloat width)
-    {
-        glLineWidth(width);
-    }
-    // todo:
-}
-
 GLRenderContext::GLRenderContext(GLContext *ctx)
     : mContext(ctx), RenderContext()
 {
@@ -119,29 +94,17 @@ const std::string &GLRenderContext::GetTitle() const
 
 void GLRenderContext::DrawIndexed(std::shared_ptr<CommandBuffer>, DrawType type, uint32_t count, uint32_t start) const
 {
-    if (!mCurrentVertexHandle.valid)
-    {
-        // Todo
-    }
+    if (!CurrentVertexHandle.valid || !CurrentIndiceHandle.valid)
+        return;
 
-    if (!mCurrentIndiceHandle.valid)
-    {
-        // Todo
-    }
     GlCall(glDrawElements(GLUtilities::GetDrawType(type), count, GLUtilities::GetDataType(DataType::UnsignedInt), nullptr));
 }
 
-void GLRenderContext::Draw(std::shared_ptr<CommandBuffer>, DrawType type, uint32_t count, DataType datayType, void *indices) const
+void GLRenderContext::Draw(std::shared_ptr<CommandBuffer>, DrawType type, uint32_t count) const
 {
-    if (!mCurrentVertexHandle.valid)
-    {
-        // Todo
-    }
+    if (!CurrentVertexHandle.valid)
+        return;
 
-    if (!mCurrentIndiceHandle.valid)
-    {
-        // Todo
-    }
     GlCall(glDrawArrays(GLUtilities::GetDrawType(type), 0, count));
 }
 
@@ -149,7 +112,9 @@ void GLRenderContext::Dispatch(std::shared_ptr<CommandBuffer>, uint32_t workGrou
 {
 }
 
-void GLRenderContext::DrawSplashScreen(std::shared_ptr<Texture> texture) {}
+void GLRenderContext::DrawSplashScreen(std::shared_ptr<Texture> texture)
+{
+}
 
 uint32_t GLRenderContext::GetGPUCount() const
 {

@@ -32,17 +32,6 @@ namespace pluto
             struct UniformBufferInfo
             {
                 std::shared_ptr<UniformBuffer> ubo;
-
-
-
-
-
-
-
-
-
-
-
                 std::vector<BufferMemberInfo> members;
                 uint8_t *data{nullptr};
                 uint32_t size{0};

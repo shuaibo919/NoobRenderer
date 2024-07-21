@@ -44,7 +44,7 @@ namespace pluto
 
             const std::string &GetTitle() const override;
             void DrawIndexed(std::shared_ptr<CommandBuffer>, DrawType type, uint32_t count, uint32_t start) const override;
-            void Draw(std::shared_ptr<CommandBuffer>, DrawType type, uint32_t count, DataType datayType, void *indices) const override;
+            void Draw(std::shared_ptr<CommandBuffer>, DrawType type, uint32_t count) const override;
             void Dispatch(std::shared_ptr<CommandBuffer>, uint32_t workGroupSizeX, uint32_t workGroupSizeY, uint32_t workGroupSizeZ) override;
             void DrawSplashScreen(std::shared_ptr<Texture> texture) override;
             uint32_t GetGPUCount() const override;
@@ -53,14 +53,18 @@ namespace pluto
 
             std::shared_ptr<SwapChain> GetSwapChain() override;
 
-        private:
+        public:
+            /// @brief Because GLRenderContext is not exposed externally,
+            /// this part is made public for convenience in gl-backend use
             struct GLObject
             {
                 uint32_t handle;
                 bool valid{false};
             };
-            GLObject mCurrentVertexHandle;
-            GLObject mCurrentIndiceHandle;
+            GLObject CurrentVertexHandle;
+            GLObject CurrentIndiceHandle;
+
+        private:
             GLContext *mContext;
         };
     }

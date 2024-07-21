@@ -25,6 +25,7 @@ namespace pluto
                 DescriptorSet::Ptr Create(std::shared_ptr<GraphicsContext> &pContext);
             };
             virtual ~DescriptorSet();
+            const Properties &GetProperties() const { return *mProperties; }
 
             virtual void Update(std::shared_ptr<CommandBuffer> buffer = nullptr) = 0;
             virtual void SetTexture(const std::string &name, std::shared_ptr<Texture> texture, AttachmentType textureType = AttachmentType::Color, uint32_t mipIndex = 0) = 0;
