@@ -353,8 +353,8 @@ namespace pluto
 
         struct Descriptor
         {
-            std::shared_ptr<Texture> texture;
-            std::shared_ptr<UniformBuffer> ubo;
+            SharedPtr<Texture> texture;
+            SharedPtr<UniformBuffer> ubo;
 
             uint32_t offset;
             uint32_t size;

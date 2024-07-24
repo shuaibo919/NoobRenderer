@@ -36,7 +36,8 @@ Texture::Ptr GLSwapChain::GetCurrentImage()
 {
     return nullptr;
 }
-std::shared_ptr<Texture> GLSwapChain::GetImage(uint32_t index)
+
+pluto::SharedPtr<Texture> GLSwapChain::GetImage(uint32_t index)
 {
     return nullptr;
 };

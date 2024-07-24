@@ -20,14 +20,14 @@ namespace pluto
         public:
             inline uint32_t GetFramebuffer() const { return mHandle; }
 
-            void Bind() const;
-            void UnBind() const;
+            void Bind(const SharedPtr<CommandBuffer> &cmdbuffer) const;
+            void UnBind(const SharedPtr<CommandBuffer> &cmdbuffer) const;
             void Clear() {}
             unsigned int GetAttachmentPoint(Graphics::RHIFormat format);
-            void AddTextureAttachment(std::shared_ptr<Texture> &texture, uint32_t mipLevel = 0);
-            void AddCubeTextureAttachment(CubeFace face, std::shared_ptr<TextureCube> &texture, uint32_t mipLevel = 0);
-            void AddDepthAttachment(std::shared_ptr<Texture> &texture);
-            void AddTextureLayer(std::shared_ptr<Texture> &texture, int index);
+            void AddTextureAttachment(const SharedPtr<Texture> &texture, uint32_t mipLevel = 0);
+            void AddCubeTextureAttachment(CubeFace face, const SharedPtr<TextureCube> &texture, uint32_t mipLevel = 0);
+            void AddDepthAttachment(const SharedPtr<Texture> &texture);
+            void AddTextureLayer(const SharedPtr<Texture> &texture, int index);
 
         private:
             uint32_t mHandle;

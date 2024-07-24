@@ -10,27 +10,27 @@ namespace pluto
         class RenderContext
         {
         public:
-            using Ptr = std::shared_ptr<RenderContext>;
+            using Ptr = SharedPtr<RenderContext>;
             RenderContext() = default;
             virtual ~RenderContext() = default;
 
             virtual void Init() = 0;
             virtual void Begin() = 0;
             virtual void OnResize(uint32_t width, uint32_t height) = 0;
-            virtual void ClearRenderTarget(std::shared_ptr<Texture> texture, AttachmentType type, std::shared_ptr<CommandBuffer> commandBuffer, glm::vec4 clearColor) = 0;
+            virtual void ClearRenderTarget(const SharedPtr<Texture> &texture, AttachmentType type, const SharedPtr<CommandBuffer> &commandBuffer, glm::vec4 clearColor) = 0;
 
             virtual void Present() = 0;
-            virtual void Present(std::shared_ptr<CommandBuffer> commandBuffer) = 0;
-            virtual void BindDescriptorSet(std::shared_ptr<Pipeline> pipeline, std::shared_ptr<CommandBuffer> commandBuffer, uint32_t dynamicOffset, std::shared_ptr<DescriptorSet> descriptorSet) = 0;
-            virtual void BindDescriptorSets(std::shared_ptr<Pipeline> pipeline, std::shared_ptr<CommandBuffer> commandBuffer, uint32_t dynamicOffset, std::vector<std::shared_ptr<DescriptorSet>> descriptorSets) = 0;
+            virtual void Present(const SharedPtr<CommandBuffer> &commandBuffer) = 0;
+            virtual void BindDescriptorSet(const SharedPtr<Pipeline> &pipeline, const SharedPtr<CommandBuffer> &commandBuffer, uint32_t dynamicOffset, const SharedPtr<DescriptorSet> &descriptorSet) = 0;
+            virtual void BindDescriptorSets(const SharedPtr<Pipeline> &pipeline, const SharedPtr<CommandBuffer> &commandBuffer, uint32_t dynamicOffset, std::vector<SharedPtr<DescriptorSet>> &descriptorSets) = 0;
 
             virtual const std::string &GetTitle() const = 0;
-            virtual void DrawIndexed(std::shared_ptr<CommandBuffer>, DrawType type, uint32_t count, uint32_t start) const = 0;
-            virtual void Draw(std::shared_ptr<CommandBuffer>, DrawType type, uint32_t count) const = 0;
-            virtual void Dispatch(std::shared_ptr<CommandBuffer>, uint32_t workGroupSizeX, uint32_t workGroupSizeY, uint32_t workGroupSizeZ) = 0;
-            virtual void DrawSplashScreen(std::shared_ptr<Texture> texture) = 0;
+            virtual void DrawIndexed(const SharedPtr<CommandBuffer> &, DrawType type, uint32_t count, uint32_t start) const = 0;
+            virtual void Draw(const SharedPtr<CommandBuffer> &, DrawType type, uint32_t count) const = 0;
+            virtual void Dispatch(const SharedPtr<CommandBuffer> &, uint32_t workGroupSizeX, uint32_t workGroupSizeY, uint32_t workGroupSizeZ) = 0;
+            virtual void DrawSplashScreen(const SharedPtr<Texture> &texture) = 0;
 
-            virtual std::shared_ptr<SwapChain> GetSwapChain() = 0;
+            virtual SharedPtr<SwapChain> GetSwapChain() = 0;
 
             virtual uint32_t GetGPUCount() const { return 1; }
             virtual bool SupportsCompute() { return false; }

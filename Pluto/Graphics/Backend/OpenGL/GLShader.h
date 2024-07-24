@@ -33,7 +33,7 @@ namespace pluto
             void Bind() const override;
             void Unbind() const override;
 
-            bool IsCompiled();
+            bool IsCompiled() override;
             const uint32_t GetHandle() const { return mHandle; };
 
             void SetUniform(const std::string &name, bool value);

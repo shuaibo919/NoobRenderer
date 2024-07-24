@@ -12,7 +12,7 @@ namespace pluto
             friend class GraphicsContext;
 
         public:
-            using Ptr = std::shared_ptr<Texture>;
+            using Ptr = SharedPtr<Texture>;
             enum class Type
             {
                 Invalid,
@@ -44,10 +44,10 @@ namespace pluto
                 Texture::Builder &SetFilter(TextureFilter minFilter, TextureFilter magFilter);
                 Texture::Builder &SetWrap(TextureWrap wrap);
                 Texture::Builder &SetAdancedOptions(TextureFlags flag = TextureFlags::TextureCreateMips, bool srgb = true, bool mipmap = true, bool anisotropic = true);
-                Texture::Ptr Create(Texture::Type type, std::shared_ptr<GraphicsContext> &pContext);
-                Texture::Ptr Create(Texture::Properties &desc, std::shared_ptr<GraphicsContext> &pContext);
-                Texture::Ptr Create(Texture::Type type, const std::string &path, std::shared_ptr<GraphicsContext> &pContext);
-                Texture::Ptr Create(const std::string &path, Texture::Properties &desc, std::shared_ptr<GraphicsContext> &pContext);
+                Texture::Ptr Create(Texture::Type type, const SharedPtr<GraphicsContext> &pContext);
+                Texture::Ptr Create(Texture::Properties &desc, const SharedPtr<GraphicsContext> &pContext);
+                Texture::Ptr Create(Texture::Type type, const std::string &path, const SharedPtr<GraphicsContext> &pContext);
+                Texture::Ptr Create(const std::string &path, Texture::Properties &desc, const SharedPtr<GraphicsContext> &pContext);
             };
 
         public:

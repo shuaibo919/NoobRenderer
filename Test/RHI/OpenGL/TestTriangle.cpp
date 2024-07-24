@@ -29,7 +29,7 @@ int main()
     RenderDevice::Init();
     RenderDevice::Create();
     auto ctx = GraphicsContext::Create(RenderAPI::OPENGL, RenderDevice::Get());
-    auto window = Window::Create(ctx, 600, 600, "Test");
+    auto window = Window::Create(ctx, 300, 100, "Test");
     ctx->Init();
     ctx->SetMainSwapChain(window->GetSwapChain());
     auto vertexBuffer = VertexBuffer::Builder()
@@ -41,11 +41,13 @@ int main()
     auto shader = Shader::Builder()
                       .SetFile("Asset/Shader/TestTriangle.shader.json")
                       .Create(ctx);
+
     auto colorTarget = Texture::Builder()
-                           .SetBase(600, 600, 1, RHIFormat::R16G16B16A16Float)
+                           .SetBase(300, 100, 1, RHIFormat::R16G16B16A16Float)
                            .SetFilter(TextureFilter::Linear, TextureFilter::Linear)
                            .SetWrap(TextureWrap::ClampToedge)
                            .Create(Texture::Type::Texture2D, ctx);
+
     auto cmdBuffer = CommandBuffer::Builder()
                          .Create(ctx);
 
@@ -85,17 +87,18 @@ int main()
     descriptorSet->SetUniform(view.blockname, view.name, &view.data);
     descriptorSet->Update();
 
+    cmdBuffer->BeginRecording();
+    cmdBuffer->BindPipeline(pipeline);
+    context->BindDescriptorSet(pipeline, cmdBuffer, 0, descriptorSet);
+    vertexBuffer->Bind(cmdBuffer, pipeline, 0);
+    context->Draw(cmdBuffer, DrawType::Triangle, 3);
+    vertexBuffer->Unbind();
+    cmdBuffer->EndRecording();
+
     while (!window->ShouldClose())
     {
         {
-
-            pipeline->Bind(cmdBuffer);
-            cmdBuffer->BindPipeline(pipeline);
-            context->BindDescriptorSet(pipeline, cmdBuffer, 0, descriptorSet);
-            vertexBuffer->Bind(cmdBuffer, pipeline, 0);
-            context->Draw(cmdBuffer, DrawType::Triangle, 3);
-            vertexBuffer->Unbind();
-            pipeline->End(cmdBuffer);
+            cmdBuffer->Submit();
         }
         window->PollEvents();
         window->SwapBuffers();

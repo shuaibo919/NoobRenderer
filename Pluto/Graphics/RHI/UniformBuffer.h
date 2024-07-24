@@ -13,7 +13,7 @@ namespace pluto
 
         public:
             static const uint32_t Empty = 0;
-            using Ptr = std::shared_ptr<UniformBuffer>;
+            using Ptr = SharedPtr<UniformBuffer>;
             struct Properties
             {
                 void *data{nullptr};
@@ -23,7 +23,7 @@ namespace pluto
             {
                 Builder() {}
                 UniformBuffer::Builder &SetSize(uint32_t size);
-                UniformBuffer::Ptr Create(std::shared_ptr<GraphicsContext> &pContext);
+                UniformBuffer::Ptr Create(const SharedPtr<GraphicsContext> &pContext);
             };
             virtual ~UniformBuffer();
 

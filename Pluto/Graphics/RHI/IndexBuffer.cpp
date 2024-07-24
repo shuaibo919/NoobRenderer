@@ -16,7 +16,7 @@ IndexBuffer::Builder &IndexBuffer::Builder::SetUsage(BufferUsage usage)
     return *this;
 }
 
-IndexBuffer::Ptr IndexBuffer::Builder::Create(std::shared_ptr<GraphicsContext> &pContext)
+IndexBuffer::Ptr IndexBuffer::Builder::Create(const SharedPtr<GraphicsContext> &pContext)
 {
     return pContext->CreateIndexBuffer(std::move(mProperties));
 }

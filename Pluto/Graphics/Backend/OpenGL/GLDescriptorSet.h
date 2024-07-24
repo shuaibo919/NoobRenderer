@@ -17,21 +17,21 @@ namespace pluto
 
         public:
             void Bind(uint32_t offset = 0);
-            void Update(std::shared_ptr<CommandBuffer> buffer = nullptr) override;
-            void SetTexture(const std::string &name, std::shared_ptr<Texture> texture, AttachmentType textureType = AttachmentType::Color, uint32_t mipIndex = 0) override;
-            void SetBuffer(const std::string &name, std::shared_ptr<UniformBuffer> buffer) override;
-            std::shared_ptr<UniformBuffer> GetUniformBuffer(const std::string &name) override;
+            void Update(SharedPtr<CommandBuffer> buffer = nullptr) override;
+            void SetTexture(const std::string &name, const SharedPtr<Texture> &texture, AttachmentType textureType = AttachmentType::Color, uint32_t mipIndex = 0) override;
+            void SetBuffer(const std::string &name, const SharedPtr<UniformBuffer> &buffer) override;
+            SharedPtr<UniformBuffer> GetUniformBuffer(const std::string &name) override;
             void SetUniform(const std::string &bufferName, const std::string &uniformName, void *data) override;
             void SetUniform(const std::string &bufferName, const std::string &uniformName, void *data, uint32_t size) override;
             void SetUniformBufferData(const std::string &bufferName, void *data) override;
-            void TransitionImages(std::shared_ptr<CommandBuffer> commandBuffer = nullptr) {}
-            void SetUniformDynamic(const std::string &bufferName, uint32_t size) {}
-            Buffer *GetUniformBufferLocalData(const std::string &name) { return nullptr; }
+            void TransitionImages(SharedPtr<CommandBuffer> commandBuffer = nullptr) {}
+            void SetUniformDynamic(const std::string &bufferName, uint32_t size) override {}
+            Buffer *GetUniformBufferLocalData(const std::string &name) override { return nullptr; }
 
         public:
             struct UniformBufferInfo
             {
-                std::shared_ptr<UniformBuffer> ubo;
+                SharedPtr<UniformBuffer> ubo;
                 std::vector<BufferMemberInfo> members;
                 uint8_t *data{nullptr};
                 uint32_t size{0};

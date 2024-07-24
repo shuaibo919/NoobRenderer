@@ -4,12 +4,14 @@
 #include "Graphics/Backend/OpenGL/GLContext.h"
 #include "Graphics/Backend/OpenGL/GLShader.h"
 #include "Graphics/Backend/OpenGL/GLTexture.h"
+#include "Graphics/Backend/OpenGL/GLCommandCall.h"
 #include "Graphics/Backend/OpenGL/GLUniformBuffer.h"
 /* Common */
 #include "Graphics/Backend/OpenGL/GL.h"
 #include "Graphics/Backend/OpenGL/GLDebug.h"
 #include "Graphics/Backend/OpenGL/GLUtilities.h"
 
+using namespace pluto;
 using namespace pluto::Graphics;
 GLDescriptorSet::GLDescriptorSet(RenderContext *ctx, GLDescriptorSet::Properties *&&pProperties)
     : DescriptorSet(ctx, std::move(pProperties))
@@ -53,19 +55,26 @@ GLDescriptorSet::~GLDescriptorSet()
     }
 }
 
-void GLDescriptorSet::Update(std::shared_ptr<CommandBuffer> buffer)
+void GLDescriptorSet::Update(SharedPtr<CommandBuffer> buffer)
 {
     for (auto &bufferInfo : mUniformBuffers)
     {
-        if (bufferInfo.second.updated)
+        if (!bufferInfo.second.updated)
+            continue;
+
+        if (buffer == nullptr)
         {
             bufferInfo.second.ubo->SetData(bufferInfo.second.size, bufferInfo.second.data);
-            bufferInfo.second.updated = false;
         }
+        else
+        {
+            OpenGL::EmulateCmdRecording(buffer, GlCmdWrap(bufferInfo.second.ubo->SetData(bufferInfo.second.size, bufferInfo.second.data)));
+        }
+        bufferInfo.second.updated = false;
     }
 }
 
-void GLDescriptorSet::SetTexture(const std::string &name, std::shared_ptr<Texture> texture, AttachmentType textureType, uint32_t mipIndex)
+void GLDescriptorSet::SetTexture(const std::string &name, const SharedPtr<Texture> &texture, AttachmentType textureType, uint32_t mipIndex)
 {
     for (auto &descriptor : mProperties->descriptorInfo.descriptors)
     {
@@ -124,7 +133,7 @@ void GLDescriptorSet::SetUniformBufferData(const std::string &bufferName, void *
     }
 }
 
-void GLDescriptorSet::SetBuffer(const std::string &name, std::shared_ptr<UniformBuffer> buffer)
+void GLDescriptorSet::SetBuffer(const std::string &name, const SharedPtr<UniformBuffer> &buffer)
 {
     for (auto &descriptor : mProperties->descriptorInfo.descriptors)
     {
@@ -136,7 +145,7 @@ void GLDescriptorSet::SetBuffer(const std::string &name, std::shared_ptr<Uniform
     }
 }
 
-std::shared_ptr<UniformBuffer> GLDescriptorSet::GetUniformBuffer(const std::string &name)
+SharedPtr<UniformBuffer> GLDescriptorSet::GetUniformBuffer(const std::string &name)
 {
     for (auto &descriptor : mProperties->descriptorInfo.descriptors)
     {

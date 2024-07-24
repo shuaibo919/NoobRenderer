@@ -17,7 +17,7 @@ namespace pluto
         class Shader : public Asset, public RHIBase
         {
         public:
-            using Ptr = std::shared_ptr<Shader>;
+            using Ptr = SharedPtr<Shader>;
             struct Properties
             {
                 std::string name;
@@ -29,7 +29,7 @@ namespace pluto
             {
                 Builder() {}
                 Shader::Builder &SetFile(const std::string &filePath);
-                Shader::Ptr Create(std::shared_ptr<GraphicsContext> &pContext);
+                Shader::Ptr Create(const SharedPtr<GraphicsContext> &pContext);
             };
             virtual void Bind() const {};
             virtual void Unbind() const {};

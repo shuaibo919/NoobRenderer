@@ -47,13 +47,13 @@ struct Window::WindowImpl
     }
 };
 
-std::shared_ptr<Window> Window::Create(std::shared_ptr<pluto::Graphics::GraphicsContext> &graphicsContext,
-                                       unsigned int width, unsigned int height, const char *title)
+SharedPtr<Window> Window::Create(const SharedPtr<pluto::Graphics::GraphicsContext> &graphicsContext,
+                                 unsigned int width, unsigned int height, const char *title)
 {
     return std::make_shared<Window>(graphicsContext, width, height, title);
 }
 
-Window::Window(std::shared_ptr<pluto::Graphics::GraphicsContext> &graphicsContext, unsigned int width, unsigned int height, const char *title)
+Window::Window(const SharedPtr<pluto::Graphics::GraphicsContext> &graphicsContext, unsigned int width, unsigned int height, const char *title)
     : mGraphicsContext(graphicsContext), mWidth(width), mHeight(height), mTitle(title), mImpl(nullptr)
 {
     auto api = mGraphicsContext->GetRenderAPI();

@@ -14,7 +14,7 @@ SwapChain::Builder &SwapChain::Builder::SetWindow(Window *window)
     mProperties->window = window;
     return *this;
 }
-SwapChain::Ptr SwapChain::Builder::Create(std::shared_ptr<GraphicsContext> &pContext)
+SwapChain::Ptr SwapChain::Builder::Create(const SharedPtr<GraphicsContext> &pContext)
 {
     return pContext->CreateSwapChain(mProperties);
 }

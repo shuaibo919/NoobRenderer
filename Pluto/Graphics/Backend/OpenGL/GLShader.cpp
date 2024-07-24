@@ -49,7 +49,7 @@ void GLShader::Bind() const
     if (this->sCurrently != this)
     {
         GlCall(glUseProgram(mHandle));
-        this->sCurrently = const_cast<GLShader*>(this);
+        this->sCurrently = const_cast<GLShader *>(this);
     }
 }
 
@@ -58,7 +58,7 @@ void GLShader::Unbind() const
     if (this->sCurrently == this)
     {
         GlCall(glUseProgram(0));
-        this->sCurrently = const_cast<GLShader*>(this);
+        this->sCurrently = nullptr;
     }
 }
 

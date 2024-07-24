@@ -1,6 +1,7 @@
 /* OpenGL VertexBuffer */
 #include "Graphics/Backend/OpenGL/GLVertexBuffer.h"
 /* Usage */
+#include "Graphics/Backend/OpenGL/GLCommandCall.h"
 #include "Graphics/Backend/OpenGL/GLRenderContext.h"
 #include "Graphics/Backend/OpenGL/GLCommandBuffer.h"
 #include "Graphics/Backend/OpenGL/GLPipeline.h"
@@ -24,15 +25,18 @@ GLVertexBuffer::~GLVertexBuffer()
     GlCall(glDeleteBuffers(1, &mHandle));
 }
 
-void GLVertexBuffer::Bind(std::shared_ptr<CommandBuffer> commandBuffer, std::shared_ptr<Pipeline> pipeline, uint8_t binding)
+void GLVertexBuffer::Bind(const SharedPtr<CommandBuffer> &commandBuffer, const SharedPtr<Pipeline> &pipeline, uint8_t binding)
 {
     auto pRenderContext = static_cast<GLRenderContext *>(mRenderContext);
-    pRenderContext->CurrentVertexHandle.handle = mHandle;
+    OpenGL::EmulateCmdRecording(commandBuffer,
+                                GLCommandCall([&]()
+                                              {
+        pRenderContext->CurrentVertexHandle.handle = mHandle;
     pRenderContext->CurrentVertexHandle.valid = true;
     GlCall(glBindBuffer(GL_ARRAY_BUFFER, mHandle));
 
     if (pipeline != nullptr)
-        std::dynamic_pointer_cast<GLPipeline>(pipeline)->BindVertexArray(this->Get());
+        std::dynamic_pointer_cast<GLPipeline>(pipeline)->BindVertexArray(this->Get()); }));
 }
 
 void GLVertexBuffer::Unbind()

@@ -5,7 +5,7 @@
 
 using namespace pluto::Graphics;
 
-Pipeline::Builder &Pipeline::Builder::SetShader(std::shared_ptr<Shader> &pShader)
+Pipeline::Builder &Pipeline::Builder::SetShader(const SharedPtr<Shader> &pShader)
 {
     mProperties->shader = pShader;
     return *this;
@@ -50,14 +50,14 @@ Pipeline::Builder &Pipeline::Builder::SetDepthOptions(bool depthTest, bool depth
     return *this;
 }
 
-Pipeline::Builder &Pipeline::Builder::SetColorTarget(std::shared_ptr<Texture> &&pTexture, AttachmentType type)
+Pipeline::Builder &Pipeline::Builder::SetColorTarget(SharedPtr<Texture> &&pTexture, AttachmentType type)
 {
-    mProperties->colorTargets.push_back(std::forward<std::shared_ptr<Texture>>(pTexture));
+    mProperties->colorTargets.push_back(std::forward<SharedPtr<Texture>>(pTexture));
     mProperties->attachmentTypes.push_back(type);
     return *this;
 }
 
-Pipeline::Builder &Pipeline::Builder::SetResolveTarget(std::shared_ptr<Texture> &pTexture)
+Pipeline::Builder &Pipeline::Builder::SetResolveTarget(SharedPtr<Texture> &pTexture)
 {
     mProperties->resolveTexture = pTexture;
     return *this;
@@ -90,7 +90,7 @@ Pipeline::Builder &Pipeline::Builder::SetSamples(uint8_t samples)
     return *this;
 }
 
-Pipeline::Ptr Pipeline::Builder::Create(std::shared_ptr<GraphicsContext> &pContext)
+Pipeline::Ptr Pipeline::Builder::Create(const SharedPtr<GraphicsContext> &pContext)
 {
     return pContext->CreatePipeline(std::move(mProperties));
 }

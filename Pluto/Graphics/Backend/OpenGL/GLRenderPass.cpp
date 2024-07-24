@@ -2,6 +2,7 @@
 #include "Graphics/Backend/OpenGL/GLRenderPass.h"
 /* Usage */
 #include "Graphics/Backend/OpenGL/GLFramebuffer.h"
+#include "Graphics/Backend/OpenGL/GLCommandCall.h"
 #include "Graphics/Backend/OpenGL/GLRenderContext.h"
 /* Common */
 #include "Graphics/Backend/OpenGL/GL.h"
@@ -18,25 +19,25 @@ GLRenderPass::~GLRenderPass()
 {
 }
 
-void GLRenderPass::BeginRenderPass(std::shared_ptr<CommandBuffer> &commandBuffer, float *clearColor, std::shared_ptr<Framebuffer> &frame, SubPassContents contents) const
+void GLRenderPass::BeginRenderPass(const SharedPtr<CommandBuffer> &commandBuffer, float (&clearColor)[4], const SharedPtr<Framebuffer> &frame, SubPassContents contents) const
 {
     if (frame != nullptr)
     {
-        std::dynamic_pointer_cast<GLFramebuffer>(frame)->Bind();
-        GlCall(glClearColor(clearColor[0], clearColor[1], clearColor[2], clearColor[3]));
+        std::dynamic_pointer_cast<GLFramebuffer>(frame)->Bind(commandBuffer);
+        OpenGL::EmulateCmdRecording(commandBuffer, GlCmd(glClearColor(clearColor[0], clearColor[1], clearColor[2], clearColor[3])));
     }
     else
     {
-        GlCall(glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0));
-        GlCall(glClearColor(clearColor[0], clearColor[1], clearColor[2], clearColor[3]));
+        OpenGL::EmulateCmdRecording(commandBuffer, GlCmd(glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0)));
+        OpenGL::EmulateCmdRecording(commandBuffer, GlCmd(glClearColor(clearColor[0], clearColor[1], clearColor[2], clearColor[3])));
     }
 
     if (mProperties->clear)
     {
-        static_cast<GLRenderContext *>(mRenderContext)->Clear(RendererBufferType::RenderBufferColor | RendererBufferType::RenderBufferDepth | RendererBufferType::RenderBufferStencil);
+        static_cast<GLRenderContext *>(mRenderContext)->Clear(commandBuffer, RendererBufferType::RenderBufferColor | RendererBufferType::RenderBufferDepth | RendererBufferType::RenderBufferStencil);
     }
 }
-void GLRenderPass::EndRenderPass(std::shared_ptr<CommandBuffer> &commandBuffer)
+void GLRenderPass::EndRenderPass(const SharedPtr<CommandBuffer> &commandBuffer)
 {
-    GlCall(glBindFramebuffer(GL_FRAMEBUFFER, 0));
+    OpenGL::EmulateCmdRecording(commandBuffer, GlCmd(glBindFramebuffer(GL_FRAMEBUFFER, 0)));
 }

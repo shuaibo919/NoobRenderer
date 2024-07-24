@@ -15,8 +15,8 @@ namespace pluto
             ~GLRenderPass();
 
         public:
-            void BeginRenderPass(std::shared_ptr<CommandBuffer> &commandBuffer, float *clearColor, std::shared_ptr<Framebuffer> &frame, SubPassContents contents) const override;
-            void EndRenderPass(std::shared_ptr<CommandBuffer> &commandBuffer) override;
+            void BeginRenderPass(const SharedPtr<CommandBuffer> &commandBuffer, float (&clearColor)[4], const SharedPtr<Framebuffer> &frame, SubPassContents contents) const override;
+            void EndRenderPass(const SharedPtr<CommandBuffer> &commandBuffer) override;
         };
 
     }

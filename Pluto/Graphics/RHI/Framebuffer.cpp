@@ -28,20 +28,20 @@ Framebuffer::Builder &Framebuffer::Builder::SetUseScreen(bool use)
     return *this;
 }
 
-Framebuffer::Builder &Framebuffer::Builder::SetRenderPass(std::shared_ptr<RenderPass> &&renderPass)
+Framebuffer::Builder &Framebuffer::Builder::SetRenderPass(SharedPtr<RenderPass> &&renderPass)
 {
-    mProperties->renderPass = std::forward<std::shared_ptr<RenderPass>>(renderPass);
+    mProperties->renderPass = std::forward<SharedPtr<RenderPass>>(renderPass);
     return *this;
 }
 
-Framebuffer::Builder &Framebuffer::Builder::SetAttachment(std::shared_ptr<Texture> &&texture, AttachmentType type)
+Framebuffer::Builder &Framebuffer::Builder::SetAttachment(SharedPtr<Texture> &&texture, AttachmentType type)
 {
-    mProperties->attachments.push_back(std::forward<std::shared_ptr<Texture>>(texture));
+    mProperties->attachments.push_back(std::forward<SharedPtr<Texture>>(texture));
     mProperties->attachmentTypes.push_back(type);
     return *this;
 }
 
-Framebuffer::Ptr Framebuffer::Builder::Create(std::shared_ptr<GraphicsContext> &pContext)
+Framebuffer::Ptr Framebuffer::Builder::Create(const SharedPtr<GraphicsContext> &pContext)
 {
     return pContext->CreateFrameBuffer(std::move(mProperties));
 }

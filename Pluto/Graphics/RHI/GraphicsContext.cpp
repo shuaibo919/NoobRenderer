@@ -9,7 +9,7 @@
 
 using namespace pluto::Graphics;
 
-std::shared_ptr<GraphicsContext> GraphicsContext::Create(RenderAPI api, RenderDevice const *pDevice)
+pluto::SharedPtr<GraphicsContext> GraphicsContext::Create(RenderAPI api, RenderDevice const *pDevice)
 {
     switch (api)
     {

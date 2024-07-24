@@ -17,6 +17,7 @@
 #include "Graphics/Backend/OpenGL/GL.h"
 #include "Graphics/Backend/OpenGL/GLDebug.h"
 
+using namespace pluto;
 using namespace pluto::Graphics;
 
 namespace pluto::Graphics::OpenGL
@@ -142,7 +143,7 @@ void GLContext::Init()
     mRenderContext->Init();
 }
 
-std::shared_ptr<GraphicsContext> GLContext::Create()
+SharedPtr<GraphicsContext> GLContext::Create()
 {
     return std::make_shared<GLContext>();
 }
@@ -177,27 +178,27 @@ Framebuffer::Ptr GLContext::CreateFrameBuffer(void *&&pPropeties)
     return OpenGL::CreateFrameBuffer(mRenderContext, std::forward<void *>(pPropeties));
 }
 
-std::shared_ptr<CommandBuffer> GLContext::CreateCommandBuffer(void *&&pPropeties)
+SharedPtr<CommandBuffer> GLContext::CreateCommandBuffer(void *&&pPropeties)
 {
     return OpenGL::CreateCommandBuffer(mRenderContext, std::forward<void *>(pPropeties));
 }
 
-std::shared_ptr<SwapChain> GLContext::CreateSwapChain(void *&&pPropeties)
+SharedPtr<SwapChain> GLContext::CreateSwapChain(void *&&pPropeties)
 {
     return OpenGL::CreateSwapChain(mRenderContext, std::forward<void *>(pPropeties));
 }
 
-std::shared_ptr<UniformBuffer> GLContext::CreateUniformBuffer(void *&&pPropeties)
+SharedPtr<UniformBuffer> GLContext::CreateUniformBuffer(void *&&pPropeties)
 {
     return OpenGL::CreateUniformBuffer(mRenderContext, std::forward<void *>(pPropeties));
 }
 
-std::shared_ptr<Pipeline> GLContext::CreatePipeline(void *&&pPropeties)
+SharedPtr<Pipeline> GLContext::CreatePipeline(void *&&pPropeties)
 {
     return OpenGL::CreatePipeline(mRenderContext, std::forward<void *>(pPropeties));
 }
 
-std::shared_ptr<DescriptorSet> GLContext::CreateDescriptorSet(void *&&pPropeties)
+SharedPtr<DescriptorSet> GLContext::CreateDescriptorSet(void *&&pPropeties)
 {
     return OpenGL::CreateDescriptorSet(mRenderContext, std::forward<void *>(pPropeties));
 }
