@@ -36,11 +36,6 @@ void GLRenderContext::Clear(uint32_t buffer)
     GlCall(glClear(GLUtilities::GetRendererBuffer(buffer)));
 }
 
-void GLRenderContext::Clear(const SharedPtr<CommandBuffer> &cmd, uint32_t buffer)
-{
-    OpenGL::EmulateCmdRecording(cmd, GlCmd(glClear(GLUtilities::GetRendererBuffer(buffer))));
-}
-
 void GLRenderContext::Begin()
 {
     GlCall(glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0));
@@ -89,7 +84,7 @@ void GLRenderContext::BindDescriptorSet(const SharedPtr<Pipeline> &pipeline, con
 {
     if (descriptorSet != nullptr)
     {
-        OpenGL::EmulateCmdRecording(commandBuffer, GlCmdWrap(std::static_pointer_cast<GLDescriptorSet>(descriptorSet)->Bind(dynamicOffset)));
+        std::static_pointer_cast<GLDescriptorSet>(descriptorSet)->Bind(dynamicOffset);
     }
 }
 
@@ -103,7 +98,7 @@ void GLRenderContext::DrawIndexed(const SharedPtr<CommandBuffer> &cmd, DrawType 
     if (!CurrentVertexHandle.valid || !CurrentIndiceHandle.valid)
         return;
 
-    OpenGL::EmulateCmdRecording(cmd, GlCmd(glDrawElements(GLUtilities::GetDrawType(type), count, GLUtilities::GetDataType(DataType::UnsignedInt), nullptr)));
+    glDrawElements(GLUtilities::GetDrawType(type), count, GLUtilities::GetDataType(DataType::UnsignedInt), nullptr);
 }
 
 void GLRenderContext::Draw(const SharedPtr<CommandBuffer> &cmd, DrawType type, uint32_t count) const
@@ -111,7 +106,7 @@ void GLRenderContext::Draw(const SharedPtr<CommandBuffer> &cmd, DrawType type, u
     if (!CurrentVertexHandle.valid)
         return;
 
-    OpenGL::EmulateCmdRecording(cmd, GlCmd(glDrawArrays(GLUtilities::GetDrawType(type), 0, count)));
+    glDrawArrays(GLUtilities::GetDrawType(type), 0, count);
 }
 
 void GLRenderContext::Dispatch(const SharedPtr<CommandBuffer> &, uint32_t workGroupSizeX, uint32_t workGroupSizeY, uint32_t workGroupSizeZ)

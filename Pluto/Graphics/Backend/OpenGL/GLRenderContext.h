@@ -29,8 +29,7 @@ namespace pluto
             State state;
             GLRenderContext(GLContext *ctx);
             ~GLRenderContext();
-            void Clear(uint32_t buffer);
-            void Clear(const SharedPtr<CommandBuffer> &cmd, uint32_t buffer);
+            static void Clear(uint32_t buffer);
 
         public:
             void Init() override;
@@ -60,10 +59,10 @@ namespace pluto
             struct GLObject
             {
                 uint32_t handle;
-                bool valid{false};
+                bool valid;
             };
-            GLObject CurrentVertexHandle;
-            GLObject CurrentIndiceHandle;
+            inline static GLObject CurrentVertexHandle{0, false};
+            inline static GLObject CurrentIndiceHandle{0, false};
 
         private:
             GLContext *mContext;

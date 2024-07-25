@@ -20,8 +20,8 @@ namespace pluto
         public:
             inline uint32_t GetFramebuffer() const { return mHandle; }
 
-            void Bind(const SharedPtr<CommandBuffer> &cmdbuffer) const;
-            void UnBind(const SharedPtr<CommandBuffer> &cmdbuffer) const;
+            void Bind();
+            void UnBind();
             void Clear() {}
             unsigned int GetAttachmentPoint(Graphics::RHIFormat format);
             void AddTextureAttachment(const SharedPtr<Texture> &texture, uint32_t mipLevel = 0);

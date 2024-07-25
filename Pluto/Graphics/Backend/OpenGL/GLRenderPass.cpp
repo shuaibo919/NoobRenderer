@@ -23,21 +23,21 @@ void GLRenderPass::BeginRenderPass(const SharedPtr<CommandBuffer> &commandBuffer
 {
     if (frame != nullptr)
     {
-        std::dynamic_pointer_cast<GLFramebuffer>(frame)->Bind(commandBuffer);
-        OpenGL::EmulateCmdRecording(commandBuffer, GlCmd(glClearColor(clearColor[0], clearColor[1], clearColor[2], clearColor[3])));
+        std::dynamic_pointer_cast<GLFramebuffer>(frame)->Bind();
+        glClearColor(clearColor[0], clearColor[1], clearColor[2], clearColor[3]);
     }
     else
     {
-        OpenGL::EmulateCmdRecording(commandBuffer, GlCmd(glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0)));
-        OpenGL::EmulateCmdRecording(commandBuffer, GlCmd(glClearColor(clearColor[0], clearColor[1], clearColor[2], clearColor[3])));
+        glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+        glClearColor(clearColor[0], clearColor[1], clearColor[2], clearColor[3]);
     }
 
     if (mProperties->clear)
     {
-        static_cast<GLRenderContext *>(mRenderContext)->Clear(commandBuffer, RendererBufferType::RenderBufferColor | RendererBufferType::RenderBufferDepth | RendererBufferType::RenderBufferStencil);
+        GLRenderContext::Clear(RendererBufferType::RenderBufferColor | RendererBufferType::RenderBufferDepth | RendererBufferType::RenderBufferStencil);
     }
 }
 void GLRenderPass::EndRenderPass(const SharedPtr<CommandBuffer> &commandBuffer)
 {
-    OpenGL::EmulateCmdRecording(commandBuffer, GlCmd(glBindFramebuffer(GL_FRAMEBUFFER, 0)));
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }

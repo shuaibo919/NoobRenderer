@@ -1,9 +1,9 @@
 #pragma once
 #include "Graphics/Backend/OpenGL/GLCommandBuffer.h"
 
-#define GlCmd(x) GLCommandCall([&]() { GlCall(x); })
+#define GlNativeCmdCtor(x) GLCommandCall([&]() { GlCall(x); })
 
-#define GlCmdWrap(x) GLCommandCall([&]() { x; })
+#define GlWrapCmdCtor(x) GLCommandCall([&]() { x; })
 
 namespace pluto
 {

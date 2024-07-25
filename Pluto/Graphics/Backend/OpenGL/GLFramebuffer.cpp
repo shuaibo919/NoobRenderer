@@ -57,20 +57,20 @@ GLFramebuffer::~GLFramebuffer()
     }
 }
 
-void GLFramebuffer::Bind(const SharedPtr<CommandBuffer> &cmdbuffer) const
+void GLFramebuffer::Bind()
 {
-    OpenGL::EmulateCmdRecording(cmdbuffer, GlCmd(glBindFramebuffer(GL_DRAW_FRAMEBUFFER, mProperties->screenUse ? 0 : mHandle)));
-    OpenGL::EmulateCmdRecording(cmdbuffer, GlCmd(glBindFramebuffer(GL_DRAW_FRAMEBUFFER, mProperties->screenUse ? 0 : mHandle)));
-    OpenGL::EmulateCmdRecording(cmdbuffer, GlCmd(glViewport(0, 0, mProperties->width, mProperties->height)));
+    glBindFramebuffer(GL_FRAMEBUFFER, mProperties->screenUse ? 0 : mHandle);
+    glViewport(0, 0, mProperties->width, mProperties->height);
 
     if (!mProperties->screenUse)
     {
-        OpenGL::EmulateCmdRecording(cmdbuffer, GlCmd(glDrawBuffers(static_cast<GLsizei>(mAttachmentChannels.size()), mAttachmentChannels.data())));
+        glDrawBuffers(static_cast<GLsizei>(mAttachmentChannels.size()), mAttachmentChannels.data());
     }
 }
-void GLFramebuffer::UnBind(const SharedPtr<CommandBuffer> &cmdbuffer) const
+
+void GLFramebuffer::UnBind()
 {
-    OpenGL::EmulateCmdRecording(cmdbuffer, GlCmd(glBindFramebuffer(GL_FRAMEBUFFER, 0)));
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 void GLFramebuffer::AddTextureAttachment(const SharedPtr<Texture> &texture, uint32_t mipLevel)

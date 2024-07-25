@@ -124,41 +124,37 @@ void GLPipeline::Bind(const SharedPtr<CommandBuffer> &commandBuffer, uint32_t la
     }
 
     mRenderPass->BeginRenderPass(commandBuffer, mProperties->clearColor, framebuffer, Graphics::Inline);
-    // if (mProperties->shader != nullptr)
-    // {
-    //     OpenGL::EmulateCmdRecording(commandBuffer, GlCmdWrap(mProperties->shader->Bind()));
-    // }
+    if (mProperties->shader != nullptr)
+    {
+        mProperties->shader->Bind();
+    }
 
-    // auto update_gl_state = [&]()
-    // {
-    //     update_state(pRenderContext->state.EnableBlend, mProperties->transparencyEnabled,
-    //                  FuncWrapper(glEnable(GL_BLEND)), FuncWrapper(glDisable(GL_BLEND)));
+    update_state(pRenderContext->state.EnableBlend, mProperties->transparencyEnabled,
+                 FuncWrapper(glEnable(GL_BLEND)), FuncWrapper(glDisable(GL_BLEND)));
 
-    //     if (pRenderContext->state.EnableBlend)
-    //     {
-    //         update_state(pRenderContext->state.CtxBlendMode, mProperties->blendMode, FuncWrapper(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)));
-    //         update_state(pRenderContext->state.CtxBlendMode, mProperties->blendMode, FuncWrapper(glBlendFunc(GL_ZERO, GL_SRC_COLOR)));
-    //         update_state(pRenderContext->state.CtxBlendMode, mProperties->blendMode, FuncWrapper(glBlendFunc(GL_ONE, GL_ZERO)));
-    //         update_state(pRenderContext->state.CtxBlendMode, mProperties->blendMode, FuncWrapper(glBlendFunc(GL_NONE, GL_NONE)));
-    //     }
+    if (pRenderContext->state.EnableBlend)
+    {
+        update_state(pRenderContext->state.CtxBlendMode, mProperties->blendMode, FuncWrapper(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)));
+        update_state(pRenderContext->state.CtxBlendMode, mProperties->blendMode, FuncWrapper(glBlendFunc(GL_ZERO, GL_SRC_COLOR)));
+        update_state(pRenderContext->state.CtxBlendMode, mProperties->blendMode, FuncWrapper(glBlendFunc(GL_ONE, GL_ZERO)));
+        update_state(pRenderContext->state.CtxBlendMode, mProperties->blendMode, FuncWrapper(glBlendFunc(GL_NONE, GL_NONE)));
+    }
 
-    //     update_state(pRenderContext->state.EnableCull, mProperties->cullMode != CullMode::None, FuncWrapper(glEnable(GL_CULL_FACE)), FuncWrapper(glDisable(GL_CULL_FACE)));
+    update_state(pRenderContext->state.EnableCull, mProperties->cullMode != CullMode::None, FuncWrapper(glEnable(GL_CULL_FACE)), FuncWrapper(glDisable(GL_CULL_FACE)));
 
-    //     if (pRenderContext->state.EnableCull)
-    //     {
-    //         update_state(pRenderContext->state.CtxCullMode, mProperties->cullMode, FuncWrapper(glCullFace(GL_BACK)));
-    //         update_state(pRenderContext->state.CtxCullMode, mProperties->cullMode, FuncWrapper(glCullFace(GL_FRONT)));
-    //         update_state(pRenderContext->state.CtxCullMode, mProperties->cullMode, FuncWrapper(glCullFace(GL_FRONT_AND_BACK)));
-    //     }
+    if (pRenderContext->state.EnableCull)
+    {
+        update_state(pRenderContext->state.CtxCullMode, mProperties->cullMode, FuncWrapper(glCullFace(GL_BACK)));
+        update_state(pRenderContext->state.CtxCullMode, mProperties->cullMode, FuncWrapper(glCullFace(GL_FRONT)));
+        update_state(pRenderContext->state.CtxCullMode, mProperties->cullMode, FuncWrapper(glCullFace(GL_FRONT_AND_BACK)));
+    }
 
-    //     update_state(pRenderContext->state.EnableDepthTest, mProperties->DepthTest, FuncWrapper(glEnable(GL_DEPTH_TEST)), FuncWrapper(glDisable(GL_DEPTH_TEST)));
+    update_state(pRenderContext->state.EnableDepthTest, mProperties->DepthTest, FuncWrapper(glEnable(GL_DEPTH_TEST)), FuncWrapper(glDisable(GL_DEPTH_TEST)));
 
-    //     // todo more states
+    // todo more states
 
-    //     if (mProperties->lineWidth != 1.0f)
-    //         glLineWidth(mProperties->lineWidth);
-    // };
-    // OpenGL::EmulateCmdRecording(commandBuffer, GlCmdWrap(update_gl_state()));
+    if (mProperties->lineWidth != 1.0f)
+        glLineWidth(mProperties->lineWidth);
 }
 void GLPipeline::End(const SharedPtr<CommandBuffer> &commandBuffer)
 {
@@ -169,10 +165,9 @@ void GLPipeline::End(const SharedPtr<CommandBuffer> &commandBuffer)
 }
 void GLPipeline::ClearRenderTargets(const SharedPtr<CommandBuffer> &commandBuffer)
 {
-    auto pRenderContext = static_cast<GLRenderContext *>(mRenderContext);
     for (auto &framebuffer : mFramebuffers)
     {
-        static_cast<GLFramebuffer *>(framebuffer.get())->Bind(commandBuffer);
-        pRenderContext->Clear(commandBuffer, RenderBufferColor | RenderBufferDepth | RenderBufferStencil);
+        static_cast<GLFramebuffer *>(framebuffer.get())->Bind();
+        GLRenderContext::Clear(RenderBufferColor | RenderBufferDepth | RenderBufferStencil);
     }
 }

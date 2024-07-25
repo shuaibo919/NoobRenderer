@@ -27,26 +27,17 @@ GLVertexBuffer::~GLVertexBuffer()
 
 void GLVertexBuffer::Bind(const SharedPtr<CommandBuffer> &commandBuffer, const SharedPtr<Pipeline> &pipeline, uint8_t binding)
 {
-    auto pRenderContext = static_cast<GLRenderContext *>(mRenderContext);
-    pRenderContext->CurrentVertexHandle.handle = mHandle;
-    pRenderContext->CurrentVertexHandle.valid = true;
-    auto testfunc = [&]()
-        {
-            //pRenderContext->CurrentVertexHandle.handle = mHandle;
-            //pRenderContext->CurrentVertexHandle.valid = true;
-            GlCall(glBindBuffer(GL_ARRAY_BUFFER, mHandle));
+    GLRenderContext::CurrentVertexHandle.handle = mHandle;
+    GLRenderContext::CurrentVertexHandle.valid = true;
+    GlCall(glBindBuffer(GL_ARRAY_BUFFER, mHandle));
 
-            if (pipeline != nullptr)
-                std::dynamic_pointer_cast<GLPipeline>(pipeline)->BindVertexArray(this->Get());
-        };
-
-    OpenGL::EmulateCmdRecording(commandBuffer,GLCommandCall(testfunc));
+    if (pipeline != nullptr)
+        std::dynamic_pointer_cast<GLPipeline>(pipeline)->BindVertexArray(this->Get());
 }
 
 void GLVertexBuffer::Unbind()
 {
-    auto pRenderContext = static_cast<GLRenderContext *>(mRenderContext);
-    pRenderContext->CurrentVertexHandle.handle = 0;
-    pRenderContext->CurrentVertexHandle.valid = false;
+    GLRenderContext::CurrentVertexHandle.handle = 0;
+    GLRenderContext::CurrentVertexHandle.valid = false;
     GlCall(glBindBuffer(GL_ARRAY_BUFFER, 0));
 }

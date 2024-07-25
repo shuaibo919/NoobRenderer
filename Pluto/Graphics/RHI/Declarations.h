@@ -13,6 +13,7 @@ namespace pluto
         class DescriptorSet;
         class Pipeline;
         class Shader;
+        class VertexBuffer;
         class UniformBuffer;
         class Framebuffer;
         class RenderPass;

@@ -29,7 +29,7 @@ int main()
     RenderDevice::Init();
     RenderDevice::Create();
     auto ctx = GraphicsContext::Create(RenderAPI::OPENGL, RenderDevice::Get());
-    auto window = Window::Create(ctx, 600, 600, "Test");
+    auto window = Window::Create(ctx, 200, 200, "Test");
     ctx->Init();
     ctx->SetMainSwapChain(window->GetSwapChain());
     auto vertexBuffer = VertexBuffer::Builder()
@@ -43,7 +43,7 @@ int main()
                       .Create(ctx);
 
     auto colorTarget = Texture::Builder()
-                           .SetBase(600, 600, 1, RHIFormat::R16G16B16A16Float)
+                           .SetBase(200, 200, 1, RHIFormat::R16G16B16A16Float)
                            .SetFilter(TextureFilter::Linear, TextureFilter::Linear)
                            .SetWrap(TextureWrap::ClampToedge)
                            .Create(Texture::Type::Texture2D, ctx);
@@ -89,10 +89,9 @@ int main()
 
     cmdBuffer->BeginRecording();
     cmdBuffer->BindPipeline(pipeline);
-    context->BindDescriptorSet(pipeline, cmdBuffer, 0, descriptorSet);
-    vertexBuffer->Bind(cmdBuffer, pipeline, 0);
-    context->Draw(cmdBuffer, DrawType::Triangle, 3);
-    vertexBuffer->Unbind();
+    cmdBuffer->BindDescriptorSet(pipeline, 0, descriptorSet);
+    cmdBuffer->BindVetexBuffer(pipeline, vertexBuffer);
+    cmdBuffer->Draw(DrawType::Triangle, 3);
     cmdBuffer->EndRecording();
 
     while (!window->ShouldClose())

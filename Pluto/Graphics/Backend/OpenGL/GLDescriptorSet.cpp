@@ -68,7 +68,7 @@ void GLDescriptorSet::Update(SharedPtr<CommandBuffer> buffer)
         }
         else
         {
-            OpenGL::EmulateCmdRecording(buffer, GlCmdWrap(bufferInfo.second.ubo->SetData(bufferInfo.second.size, bufferInfo.second.data)));
+            bufferInfo.second.ubo->SetData(bufferInfo.second.size, bufferInfo.second.data);
         }
         bufferInfo.second.updated = false;
     }
