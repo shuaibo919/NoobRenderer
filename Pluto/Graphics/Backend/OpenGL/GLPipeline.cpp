@@ -11,7 +11,7 @@
 #include "Graphics/Backend/OpenGL/GLFramebuffer.h"
 #include "Graphics/Backend/OpenGL/GLRenderPass.h"
 #include "Graphics/Backend/OpenGL/GLSwapChain.h"
-#include "Graphics/Backend/OpenGL/GLCommandCall.h"
+#include "Graphics/Backend/OpenGL/GLCommandBuffer.h"
 /* Common */
 #include "Graphics/Backend/OpenGL/GL.h"
 #include "Graphics/Backend/OpenGL/GLDebug.h"

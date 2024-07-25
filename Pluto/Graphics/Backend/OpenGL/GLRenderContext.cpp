@@ -5,7 +5,6 @@
 #include "Graphics/Backend/OpenGL/GLSwapChain.h"
 #include "Graphics/Backend/OpenGL/GLRenderPass.h"
 #include "Graphics/Backend/OpenGL/GLCommandBuffer.h"
-#include "Graphics/Backend/OpenGL/GLCommandCall.h"
 #include "Graphics/Backend/OpenGL/GLDescriptorSet.h"
 /* Common */
 #include "Graphics/Backend/OpenGL/GL.h"

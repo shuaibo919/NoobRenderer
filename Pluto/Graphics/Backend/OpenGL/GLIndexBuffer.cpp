@@ -1,7 +1,7 @@
 /* OpenGL IndexBuffer */
 #include "Graphics/Backend/OpenGL/GLIndexBuffer.h"
 /* Usage */
-#include "Graphics/Backend/OpenGL/GLCommandCall.h"
+#include "Graphics/Backend/OpenGL/GLCommandBuffer.h"
 /* Common */
 #include "Graphics/Backend/OpenGL/GL.h"
 #include "Graphics/Backend/OpenGL/GLDebug.h"

@@ -29,7 +29,7 @@ int main()
     RenderDevice::Init();
     RenderDevice::Create();
     auto ctx = GraphicsContext::Create(RenderAPI::OPENGL, RenderDevice::Get());
-    auto window = Window::Create(ctx, 200, 200, "Test");
+    auto window = Window::Create(ctx, 200, 50, "Test");
     ctx->Init();
     ctx->SetMainSwapChain(window->GetSwapChain());
     auto vertexBuffer = VertexBuffer::Builder()
@@ -43,7 +43,7 @@ int main()
                       .Create(ctx);
 
     auto colorTarget = Texture::Builder()
-                           .SetBase(200, 200, 1, RHIFormat::R16G16B16A16Float)
+                           .SetBase(200, 50, 1, RHIFormat::R16G16B16A16Float)
                            .SetFilter(TextureFilter::Linear, TextureFilter::Linear)
                            .SetWrap(TextureWrap::ClampToedge)
                            .Create(Texture::Type::Texture2D, ctx);

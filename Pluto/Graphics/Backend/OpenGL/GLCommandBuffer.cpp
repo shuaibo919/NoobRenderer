@@ -1,6 +1,6 @@
 /* OpenGL Command Buffer */
 #include "Graphics/Backend/OpenGL/GLCommandBuffer.h"
-#include "Graphics/Backend/OpenGL/GLCommandCall.h"
+#include "Graphics/Backend/OpenGL/GLCommandEmulated.h"
 /* Usage */
 #include "Graphics/Backend/OpenGL/GLContext.h"
 #include "Graphics/Backend/OpenGL/GLVertexBuffer.h"
@@ -29,7 +29,7 @@ void GLCommandBuffer::Submit()
     int i = 0;
     for (auto &cmd : mCmds)
     {
-        cmd.call();
+        cmd.Execute();
         // log<Info>("Executing command: {%d}", i++);
     }
 }
@@ -101,32 +101,28 @@ GLCommandBuffer::Ptr GLCommandBuffer::Get()
     return shared_from_this();
 }
 
-void GLCommandBuffer::EmulateRecording(GLCommandCall &&_call)
-{
-    if (!mRecording)
-        return;
-    mCmds.emplace_back(std::forward<GLCommandCall>(_call));
-}
-
 void GLCommandBuffer::Present(const SharedPtr<CommandBuffer> &commandBuffer)
 {
 }
 
 void GLCommandBuffer::BindVetexBuffer(const SharedPtr<Pipeline> &pipeline, const SharedPtr<VertexBuffer> &vbo, uint8_t binding)
 {
-    auto BindVetexBuffer = [&]()
-    {
-        vbo->Bind(nullptr, pipeline, binding);
-    };
-    this->EmulateRecording(GLCommandCall(std::move(BindVetexBuffer)));
+    auto params = new CmdBindVertexBufferData();
+    params->pointer = vbo.get();
+    params->pipeline = pipeline;
+    params->binding = binding;
+    this->mCmds.emplace_back(std::move(params), GLEmulatedCommandType::BindVertexBuffer);
 }
 
 void GLCommandBuffer::BindDescriptorSet(const SharedPtr<Pipeline> &pipeline, uint32_t dynamicOffset, const SharedPtr<DescriptorSet> &descriptorSet)
 {
-    if (descriptorSet != nullptr)
-    {
-        this->EmulateRecording(GlWrapCmdCtor(std::static_pointer_cast<GLDescriptorSet>(descriptorSet)->Bind(dynamicOffset)));
-    }
+    if (descriptorSet == nullptr)
+        return;
+
+    auto params = new CmdBindDescriptorSetData();
+    params->pointer = descriptorSet.get();
+    params->dynamicOffset = dynamicOffset;
+    this->mCmds.emplace_back(std::move(params), GLEmulatedCommandType::BindDescriptorSet);
 }
 
 void GLCommandBuffer::BindDescriptorSets(const SharedPtr<Pipeline> &pipeline, uint32_t dynamicOffset, std::vector<SharedPtr<DescriptorSet>> &descriptorSets)
@@ -139,44 +135,40 @@ void GLCommandBuffer::UpdateViewport(uint32_t width, uint32_t height, bool flipV
 
 void GLCommandBuffer::BindPipeline(const SharedPtr<Pipeline> &pipeline)
 {
-    auto BindPipeline = [&]()
-    {
-        if (pipeline != mBoundPipeline || mBoundPipelineLayer != 0)
-        {
-            mBoundPipelineLayer = 0;
-            pipeline->Bind(nullptr);
-            mBoundPipeline = pipeline;
-        }
-        if (pipeline == mBoundPipeline)
-        {
-            pipeline->ClearRenderTargets(nullptr);
-        }
-    };
-    this->EmulateRecording(GLCommandCall(std::move(BindPipeline)));
+    if (pipeline == mBoundPipeline && mBoundPipelineLayer == 0)
+        return;
+    mBoundPipeline = pipeline;
+    mBoundPipelineLayer = 0;
+    auto params = new CmdBindPipelineData();
+    params->pointer = pipeline.get();
+    params->layer = 0;
+    this->mCmds.emplace_back(std::move(params), GLEmulatedCommandType::BindPipeline);
 }
 
 void GLCommandBuffer::BindPipeline(const SharedPtr<Pipeline> &pipeline, uint32_t layer)
 {
-    auto BindPipeline = [&]()
-    {
-        if (pipeline != mBoundPipeline || mBoundPipelineLayer != layer)
-        {
-            pipeline->Bind(this->Get(), layer);
-            mBoundPipeline = pipeline;
-            mBoundPipelineLayer = layer;
-        }
-    };
-    this->EmulateRecording(GLCommandCall(std::move(BindPipeline)));
+    if (pipeline == mBoundPipeline && mBoundPipelineLayer == layer)
+        return;
+    mBoundPipeline = pipeline;
+    mBoundPipelineLayer = layer;
+    auto params = new CmdBindPipelineData();
+    params->pointer = pipeline.get();
+    params->layer = layer;
+    this->mCmds.emplace_back(std::move(params), GLEmulatedCommandType::BindPipeline);
 }
 
 void GLCommandBuffer::DrawIndexed(DrawType type, uint32_t count, uint32_t start)
 {
-    this->EmulateRecording(GlNativeCmdCtor(glDrawElements(GLUtilities::GetDrawType(type), count, GLUtilities::GetDataType(DataType::UnsignedInt), nullptr)));
+    // this->EmulateRecording(GlNativeCmdCtor(glDrawElements(GLUtilities::GetDrawType(type), count, GLUtilities::GetDataType(DataType::UnsignedInt), nullptr)));
 }
 
 void GLCommandBuffer::Draw(DrawType type, uint32_t count)
 {
-    this->EmulateRecording(GlNativeCmdCtor(glDrawArrays(GLUtilities::GetDrawType(type), 0, count)));
+    auto params = new CmdDrawData();
+    params->count = count;
+    params->type = GLUtilities::GetDrawType(type);
+    params->first = 0;
+    this->mCmds.emplace_back(std::move(params), GLEmulatedCommandType::Draw);
 }
 
 void GLCommandBuffer::Dispatch(uint32_t workGroupSizeX, uint32_t workGroupSizeY, uint32_t workGroupSizeZ)

@@ -1,7 +1,6 @@
 /* OpenGL VertexBuffer */
 #include "Graphics/Backend/OpenGL/GLVertexBuffer.h"
 /* Usage */
-#include "Graphics/Backend/OpenGL/GLCommandCall.h"
 #include "Graphics/Backend/OpenGL/GLRenderContext.h"
 #include "Graphics/Backend/OpenGL/GLCommandBuffer.h"
 #include "Graphics/Backend/OpenGL/GLPipeline.h"

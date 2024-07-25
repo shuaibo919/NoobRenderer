@@ -5,11 +5,7 @@ namespace pluto
 {
     namespace Graphics
     {
-        struct GLCommandCall
-        {
-            std::function<void(void)> call;
-            GLCommandCall(std::function<void(void)> &&_call) : call(std::forward<std::function<void(void)>>(_call)) {}
-        };
+        class GLEmulatedCommand;
         class GLCommandBuffer : public CommandBuffer
         {
         public:
@@ -42,13 +38,12 @@ namespace pluto
 
         public:
             GLCommandBuffer::Ptr Get();
-            void EmulateRecording(GLCommandCall &&_call);
 
         private:
             bool primary;
             bool mRecording;
             uint32_t mBoundPipelineLayer = 0;
-            std::vector<GLCommandCall> mCmds;
+            std::vector<GLEmulatedCommand> mCmds;
             SharedPtr<Pipeline> mBoundPipeline{nullptr};
         };
     }
