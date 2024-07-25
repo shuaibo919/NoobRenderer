@@ -25,11 +25,8 @@ namespace pluto
             void EndRecording() override;
             void ExecuteSecondary(const SharedPtr<CommandBuffer> &primaryCmdBuffer) override;
 
-            void BindPipeline(const SharedPtr<Pipeline> &pipeline) override;
-            void BindPipeline(const SharedPtr<Pipeline> &pipeline, uint32_t layer) override;
-            void UnBindPipeline() override;
-            void EndCurrentRenderPass() override {};
-            void UpdateViewport(uint32_t width, uint32_t height, bool flipViewport) override {};
+            /* move RenderContext cap to here */
+
 
         public:
             GLCommandBuffer::Ptr Get();
