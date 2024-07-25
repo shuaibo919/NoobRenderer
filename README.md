@@ -7,6 +7,8 @@ In this pluto branch, the first step will be to add RHI (Render Hardware Interfa
 - 2024.7.7: add RHI layer, refactor the entire project (RHI-OpenGL wrapper progress: 50%, RHI-Vulkan wrapper progress: 0%)
 - 2024.7.8: GL-Backend WIP
 - 2024.7.17: GL-Backend WIP (RHI-OpenGL wrapper progress: 75%)
+- 2024.7.26: 
+
 
 ## Reference
 - https://github.com/google/filament
