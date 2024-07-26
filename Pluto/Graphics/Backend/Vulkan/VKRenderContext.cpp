@@ -7,8 +7,6 @@
 #include "Graphics/Backend/Vulkan/VKCommandBuffer.h"
 #include "Graphics/Backend/Vulkan/VKDescriptorSet.h"
 /* Common */
-#include "Graphics/Backend/Vulkan/VK.h"
-#include "Graphics/Backend/Vulkan/VKDebug.h"
 #include "Graphics/Backend/Vulkan/VKUtilities.h"
 
 using namespace pluto::Graphics;

@@ -4,8 +4,6 @@
 #include "Graphics/Backend/Vulkan/VKFramebuffer.h"
 #include "Graphics/Backend/Vulkan/VKRenderContext.h"
 /* Common */
-#include "Graphics/Backend/Vulkan/VK.h"
-#include "Graphics/Backend/Vulkan/VKDebug.h"
 #include "Graphics/Backend/Vulkan/VKUtilities.h"
 
 using namespace pluto::Graphics;

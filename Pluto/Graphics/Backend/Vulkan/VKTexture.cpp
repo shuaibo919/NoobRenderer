@@ -1,8 +1,6 @@
 /* Vulkan Texture */
 #include "Graphics/Backend/Vulkan/VKTexture.h"
 /* Common */
-#include "Graphics/Backend/Vulkan/VK.h"
-#include "Graphics/Backend/Vulkan/VKDebug.h"
 #include "Graphics/Backend/Vulkan/VKUtilities.h"
 using namespace pluto::Graphics;
 

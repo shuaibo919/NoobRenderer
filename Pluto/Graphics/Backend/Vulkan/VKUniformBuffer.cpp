@@ -26,17 +26,3 @@ void VKUniformBuffer::SetData(uint32_t size, void *data)
 void VKUniformBuffer::SetDynamicData(uint32_t size, uint32_t typeSize, void *data)
 {
 }
-
-bool VKUniformBuffer::GetDynamic() const
-{
-    return false;
-}
-
-uint32_t VKUniformBuffer::GetSize() const
-{
-    return 0;
-}
-
-uint32_t VKUniformBuffer::GetDynamicSize() const
-{
-}

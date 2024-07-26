@@ -3,7 +3,6 @@
 /* Usage */
 
 /* Common */
-#include "Graphics/Backend/Vulkan/VK.h"
 #include "Graphics/Backend/Vulkan/VKUtilities.h"
 
 using namespace pluto::Graphics;
