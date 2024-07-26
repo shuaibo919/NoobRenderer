@@ -53,7 +53,8 @@ endif()
 FetchContent_Declare(
     glfw
     GIT_REPOSITORY https://github.com/glfw/glfw
-    Git_TAG "3.4"
+    GIT_TAG "b35641f4a3c62aa86a0b3c983d163bc0fe36026d" # 3.4
+    GIT_PROGRESS TRUE
 )
 
 FetchContent_GetProperties(glfw)
@@ -74,6 +75,7 @@ FetchContent_Declare(
     glm
     GIT_REPOSITORY https://github.com/icaven/glm
     GIT_TAG "dca38025fba63bb9284023e6de55f756b9e37cec"
+    GIT_PROGRESS TRUE
 )
 
 FetchContent_GetProperties(glm)
