@@ -10,7 +10,7 @@ namespace pluto
         class VKRenderContext : public RenderContext
         {
         public:
-            VKRenderContext(GLContext *ctx);
+            VKRenderContext(VKContext *ctx);
             ~VKRenderContext();
             static void Clear(uint32_t buffer);
 

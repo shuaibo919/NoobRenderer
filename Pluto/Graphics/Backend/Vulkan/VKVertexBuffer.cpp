@@ -8,19 +8,19 @@
 #include "Graphics/Backend/Vulkan/VKUtilities.h"
 
 using namespace pluto::Graphics;
-GLVertexBuffer::GLVertexBuffer(RenderContext *ctx, VertexBuffer::Properties *&&pProperties)
+VKVertexBuffer::VKVertexBuffer(RenderContext *ctx, VertexBuffer::Properties *&&pProperties)
     : VertexBuffer(ctx, std::move(pProperties))
 {
 }
 
-GLVertexBuffer::~GLVertexBuffer()
+VKVertexBuffer::~VKVertexBuffer()
 {
 }
 
-void GLVertexBuffer::Bind(const SharedPtr<CommandBuffer> &commandBuffer, const SharedPtr<Pipeline> &pipeline, uint8_t binding)
+void VKVertexBuffer::Bind(const SharedPtr<CommandBuffer> &commandBuffer, const SharedPtr<Pipeline> &pipeline, uint8_t binding)
 {
 }
 
-void GLVertexBuffer::Unbind()
+void VKVertexBuffer::Unbind()
 {
 }

@@ -21,6 +21,7 @@ namespace pluto
         public:
             void Bind() const override;
             void Unbind() const override;
+            bool IsCompiled() override;
         };
     }
 }

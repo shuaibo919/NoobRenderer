@@ -7,27 +7,19 @@
 #include "Graphics/Backend/Vulkan/VKUtilities.h"
 
 using namespace pluto::Graphics;
-GLFramebuffer::GLFramebuffer(RenderContext *ctx, GLFramebuffer::Properties *&&pProperties)
-    : Framebuffer(ctx, std::move(pProperties)), mColorAttachmentCount(0)
+VKFramebuffer::VKFramebuffer(RenderContext *ctx, VKFramebuffer::Properties *&&pProperties)
+    : Framebuffer(ctx, std::move(pProperties))
 {
 }
 
-GLFramebuffer::~GLFramebuffer()
+VKFramebuffer::~VKFramebuffer()
 {
 }
 
-void GLFramebuffer::Bind()
+void VKFramebuffer::Validate()
 {
 }
 
-void GLFramebuffer::UnBind()
-{
-}
-
-void GLFramebuffer::Validate()
-{
-}
-
-void GLFramebuffer::SetClearColor(const glm::vec4 &color)
+void VKFramebuffer::SetClearColor(const glm::vec4 &color)
 {
 }

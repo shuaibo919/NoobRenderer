@@ -1,20 +1,22 @@
 set(TARGET_NAME ${PLUTO_ENGINE_NAME})
 
 if(${BUILD_WITH_VULKAN_BACKEND})
+    message(STATUS "Build with Vulkan Backend")
     add_definitions(-DVULKAN_BACKEND)
-    file(GLOB_RECURSE PLUTO_GRAPHICS_BACKEND ${CMAKE_CURRENT_SOURCE_DIR}/Graphics/Backend/Vulkan/*.cpp)
+    file(GLOB PLUTO_GRAPHICS_BACKEND ${CMAKE_CURRENT_SOURCE_DIR}/Graphics/Backend/Vulkan/*.cpp)
 elseif()
+    message(STATUS "Build with OpenGL Backend")
     add_definitions(-DOPENGL_BACKEND)
-    file(GLOB_RECURSE PLUTO_GRAPHICS_BACKEND ${CMAKE_CURRENT_SOURCE_DIR}/Graphics/Backend/OpenGL/*.cpp)
+    file(GLOB PLUTO_GRAPHICS_BACKEND ${CMAKE_CURRENT_SOURCE_DIR}/Graphics/Backend/OpenGL/*.cpp)
 endif()
 
 # Core-Layer-Source
-file(GLOB_RECURSE PLUTO_CORE_SRC ${CMAKE_CURRENT_SOURCE_DIR}/Core/*.cpp)
-file(GLOB_RECURSE PLUTO_CORE_UTILITY_SRC ${CMAKE_CURRENT_SOURCE_DIR}/Core/Utilities/*.cpp)
+file(GLOB PLUTO_CORE_SRC ${CMAKE_CURRENT_SOURCE_DIR}/Core/*.cpp)
+file(GLOB PLUTO_CORE_UTILITY_SRC ${CMAKE_CURRENT_SOURCE_DIR}/Core/Utilities/*.cpp)
 
 # Graphics-Layer-Source
-file(GLOB_RECURSE PLUTO_GRAPHICS_SRC ${CMAKE_CURRENT_SOURCE_DIR}/Graphics/*.cpp)
-file(GLOB_RECURSE PLUTO_GRAPHICS_RHI_SRC ${CMAKE_CURRENT_SOURCE_DIR}/Graphics/RHI/*.cpp)
+file(GLOB PLUTO_GRAPHICS_SRC ${CMAKE_CURRENT_SOURCE_DIR}/Graphics/*.cpp)
+file(GLOB PLUTO_GRAPHICS_RHI_SRC ${CMAKE_CURRENT_SOURCE_DIR}/Graphics/RHI/*.cpp)
 
 # Graphics-Layer
 set(PLUTO_ENGINE_GRAPHICS Graphics)
@@ -45,9 +47,6 @@ elseif()
     target_include_directories(glad_lib PUBLIC ${PLUTO_ENGINE_THIRD_LIB_PATH}/glad/include)
     target_link_libraries(${TARGET_NAME} glad_lib)
 endif()
-
-add_library(glad_lib STATIC ${PLUTO_ENGINE_THIRD_LIB_PATH}/glad/src/glad.c)
-target_include_directories(glad_lib PUBLIC ${PLUTO_ENGINE_THIRD_LIB_PATH}/glad/include)
 
 # Third-Lib-Headers
 target_include_directories(${TARGET_NAME} PUBLIC ${PLUTO_ENGINE_THIRD_LIB_PATH}/glm)

@@ -16,6 +16,7 @@ VKSwapChain::VKSwapChain(RenderContext *ctx, VKSwapChain::Properties *&&pPropert
 VKSwapChain::~VKSwapChain()
 {
 }
+
 void VKSwapChain::OnResize(uint32_t width, uint32_t height)
 {
     mProperties->width = width;

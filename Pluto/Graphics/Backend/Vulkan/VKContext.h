@@ -20,13 +20,14 @@ namespace pluto
             SharedPtr<Texture> CreateTexture(uint16_t type, RenderContext *ctx, void *&&pPropeties);
             SharedPtr<Texture> CreateTexture(uint16_t type, const std::string &path, RenderContext *ctx, void *&&pPropeties);
         }
+        class RenderDevice;
         class VKContext : public GraphicsContext
         {
             friend class GraphicsContext;
 
         public:
-            GLContext();
-            ~GLContext();
+            VKContext();
+            ~VKContext();
 
             size_t GetMinUniformBufferOffsetAlignment() const override { return 256; }
             bool FlipImGUITexture() const override { return true; }
@@ -39,7 +40,7 @@ namespace pluto
             void Init() override;
 
         protected:
-            static SharedPtr<GraphicsContext> Create();
+            static SharedPtr<GraphicsContext> Create(RenderDevice const *device);
 
         protected:
             SharedPtr<Shader> CreateShader(void *&&pPropeties) override;

@@ -14,7 +14,7 @@ namespace pluto
 
         public:
             VKSwapChain(RenderContext *ctx, Properties *&&pProperties);
-            VKSwapChain();
+            ~VKSwapChain();
             void OnResize(uint32_t width, uint32_t height);
 
         public:

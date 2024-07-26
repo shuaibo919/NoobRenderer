@@ -10,7 +10,7 @@
 using namespace pluto::Graphics;
 
 VKShader::VKShader(RenderContext *ctx, VKShader::Properties *&&pProperties)
-    : Shader(ctx, std::move(pProperties)), mCompiled(false), mHandle(0)
+    : Shader(ctx, std::move(pProperties))
 {
 }
 
@@ -24,4 +24,9 @@ void VKShader::Bind() const
 
 void VKShader::Unbind() const
 {
+}
+
+bool VKShader::IsCompiled()
+{
+    return false;
 }

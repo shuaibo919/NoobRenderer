@@ -13,6 +13,7 @@
 #include "Graphics/Backend/Vulkan/VKCommandBuffer.h"
 #include "Graphics/Backend/Vulkan/VKUniformBuffer.h"
 #include "Graphics/Backend/Vulkan/VKDescriptorSet.h"
+#include "Graphics/Backend/Vulkan/VKRenderDevice.h"
 /* Common */
 
 using namespace pluto;
@@ -42,7 +43,7 @@ namespace pluto::Graphics::Vulkan
 
     Framebuffer::Ptr CreateFrameBuffer(RenderContext *ctx, void *&&pPropeties)
     {
-        return std::make_shared<VKFramebuffer>(ctx, std::move((GLFramebuffer::Properties *)pPropeties));
+        return std::make_shared<VKFramebuffer>(ctx, std::move((Framebuffer::Properties *)pPropeties));
     }
 
     CommandBuffer::Ptr CreateCommandBuffer(RenderContext *ctx, void *&&pPropeties)
@@ -123,7 +124,7 @@ namespace pluto::Graphics::Vulkan
 VKContext::VKContext()
 {
     mRenderContext = new VKRenderContext(this);
-    mRenderAPI = RenderAPI::Vulkan;
+    mRenderAPI = RenderAPI::VULKAN;
 }
 
 VKContext::~VKContext() = default;
@@ -141,7 +142,7 @@ void VKContext::Init()
     mRenderContext->Init();
 }
 
-SharedPtr<GraphicsContext> VKContext::Create()
+SharedPtr<GraphicsContext> VKContext::Create(RenderDevice const *device)
 {
     return std::make_shared<VKContext>();
 }

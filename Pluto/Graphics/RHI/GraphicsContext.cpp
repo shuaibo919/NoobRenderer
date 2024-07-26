@@ -15,7 +15,7 @@ pluto::SharedPtr<GraphicsContext> GraphicsContext::Create(RenderAPI api, RenderD
     {
 #ifdef VULKAN_BACKEND
     case RenderAPI::VULKAN:
-        return Graphics::VulkanContext::Create(pDevice);
+        return Graphics::VKContext::Create(pDevice);
         break;
 #endif
 

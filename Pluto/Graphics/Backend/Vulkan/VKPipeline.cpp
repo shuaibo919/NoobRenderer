@@ -5,32 +5,33 @@
 /* Common */
 #include "Graphics/Backend/Vulkan/VKUtilities.h"
 
+using namespace pluto;
 using namespace pluto::Graphics;
-GLPipeline::GLPipeline(RenderContext *ctx, GLPipeline::Properties *&&pProperties)
+VKPipeline::VKPipeline(RenderContext *ctx, VKPipeline::Properties *&&pProperties)
     : Pipeline(ctx, std::move(pProperties))
 {
 }
 
-GLPipeline::~GLPipeline()
+VKPipeline::~VKPipeline()
 {
 }
 
-void GLPipeline::BindVertexArray(SharedPtr<VertexBuffer> vbo)
+void VKPipeline::BindVertexArray(SharedPtr<VertexBuffer> vbo)
 {
 }
 
-void GLPipeline::Preparation()
+void VKPipeline::Preparation()
 {
 }
 
-void GLPipeline::Bind(const SharedPtr<CommandBuffer> &commandBuffer, uint32_t layer)
+void VKPipeline::Bind(const SharedPtr<CommandBuffer> &commandBuffer, uint32_t layer)
 {
 }
 
-void GLPipeline::End(const SharedPtr<CommandBuffer> &commandBuffer)
+void VKPipeline::End(const SharedPtr<CommandBuffer> &commandBuffer)
 {
 }
 
-void GLPipeline::ClearRenderTargets(const SharedPtr<CommandBuffer> &commandBuffer)
+void VKPipeline::ClearRenderTargets(const SharedPtr<CommandBuffer> &commandBuffer)
 {
 }
