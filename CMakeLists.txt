@@ -6,11 +6,11 @@ set(CMAKE_BUILD_TYPE "Debug")
 project(Pluto)
 
 # Build options
+option(GENERATE_TESTS ON)
+option(BUILD_WITH_VULKAN_BACKEND "option for debug" OFF)
+
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
-    SET(GENERATE_TESTS ON)
     add_definitions(-DPLUTO_DEBUG)
-else()
-    SET(GENERATE_TESTS OFF)
 endif()
 
 if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")

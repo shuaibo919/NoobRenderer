@@ -1,6 +1,10 @@
 set(TARGET_NAME ${PLUTO_ENGINE_NAME})
 
-add_definitions(-DOPENGL_BACKEND)
+if(${BUILD_WITH_VULKAN_BACKEND})
+    add_definitions(-DVULKAN_BACKEND)
+elseif()
+    add_definitions(-DOPENGL_BACKEND)
+endif()
 
 # Core-Layer-Source
 file(GLOB_RECURSE PLUTO_CORE_SRC ${CMAKE_CURRENT_SOURCE_DIR}/Core/*.cpp)
@@ -33,20 +37,30 @@ add_library(${TARGET_NAME} STATIC
 # Third-Lib-glfw
 add_subdirectory(Third/glfw)
 
-# Third-Lib-glad
+# Graphics Api
+if(${BUILD_WITH_VULKAN_BACKEND})
+    find_package(Vulkan REQUIRED)
+    target_link_libraries(${TARGET_NAME} Vulkan::Vulkan)
+elseif()
+    add_library(glad_lib STATIC ${PLUTO_ENGINE_THIRD_LIB_PATH}/glad/src/glad.c)
+    target_include_directories(glad_lib PUBLIC ${PLUTO_ENGINE_THIRD_LIB_PATH}/glad/include)
+    target_link_libraries(${TARGET_NAME} glad_lib)
+endif()
+
 add_library(glad_lib STATIC ${PLUTO_ENGINE_THIRD_LIB_PATH}/glad/src/glad.c)
 target_include_directories(glad_lib PUBLIC ${PLUTO_ENGINE_THIRD_LIB_PATH}/glad/include)
 
 # Third-Lib-Headers
 target_include_directories(${TARGET_NAME} PUBLIC ${PLUTO_ENGINE_THIRD_LIB_PATH}/glm)
 target_include_directories(${TARGET_NAME} PUBLIC ${PLUTO_ENGINE_THIRD_LIB_PATH}/json)
-target_include_directories(${TARGET_NAME} PUBLIC ${PLUTO_ENGINE_THIRD_LIB_PATH}/glad/include)
 target_include_directories(${TARGET_NAME} PUBLIC ${PLUTO_ENGINE_THIRD_LIB_PATH}/glfw/include)
 target_include_directories(${TARGET_NAME} PUBLIC ${PLUTO_ENGINE_THIRD_LIB_PATH}/stb_image/include)
 
 # Core-Layer-Headers
 target_include_directories(${TARGET_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
-target_link_libraries(${TARGET_NAME} glfw glad_lib)
+
+# Third lib linking
+target_link_libraries(${TARGET_NAME} glfw)
 
 # Shader Preprocess
 add_subdirectory(ShaderFiles)
