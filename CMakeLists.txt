@@ -7,7 +7,7 @@ project(Pluto)
 
 # Build options
 option(GENERATE_TESTS ON)
-option(BUILD_WITH_VULKAN_BACKEND "option for debug" OFF)
+option(BUILD_WITH_VULKAN_BACKEND "option for debug" ON)
 
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
     add_definitions(-DPLUTO_DEBUG)
