@@ -9,6 +9,7 @@
 #include "Graphics/Backend/OpenGL/GLRenderPass.h"
 #include "Graphics/Backend/OpenGL/GLIndexBuffer.h"
 #include "Graphics/Backend/OpenGL/GLFramebuffer.h"
+#include "Graphics/Backend/OpenGL/GLRenderDevice.h"
 #include "Graphics/Backend/OpenGL/GLVertexBuffer.h"
 #include "Graphics/Backend/OpenGL/GLCommandBuffer.h"
 #include "Graphics/Backend/OpenGL/GLUniformBuffer.h"
@@ -128,7 +129,11 @@ GLContext::GLContext()
     mRenderAPI = RenderAPI::OPENGL;
 }
 
-GLContext::~GLContext() = default;
+GLContext::~GLContext()
+{
+    if (mDevice != nullptr)
+        GLRenderDevice::Release(mDevice);
+}
 
 void GLContext::Present()
 {
@@ -136,6 +141,11 @@ void GLContext::Present()
 
 void GLContext::OnImGui()
 {
+}
+
+void GLContext::BindToDevice()
+{
+    mDevice = GLRenderDevice::Create(this->Get());
 }
 
 void GLContext::Init()

@@ -6,7 +6,7 @@ set(CMAKE_BUILD_TYPE "Debug")
 project(Pluto)
 
 # Build options
-option(GENERATE_TESTS ON)
+option(BUILD_WITH_TESTS "Generate Tests" ON)
 option(BUILD_WITH_VULKAN_BACKEND "Vulkan(ON) / OpenGL(OFF)" ON)
 
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
@@ -31,10 +31,7 @@ set(CMAKE_BEGIN_PATH ${CMAKE_CURRENT_SOURCE_DIR})
 
 add_subdirectory(Pluto)
 add_subdirectory(PlutoEditor)
-
-if(${GENERATE_TESTS})
-    add_subdirectory(Test)
-endif()
+add_subdirectory(Test)
 
 add_custom_target(copy_asset ALL
     COMMAND ${CMAKE_COMMAND} -E copy_directory

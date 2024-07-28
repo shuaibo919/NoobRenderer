@@ -27,10 +27,10 @@ int main()
     using namespace pluto;
     using namespace pluto::Graphics;
     RenderDevice::Init();
-    RenderDevice::Create();
-    auto ctx = GraphicsContext::Create(RenderAPI::OPENGL, RenderDevice::Get());
-    auto window = Window::Create(ctx, 200, 50, "Test");
+    auto ctx = GraphicsContext::Create(RenderAPI::OPENGL);
+    auto window = Window::Create(ctx, 600, 600, "Test");
     ctx->Init();
+    ctx->BindToDevice();
     ctx->SetMainSwapChain(window->GetSwapChain());
     auto vertexBuffer = VertexBuffer::Builder()
                             .SetVertexData(vertices, 3, sizeof(vertices))
@@ -43,7 +43,7 @@ int main()
                       .Create(ctx);
 
     auto colorTarget = Texture::Builder()
-                           .SetBase(200, 50, 1, RHIFormat::R16G16B16A16Float)
+                           .SetBase(600, 600, 1, RHIFormat::R16G16B16A16Float)
                            .SetFilter(TextureFilter::Linear, TextureFilter::Linear)
                            .SetWrap(TextureWrap::ClampToedge)
                            .Create(Texture::Type::Texture2D, ctx);
@@ -103,7 +103,6 @@ int main()
         window->SwapBuffers();
     }
     window->Terminate();
-    RenderDevice::Release();
 
     return 0;
 }

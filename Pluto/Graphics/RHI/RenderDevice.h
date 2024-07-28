@@ -15,15 +15,11 @@ namespace pluto
 
         public:
             static void Init();
-            static void Create();
-            static void Release();
-            static RenderDevice const *Get() { return sInstance; }
+            static RenderDevice *Create(const SharedPtr<GraphicsContext> &pContext);
+            static void Release(RenderDevice *pDevice);
 
         protected:
-            inline static RenderDevice *(*CreateImpl)(){nullptr};
-
-        private:
-            inline static RenderDevice *sInstance{nullptr};
+            inline static RenderDevice *(*CreateImpl)(const SharedPtr<GraphicsContext> &pContext){nullptr};
         };
     }
 }

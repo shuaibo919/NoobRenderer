@@ -6,6 +6,7 @@ using namespace pluto::Graphics;
 
 void *VKTexture2D::GetHandle() const
 {
+    return nullptr;
 }
 
 void VKTexture2D::Bind(uint32_t slot) const

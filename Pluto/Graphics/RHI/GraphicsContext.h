@@ -60,7 +60,9 @@ namespace pluto
             virtual void WaitIdle() const = 0;
             virtual void OnImGui() = 0;
 
-            static SharedPtr<GraphicsContext> Create(RenderAPI api, RenderDevice const *pDevice);
+            virtual void BindToDevice() = 0;
+
+            static SharedPtr<GraphicsContext> Create(RenderAPI api);
 
         protected:
             RenderAPI mRenderAPI{RenderAPI::None};

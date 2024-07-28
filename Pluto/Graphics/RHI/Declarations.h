@@ -374,5 +374,14 @@ namespace pluto
         {
             std::vector<Descriptor> descriptors;
         };
+
+        enum class PhysicalDeviceType
+        {
+            Discrete,
+            Integrated,
+            Virtual,
+            Cpu,
+            Unknown
+        };
     }
 }

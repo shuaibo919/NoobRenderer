@@ -5,6 +5,9 @@
 #include "Core/Log.hpp"
 /* Third */
 #include "GLFW/glfw3.h"
+#if defined(VULKAN_BACKEND)
+#define GLFW_INCLUDE_VULKAN
+#endif
 using namespace pluto;
 
 struct Window::WindowImpl
@@ -14,6 +17,7 @@ struct Window::WindowImpl
     static Window::WindowImpl *CreateOpenGLWindow(unsigned int width, unsigned int height, const char *title, int hint = 4, int value = 1)
     {
         auto wImpl = new Window::WindowImpl();
+#if defined(OPENGL_BACKEND)
         glfwInit();
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, hint);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, value);
@@ -31,12 +35,20 @@ struct Window::WindowImpl
             log<Error>("Failed to initialize GLAD");
             return nullptr;
         }
+#endif
         return wImpl;
     }
     static Window::WindowImpl *CreateVulkanWindow(unsigned int width, unsigned int height, const char *title)
     {
-        log<Error>("Not Implemented");
-        return nullptr;
+        auto wImpl = new Window::WindowImpl();
+#if defined(VULKAN_BACKEND)
+        glfwInit();
+
+        glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
+        glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
+        wImpl->mWindow = glfwCreateWindow(width, height, title, nullptr, nullptr);
+#endif
+        return wImpl;
     }
     ~WindowImpl()
     {
@@ -63,7 +75,7 @@ Window::Window(const SharedPtr<pluto::Graphics::GraphicsContext> &graphicsContex
         mImpl = Window::WindowImpl::CreateOpenGLWindow(mWidth, mHeight, mTitle.c_str());
         break;
     case Graphics::RenderAPI::VULKAN:
-        log<Error>("Not Implemented");
+        mImpl = Window::WindowImpl::CreateVulkanWindow(mWidth, mHeight, mTitle.c_str());
         break;
 
     default:

@@ -9,13 +9,13 @@
 
 using namespace pluto::Graphics;
 
-pluto::SharedPtr<GraphicsContext> GraphicsContext::Create(RenderAPI api, RenderDevice const *pDevice)
+pluto::SharedPtr<GraphicsContext> GraphicsContext::Create(RenderAPI api)
 {
     switch (api)
     {
 #ifdef VULKAN_BACKEND
     case RenderAPI::VULKAN:
-        return Graphics::VKContext::Create(pDevice);
+        return Graphics::VKContext::Create();
         break;
 #endif
 

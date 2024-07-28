@@ -1,5 +1,6 @@
 #pragma once
 #include "Graphics/RHI/GraphicsContext.h"
+#include "Graphics/Backend/Vulkan/Vk.h"
 
 namespace pluto
 {
@@ -20,10 +21,11 @@ namespace pluto
             SharedPtr<Texture> CreateTexture(uint16_t type, RenderContext *ctx, void *&&pPropeties);
             SharedPtr<Texture> CreateTexture(uint16_t type, const std::string &path, RenderContext *ctx, void *&&pPropeties);
         }
-        class RenderDevice;
-        class VKContext : public GraphicsContext
+        class VKRenderDevice;
+        class VKContext : public GraphicsContext, public std::enable_shared_from_this<VKContext>
         {
             friend class GraphicsContext;
+            friend class VKRenderDevice;
 
         public:
             VKContext();
@@ -39,8 +41,15 @@ namespace pluto
             void OnImGui() override;
             void Init() override;
 
+            void BindToDevice() override;
+
+            /* Context Methods For Vulkan */
+            VkInstance GetVKInstance() const { return mVkInstance; }
+            uint32_t GetVKVersion() const { return mVKVersion; }
+
         protected:
-            static SharedPtr<GraphicsContext> Create(RenderDevice const *device);
+            static SharedPtr<GraphicsContext> Create();
+            SharedPtr<GraphicsContext> Get() { return shared_from_this(); }
 
         protected:
             SharedPtr<Shader> CreateShader(void *&&pPropeties) override;
@@ -55,6 +64,22 @@ namespace pluto
             SharedPtr<DescriptorSet> CreateDescriptorSet(void *&&pPropeties) override;
             SharedPtr<Texture> CreateTexture(uint16_t type, void *&&pPropeties) override;
             SharedPtr<Texture> CreateTexture(uint16_t type, const std::string &path, void *&&pPropeties) override;
+
+        private:
+            uint32_t mVKVersion;
+            VkInstance mVkInstance;
+            VKRenderDevice *mRenderDevice;
+            VkDebugReportCallbackEXT mDebugCallback{VK_NULL_HANDLE};
+
+            std::vector<VkLayerProperties> mInstanceLayers;
+            std::vector<VkExtensionProperties> mInstanceExtensions;
+
+            std::vector<const char *> mInstanceLayerNames;
+            std::vector<const char *> mInstanceExtensionNames;
+
+            bool CheckValidationLayerSupport(std::vector<const char *> &validationLayers);
+            bool CheckExtensionSupport(std::vector<const char *> &extensions);
+            void SetupDebugMessenger();
         };
     }
 }

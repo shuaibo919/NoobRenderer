@@ -85,6 +85,22 @@ if(NOT glm_POPULATED)
     target_include_directories(${TARGET_NAME} PUBLIC ${glm_SOURCE_DIR}/)
 endif()
 
+# # Third-Dependencies: VMA
+if(${BUILD_WITH_VULKAN_BACKEND})
+    FetchContent_Declare(
+        vma
+        GIT_REPOSITORY https://github.com/GPUOpen-LibrariesAndSDKs/VulkanMemoryAllocator
+        GIT_TAG "009ecd192c1289c7529bff248a16cfe896254816" # 3.10
+        GIT_PROGRESS TRUE
+    )
+    FetchContent_GetProperties(vma)
+
+    if(NOT vma_POPULATED)
+        FetchContent_Populate(vma)
+        target_include_directories(${TARGET_NAME} PRIVATE ${vma_SOURCE_DIR}/include)
+    endif()
+endif()
+
 # # Third-Dependencies: Source Code or Header Integration
 target_include_directories(${TARGET_NAME} PUBLIC ${PLUTO_ENGINE_THIRD_LIB_PATH}/json)
 target_include_directories(${TARGET_NAME} PUBLIC ${PLUTO_ENGINE_THIRD_LIB_PATH}/stb_image/include)

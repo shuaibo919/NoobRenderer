@@ -20,7 +20,7 @@ namespace pluto
             SharedPtr<Texture> CreateTexture(uint16_t type, RenderContext *ctx, void *&&pPropeties);
             SharedPtr<Texture> CreateTexture(uint16_t type, const std::string &path, RenderContext *ctx, void *&&pPropeties);
         }
-        class GLContext : public GraphicsContext
+        class GLContext : public GraphicsContext, public std::enable_shared_from_this<GLContext>
         {
             friend class GraphicsContext;
 
@@ -38,10 +38,13 @@ namespace pluto
             void OnImGui() override;
             void Init() override;
 
+            void BindToDevice() override;
+
             static int LoadGladProc(void *proc);
 
         protected:
             static SharedPtr<GraphicsContext> Create();
+            SharedPtr<GraphicsContext> Get() { return shared_from_this(); };
 
         protected:
             SharedPtr<Shader> CreateShader(void *&&pPropeties) override;
@@ -56,6 +59,9 @@ namespace pluto
             SharedPtr<DescriptorSet> CreateDescriptorSet(void *&&pPropeties) override;
             SharedPtr<Texture> CreateTexture(uint16_t type, void *&&pPropeties) override;
             SharedPtr<Texture> CreateTexture(uint16_t type, const std::string &path, void *&&pPropeties) override;
+
+        private:
+            RenderDevice *mDevice;
         };
     }
 }
