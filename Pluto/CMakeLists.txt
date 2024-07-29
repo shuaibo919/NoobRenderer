@@ -97,7 +97,12 @@ if(${BUILD_WITH_VULKAN_BACKEND})
 
     if(NOT vma_POPULATED)
         FetchContent_Populate(vma)
-        target_include_directories(${TARGET_NAME} PRIVATE ${vma_SOURCE_DIR}/include)
+        add_subdirectory(${vma_SOURCE_DIR} ${vma_BINARY_DIR})
+        target_link_libraries(${TARGET_NAME} GPUOpen::VulkanMemoryAllocator)
+
+        if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+            target_compile_options(${TARGET_NAME} PRIVATE -Wnullability-completeness)
+        endif()
     endif()
 endif()
 
