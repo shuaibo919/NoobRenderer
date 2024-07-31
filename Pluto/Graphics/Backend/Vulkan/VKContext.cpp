@@ -19,7 +19,7 @@
 using namespace pluto;
 using namespace pluto::Graphics;
 
-const bool EnableValidationLayers = false;
+const bool EnableValidationLayers = PLUTO_DEBUG;
 #define VK_LAYER_LUNARG_STANDARD_VALIDATION_NAME "VK_LAYER_LUNARG_standard_validation"
 #define VK_LAYER_LUNARG_ASSISTENT_LAYER_NAME "VK_LAYER_LUNARG_assistant_layer"
 #define VK_LAYER_LUNARG_VALIDATION_NAME "VK_LAYER_KHRONOS_validation"
@@ -268,10 +268,6 @@ void VKContext::BindToDevice()
 void VKContext::Init()
 {
     bool enableValidation = EnableValidationLayers;
-
-    // {
-    //     enableValidation = true;
-    // }
 
     mInstanceLayerNames = Vulkan::GetRequiredLayers(enableValidation);
     mInstanceExtensionNames = Vulkan::GetRequiredExtensions(enableValidation);

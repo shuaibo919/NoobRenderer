@@ -316,6 +316,15 @@ VKRenderDevice::VKRenderDevice(const SharedPtr<GraphicsContext> &pContext)
         log<Info>("%s unsupported", VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
     }
 
+    // The Vulkan spec states: If the VK_KHR_portability_subset extension is included in pProperties of vkEnumerateDeviceExtensionProperties,
+    // ppEnabledExtensionNames must include "VK_KHR_portability_subset"
+    // (https://vulkan.lunarg.com/doc/view/1.3.283.0/mac/1.3-extensions/vkspec.html#VUID-VkDeviceCreateInfo-pProperties-04451)}
+    if (mPhysicalDevice->IsExtensionSupported("VK_KHR_portability_subset"))
+    {
+        deviceExtensions.push_back("VK_KHR_portability_subset");
+        log<Info>("VK_KHR_portability_subset extension loaded");
+    }
+
     VkPhysicalDeviceDescriptorIndexingFeaturesEXT indexingFeatures = {};
     indexingFeatures.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DESCRIPTOR_INDEXING_FEATURES_EXT;
     indexingFeatures.runtimeDescriptorArray = VK_TRUE;
