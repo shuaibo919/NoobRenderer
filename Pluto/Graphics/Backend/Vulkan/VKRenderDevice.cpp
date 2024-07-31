@@ -306,16 +306,6 @@ VKRenderDevice::VKRenderDevice(const SharedPtr<GraphicsContext> &pContext)
     std::vector<const char *> deviceExtensions = {
         VK_KHR_SWAPCHAIN_EXTENSION_NAME};
 
-    if (mPhysicalDevice->IsExtensionSupported(VK_EXT_DEBUG_UTILS_EXTENSION_NAME))
-    {
-        deviceExtensions.push_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
-        mEnableDebugMarkers = true;
-    }
-    else
-    {
-        log<Info>("%s unsupported", VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
-    }
-
     // The Vulkan spec states: If the VK_KHR_portability_subset extension is included in pProperties of vkEnumerateDeviceExtensionProperties,
     // ppEnabledExtensionNames must include "VK_KHR_portability_subset"
     // (https://vulkan.lunarg.com/doc/view/1.3.283.0/mac/1.3-extensions/vkspec.html#VUID-VkDeviceCreateInfo-pProperties-04451)}
