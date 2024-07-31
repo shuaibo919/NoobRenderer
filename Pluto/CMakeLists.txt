@@ -41,11 +41,11 @@ target_include_directories(${TARGET_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 # # Pluto Engine : Graphics Api
 if(${BUILD_WITH_VULKAN_BACKEND})
     find_package(Vulkan REQUIRED)
-    target_link_libraries(${TARGET_NAME} Vulkan::Vulkan)
+    target_link_libraries(${TARGET_NAME} PRIVATE Vulkan::Vulkan)
 elseif()
     add_library(glad_lib STATIC ${PLUTO_ENGINE_THIRD_LIB_PATH}/glad/src/glad.c)
-    target_include_directories(glad_lib PUBLIC ${PLUTO_ENGINE_THIRD_LIB_PATH}/glad/include)
-    target_link_libraries(${TARGET_NAME} glad_lib)
+    target_include_directories(glad_lib PRIVATE ${PLUTO_ENGINE_THIRD_LIB_PATH}/glad/include)
+    target_link_libraries(${TARGET_NAME} PRIVATE glad_lib)
 endif()
 
 # Dependencies ---------------------------------------
@@ -98,20 +98,20 @@ if(${BUILD_WITH_VULKAN_BACKEND})
     if(NOT vma_POPULATED)
         FetchContent_Populate(vma)
         add_subdirectory(${vma_SOURCE_DIR} ${vma_BINARY_DIR})
-        target_link_libraries(${TARGET_NAME} GPUOpen::VulkanMemoryAllocator)
+        target_link_libraries(${TARGET_NAME} PRIVATE GPUOpen::VulkanMemoryAllocator)
 
-        if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
-            target_compile_options(${TARGET_NAME} PRIVATE -Wnullability-completeness)
+        if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+            target_compile_options(${TARGET_NAME} PRIVATE -Wno-nullability-completeness)
         endif()
     endif()
 endif()
 
 # # Third-Dependencies: Source Code or Header Integration
 target_include_directories(${TARGET_NAME} PUBLIC ${PLUTO_ENGINE_THIRD_LIB_PATH}/json)
-target_include_directories(${TARGET_NAME} PUBLIC ${PLUTO_ENGINE_THIRD_LIB_PATH}/stb_image/include)
+target_include_directories(${TARGET_NAME} PRIVATE ${PLUTO_ENGINE_THIRD_LIB_PATH}/stb_image/include)
 
 # # Third-Dependencies: Lib Linking
-target_link_libraries(${TARGET_NAME} glfw)
+target_link_libraries(${TARGET_NAME} PRIVATE glfw)
 
 # Shader Preprocess ---------------------------------------
 add_subdirectory(ShaderFiles)
