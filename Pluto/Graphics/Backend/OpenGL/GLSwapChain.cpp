@@ -3,6 +3,7 @@
 /* Usage */
 #include "Graphics/Backend/OpenGL/GLTexture.h"
 #include "Graphics/Backend/OpenGL/GLContext.h"
+#include "Graphics/Backend/OpenGL/GLRenderDevice.h"
 #include "Graphics/Backend/OpenGL/GLCommandBuffer.h"
 /* Common */
 #include "Graphics/Backend/OpenGL/GL.h"
@@ -25,7 +26,7 @@ void GLSwapChain::OnResize(uint32_t width, uint32_t height)
     mProperties->height = height;
 }
 
-bool GLSwapChain::Init(bool vsync)
+bool GLSwapChain::Init(bool vsync, const pluto::SharedPtr<RenderDevice> &pDevice)
 {
     mCommand = std::dynamic_pointer_cast<GLCommandBuffer>(
         OpenGL::CreateCommandBuffer(this->mRenderContext, new GLCommandBuffer::Properties()));

@@ -5,8 +5,10 @@ namespace pluto
 {
     namespace Graphics
     {
-        class GLCommandBuffer;
+        class RenderDevice;
+
         class GLTexture2D;
+        class GLCommandBuffer;
 
         class GLSwapChain : public SwapChain
         {
@@ -18,7 +20,7 @@ namespace pluto
             void OnResize(uint32_t width, uint32_t height);
 
         public:
-            bool Init(bool vsync) override;
+            bool Init(bool vsync, const SharedPtr<RenderDevice> &pDevice = nullptr) override;
 
             SharedPtr<Texture> GetCurrentImage() override;
             SharedPtr<Texture> GetImage(uint32_t index) override;
