@@ -9,6 +9,8 @@ namespace pluto
         namespace VKUtilities
         {
             std::string GetErrorString(VkResult result);
+            VkSurfaceKHR CreatePlatformSurface();
+            VkPresentModeKHR ChoosePresentMode(std::vector<VkPresentModeKHR> availablePresentModes, bool vsync);
         }
     }
 }

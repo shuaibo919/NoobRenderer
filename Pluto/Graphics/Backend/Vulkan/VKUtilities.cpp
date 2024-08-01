@@ -1,7 +1,7 @@
 #include "Graphics/Backend/Vulkan/VKUtilities.h"
-using namespace pluto::Graphics::VKUtilities;
+#define VKUtils pluto::Graphics::VKUtilities
 
-std::string GetErrorString(VkResult result)
+std::string VKUtils::GetErrorString(VkResult result)
 {
     switch (result)
     {
@@ -77,4 +77,16 @@ std::string GetErrorString(VkResult result)
         break;
     }
     return "UNKNOWN ERROR";
+}
+
+VkSurfaceKHR VKUtils::CreatePlatformSurface()
+{
+    // TODO: Implement this
+    return VK_NULL_HANDLE;
+}
+
+VkPresentModeKHR VKUtils::ChoosePresentMode(std::vector<VkPresentModeKHR> availablePresentModes, bool vsync)
+{
+    // TODO: Implement this
+    return VK_PRESENT_MODE_FIFO_KHR;
 }

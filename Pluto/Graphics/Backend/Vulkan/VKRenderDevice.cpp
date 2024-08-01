@@ -393,7 +393,33 @@ uint32_t VKRenderDevice::GetGPUCount() const
 {
     return mPhysicalDevice->GetGPUCount();
 }
+
 VkPhysicalDevice VKRenderDevice::GetGPU() const
 {
     return mPhysicalDevice->GetHandle();
+}
+
+int32_t VKRenderDevice::GetGraphicsQueueFamilyIndex()
+{
+    return mPhysicalDevice->GetGraphicsQueueFamilyIndex();
+}
+
+VkPhysicalDeviceProperties VKRenderDevice::GetProperties() const
+{
+    return mPhysicalDevice->GetProperties();
+}
+
+bool VKRenderDevice::IsExtensionSupported(std::string extensionName) const
+{
+    return mPhysicalDevice->IsExtensionSupported(extensionName);
+}
+
+VkPhysicalDeviceMemoryProperties VKRenderDevice::GetMemoryProperties() const
+{
+    return mPhysicalDevice->GetMemoryProperties();
+}
+
+uint32_t VKRenderDevice::GetMemoryTypeIndex(uint32_t typeBits, VkMemoryPropertyFlags properties) const
+{
+    return mPhysicalDevice->GetMemoryTypeIndex(typeBits, properties);
 }

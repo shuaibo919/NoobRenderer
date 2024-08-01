@@ -8,6 +8,7 @@ namespace pluto
     class Window;
     namespace Graphics
     {
+        class RenderDevice;
         class SwapChain : public RHIBase
         {
         public:
@@ -33,7 +34,7 @@ namespace pluto
             const Properties &GetProperties() const { return *mProperties; }
 
         public:
-            virtual bool Init(bool vsync) = 0;
+            virtual bool Init(bool vsync, const SharedPtr<RenderDevice> &pDevice = nullptr) = 0;
             virtual SharedPtr<Texture> GetCurrentImage() = 0;
             virtual SharedPtr<Texture> GetImage(uint32_t index) = 0;
             virtual uint32_t GetCurrentBufferIndex() const = 0;

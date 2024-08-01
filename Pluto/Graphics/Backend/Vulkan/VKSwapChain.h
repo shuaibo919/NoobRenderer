@@ -1,14 +1,15 @@
 #pragma once
 #include "Graphics/RHI/SwapChain.h"
 
+#include "Graphics/Backend/Vulkan/Vk.h"
+
 namespace pluto
 {
     namespace Graphics
     {
-        class RenderDevice;
-
         class VKTexture2D;
         class VKSemaphore;
+        class VKCommandPool;
         class VKRenderDevice;
         class VKCommandBuffer;
         struct FrameData
