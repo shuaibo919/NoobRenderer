@@ -14,6 +14,7 @@ namespace pluto
 
         public:
             void Submit() override;
+            void Reset() override;
             bool Init(bool primary) override;
             void Unload() override;
             void BeginRecording() override;

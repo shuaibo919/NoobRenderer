@@ -35,6 +35,7 @@ namespace pluto
 
             virtual bool Flush() { return true; }
             virtual void Submit() = 0;
+            virtual void Reset() = 0;
 
         public:
             virtual bool Init(bool primary = true) = 0;

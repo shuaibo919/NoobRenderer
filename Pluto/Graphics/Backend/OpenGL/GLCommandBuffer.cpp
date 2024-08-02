@@ -34,6 +34,12 @@ void GLCommandBuffer::Submit()
     }
 }
 
+void GLCommandBuffer::Reset()
+{
+    mCmds.clear();
+    mProperties->state = CommandBufferState::Idle;
+}
+
 bool GLCommandBuffer::Init(bool primary)
 {
     return true;

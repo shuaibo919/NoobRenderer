@@ -38,13 +38,16 @@ namespace pluto
             size_t GetSwapChainBufferCount() const override;
             void SetVSync(bool vsync) override;
 
+        public:
+            void PrepareFrameData();
+
         private:
             SharedPtr<VKRenderDevice> mBasedDevice;
             FrameData mFrames[MaxFlightFrames];
 
             void FindImageFormatAndColourSpace();
 
-            std::vector<Texture2D *> mSwapChainBuffers;
+            std::vector<SharedPtr<Texture>> mSwapChainBuffers;
 
             uint32_t mCurrentBuffer = 0;
             uint32_t mAcquireImageIndex = 0;

@@ -123,13 +123,11 @@ bool VKSwapChain::Init(bool vsync, const SharedPtr<RenderDevice> &pDevice)
     {
         for (uint32_t i = 0; i < mSwapChainBufferCount; i++)
         {
-            // mFrames[i].MainCommandBuffer->re
-            // if (mFrames[i].MainCommandBuffer->GetState() == CommandBufferState::Submitted)
-            //     mFrames[i].MainCommandBuffer->Wait();
+            // todo: if cmdbuffer is not finished, wait for it to finish
 
-            // mFrames[i].MainCommandBuffer->Reset();
+            mFrames[i].MainCommandBuffer->Reset();
 
-            delete mSwapChainBuffers[i];
+            mSwapChainBuffers[i].reset();
             mFrames[i].ImageAcquireSemaphore = VK_NULL_HANDLE;
         }
 
@@ -139,47 +137,50 @@ bool VKSwapChain::Init(bool vsync, const SharedPtr<RenderDevice> &pDevice)
         mOldSwapChain = VK_NULL_HANDLE;
     }
 
-    // todo
-    //     uint32_t swapChainImageCount;
-    //     VK_CHECK_RESULT(vkGetSwapchainImagesKHR(mBasedDevice->GetDevice(), mSwapChain, &swapChainImageCount, VK_NULL_HANDLE));
+    uint32_t swapChainImageCount;
+    VK_CHECK_RESULT(vkGetSwapchainImagesKHR(mBasedDevice->GetDevice(), mSwapChain, &swapChainImageCount, VK_NULL_HANDLE));
 
-    //     VkImage *pSwapChainImages = new;
-    //     VK_CHECK_RESULT(vkGetSwapchainImagesKHR(mBasedDevice->GetDevice(), mSwapChain, &swapChainImageCount, pSwapChainImages));
+    std::vector<VkImage> swapChainImages(swapChainImageCount);
+    VK_CHECK_RESULT(vkGetSwapchainImagesKHR(mBasedDevice->GetDevice(), mSwapChain, &swapChainImageCount, swapChainImages.data()));
 
-    //     for (uint32_t i = 0; i < mSwapChainBufferCount; i++)
-    //     {
-    //         if (i >= swapChainImageCount)
-    //             break;
+    for (uint32_t i = 0; i < mSwapChainBufferCount; i++)
+    {
+        if (i >= swapChainImageCount)
+            break;
 
-    //         VkImageViewCreateInfo viewCI{};
-    //         viewCI.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
-    //         viewCI.format = mColourFormat;
-    // #ifdef VK_USE_PLATFORM_MACOS_MVK
-    //         viewCI.components = {VK_COMPONENT_SWIZZLE_IDENTITY, VK_COMPONENT_SWIZZLE_IDENTITY, VK_COMPONENT_SWIZZLE_IDENTITY, VK_COMPONENT_SWIZZLE_IDENTITY};
-    // #else
-    //         viewCI.components = {VK_COMPONENT_SWIZZLE_R, VK_COMPONENT_SWIZZLE_G, VK_COMPONENT_SWIZZLE_B, VK_COMPONENT_SWIZZLE_A};
-    // #endif
-    //         viewCI.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
-    //         viewCI.subresourceRange.baseMipLevel = 0;
-    //         viewCI.subresourceRange.levelCount = 1;
-    //         viewCI.subresourceRange.baseArrayLayer = 0;
-    //         viewCI.subresourceRange.layerCount = 1;
-    //         viewCI.viewType = VK_IMAGE_VIEW_TYPE_2D;
-    //         viewCI.flags = 0;
-    //         viewCI.image = pSwapChainImages[i];
+        VkImageViewCreateInfo viewInfo{};
+        viewInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
+        viewInfo.format = mColourFormat;
+#ifdef VK_USE_PLATFORM_MACOS_MVK
+        viewInfo.components = {VK_COMPONENT_SWIZZLE_IDENTITY, VK_COMPONENT_SWIZZLE_IDENTITY, VK_COMPONENT_SWIZZLE_IDENTITY, VK_COMPONENT_SWIZZLE_IDENTITY};
+#else
+        viewInfo.components = {VK_COMPONENT_SWIZZLE_R, VK_COMPONENT_SWIZZLE_G, VK_COMPONENT_SWIZZLE_B, VK_COMPONENT_SWIZZLE_A};
+#endif
+        viewInfo.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+        viewInfo.subresourceRange.baseMipLevel = 0;
+        viewInfo.subresourceRange.levelCount = 1;
+        viewInfo.subresourceRange.baseArrayLayer = 0;
+        viewInfo.subresourceRange.layerCount = 1;
+        viewInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
+        viewInfo.flags = 0;
+        viewInfo.image = swapChainImages[i];
 
-    //         VkImageView imageView;
-    //         VK_CHECK_RESULT(vkCreateImageView(mBasedDevice->GetDevice(), &viewCI, VK_NULL_HANDLE, &imageView));
+        VkImageView imageView;
+        VK_CHECK_RESULT(vkCreateImageView(mBasedDevice->GetDevice(), &viewInfo, VK_NULL_HANDLE, &imageView));
 
-    //         // todo: create data
-    //         // VKTexture2D *swapChainBuffer = new VKTexture2D(pSwapChainImages[i], imageView, mColourFormat, mProperties->width, mProperties->height);
-    //         // swapChainBuffer->TransitionImage(VK_IMAGE_LAYOUT_PRESENT_SRC_KHR);
-    //         // mSwapChainBuffers.push_back(swapChainBuffer);
-    //     }
+        auto properties = new VKTexture2D::Properties();
+        auto swapChainBuffer = Vulkan::CreateTexture(static_cast<uint16_t>(Texture::Type::Texture2D), mRenderContext, imageView, std::move(properties));
+        std::static_pointer_cast<VKTexture2D>(swapChainBuffer)->TransitionImage(VK_IMAGE_LAYOUT_PRESENT_SRC_KHR, VK_NULL_HANDLE);
+        mSwapChainBuffers.push_back(swapChainBuffer);
+    }
 
-    // todo: create data
+    PrepareFrameData();
 
     return true;
+}
+
+void VKSwapChain::PrepareFrameData()
+{
 }
 
 void VKSwapChain::FindImageFormatAndColourSpace()

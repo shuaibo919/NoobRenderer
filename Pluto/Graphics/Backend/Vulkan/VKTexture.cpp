@@ -17,6 +17,10 @@ void VKTexture2D::Unbind(uint32_t slot) const
 {
 }
 
+void VKTexture2D::TransitionImage(VkImageLayout newLayout, VkCommandBuffer vkCmdHandle)
+{
+}
+
 VKTexture2D::~VKTexture2D()
 {
 }
@@ -31,6 +35,11 @@ VKTexture2D::VKTexture2D(RenderContext *ctx, const std::string &path, Properties
 {
 }
 
+VKTexture2D::VKTexture2D(RenderContext *ctx, VkImageView view, Properties *&&pProperties)
+    : Texture2D(ctx, std::move(pProperties))
+{
+}
+
 void *VKTexture2DArray::GetHandle() const
 {
     return nullptr;
@@ -41,6 +50,10 @@ void VKTexture2DArray::Bind(uint32_t slot) const
 }
 
 void VKTexture2DArray::Unbind(uint32_t slot) const
+{
+}
+
+void VKTexture2DArray::TransitionImage(VkImageLayout newLayout, VkCommandBuffer vkCmdHandle)
 {
 }
 
@@ -72,6 +85,10 @@ void VKTextureCube::Unbind(uint32_t slot) const
 {
 }
 
+void VKTextureCube::TransitionImage(VkImageLayout newLayout, VkCommandBuffer vkCmdHandle)
+{
+}
+
 VKTextureCube::~VKTextureCube()
 {
 }
@@ -97,6 +114,10 @@ void VKTexture3D::Bind(uint32_t slot) const
 }
 
 void VKTexture3D::Unbind(uint32_t slot) const
+{
+}
+
+void VKTexture3D::TransitionImage(VkImageLayout newLayout, VkCommandBuffer vkCmdHandle)
 {
 }
 

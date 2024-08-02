@@ -17,6 +17,12 @@ namespace pluto
             ~VKTexture2D();
 
         public:
+            /// @brief If passing a view:VkImageView, the values in pProperties are invalid
+            ///        and will be automatically created based on the VkImageView.
+            VKTexture2D(RenderContext *ctx, VkImageView view, Properties *&&pProperties);
+            void TransitionImage(VkImageLayout newLayout, VkCommandBuffer vkCmdHandle);
+
+        public:
             void *GetHandle() const override;
             void Bind(uint32_t slot = 0) const override;
             void Unbind(uint32_t slot = 0) const override;
@@ -31,6 +37,9 @@ namespace pluto
             VKTexture2DArray(RenderContext *ctx, Properties *&&pProperties);
             VKTexture2DArray(RenderContext *ctx, const std::string &path, Properties *&&pProperties);
             ~VKTexture2DArray();
+
+        public:
+            void TransitionImage(VkImageLayout newLayout, VkCommandBuffer vkCmdHandle);
 
         public:
             void *GetHandle() const override;
@@ -49,6 +58,9 @@ namespace pluto
             ~VKTextureCube();
 
         public:
+            void TransitionImage(VkImageLayout newLayout, VkCommandBuffer vkCmdHandle);
+
+        public:
             void *GetHandle() const override;
             void Bind(uint32_t slot = 0) const override;
             void Unbind(uint32_t slot = 0) const override;
@@ -63,6 +75,9 @@ namespace pluto
             VKTexture3D(RenderContext *ctx, Properties *&&pProperties);
             VKTexture3D(RenderContext *ctx, const std::string &path, Properties *&&pProperties);
             ~VKTexture3D();
+
+        public:
+            void TransitionImage(VkImageLayout newLayout, VkCommandBuffer vkCmdHandle);
 
         public:
             void *GetHandle() const override;
