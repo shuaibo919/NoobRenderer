@@ -41,9 +41,9 @@ namespace pluto
 
         private:
             bool primary;
-            bool mRecording;
-            uint32_t mBoundPipelineLayer = 0;
             std::vector<GLEmulatedCommand> mCmds;
+            
+            uint32_t mBoundPipelineLayer{0};
             SharedPtr<Pipeline> mBoundPipeline{nullptr};
         };
     }

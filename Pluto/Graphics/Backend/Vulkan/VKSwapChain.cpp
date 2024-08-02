@@ -88,42 +88,42 @@ bool VKSwapChain::Init(bool vsync, const SharedPtr<RenderDevice> &pDevice)
         };
     }
 
-    VkSwapchainCreateInfoKHR swapChainCI{};
-    swapChainCI.sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR;
-    swapChainCI.surface = mSurface;
-    swapChainCI.minImageCount = mSwapChainBufferCount;
-    swapChainCI.imageFormat = mColourFormat;
-    swapChainCI.imageExtent.width = swapChainExtent.width;
-    swapChainCI.imageExtent.height = swapChainExtent.height;
-    swapChainCI.preTransform = preTransform;
-    swapChainCI.compositeAlpha = compositeAlpha;
-    swapChainCI.imageArrayLayers = 1;
-    swapChainCI.presentMode = swapChainPresentMode;
-    swapChainCI.oldSwapchain = mOldSwapChain;
-    swapChainCI.imageColorSpace = mColourSpace;
-    swapChainCI.imageSharingMode = VK_SHARING_MODE_EXCLUSIVE;
-    swapChainCI.queueFamilyIndexCount = 0;
-    swapChainCI.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
-    swapChainCI.pQueueFamilyIndices = VK_NULL_HANDLE;
-    swapChainCI.clipped = VK_TRUE;
+    VkSwapchainCreateInfoKHR swapChainInfo{};
+    swapChainInfo.sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR;
+    swapChainInfo.surface = mSurface;
+    swapChainInfo.minImageCount = mSwapChainBufferCount;
+    swapChainInfo.imageFormat = mColourFormat;
+    swapChainInfo.imageExtent.width = swapChainExtent.width;
+    swapChainInfo.imageExtent.height = swapChainExtent.height;
+    swapChainInfo.preTransform = preTransform;
+    swapChainInfo.compositeAlpha = compositeAlpha;
+    swapChainInfo.imageArrayLayers = 1;
+    swapChainInfo.presentMode = swapChainPresentMode;
+    swapChainInfo.oldSwapchain = mOldSwapChain;
+    swapChainInfo.imageColorSpace = mColourSpace;
+    swapChainInfo.imageSharingMode = VK_SHARING_MODE_EXCLUSIVE;
+    swapChainInfo.queueFamilyIndexCount = 0;
+    swapChainInfo.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
+    swapChainInfo.pQueueFamilyIndices = VK_NULL_HANDLE;
+    swapChainInfo.clipped = VK_TRUE;
 
     if (surfaceCapabilities.supportedUsageFlags & VK_IMAGE_USAGE_TRANSFER_SRC_BIT)
     {
-        swapChainCI.imageUsage |= VK_IMAGE_USAGE_TRANSFER_SRC_BIT;
+        swapChainInfo.imageUsage |= VK_IMAGE_USAGE_TRANSFER_SRC_BIT;
     }
 
     if (surfaceCapabilities.supportedUsageFlags & VK_IMAGE_USAGE_TRANSFER_DST_BIT)
     {
-        swapChainCI.imageUsage |= VK_IMAGE_USAGE_TRANSFER_DST_BIT;
+        swapChainInfo.imageUsage |= VK_IMAGE_USAGE_TRANSFER_DST_BIT;
     }
 
-    VK_CHECK_RESULT(vkCreateSwapchainKHR(mBasedDevice->GetDevice(), &swapChainCI, VK_NULL_HANDLE, &mSwapChain));
+    VK_CHECK_RESULT(vkCreateSwapchainKHR(mBasedDevice->GetDevice(), &swapChainInfo, VK_NULL_HANDLE, &mSwapChain));
 
     if (mOldSwapChain != VK_NULL_HANDLE)
     {
         for (uint32_t i = 0; i < mSwapChainBufferCount; i++)
         {
-
+            // mFrames[i].MainCommandBuffer->re
             // if (mFrames[i].MainCommandBuffer->GetState() == CommandBufferState::Submitted)
             //     mFrames[i].MainCommandBuffer->Wait();
 
@@ -184,7 +184,6 @@ bool VKSwapChain::Init(bool vsync, const SharedPtr<RenderDevice> &pDevice)
 
 void VKSwapChain::FindImageFormatAndColourSpace()
 {
-
 }
 
 Texture::Ptr VKSwapChain::GetCurrentImage()
