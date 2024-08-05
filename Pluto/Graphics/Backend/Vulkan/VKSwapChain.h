@@ -28,7 +28,7 @@ namespace pluto
             void OnResize(uint32_t width, uint32_t height);
 
         public:
-            bool Init(bool vsync, const SharedPtr<RenderDevice> &pDevice = nullptr) override;
+            bool Init(bool vsync) override;
 
             SharedPtr<Texture> GetCurrentImage() override;
             SharedPtr<Texture> GetImage(uint32_t index) override;
@@ -40,9 +40,12 @@ namespace pluto
 
         public:
             void PrepareFrameData();
+            FrameData &GetCurrentFrameData();
+            VkFormat GetFormat() const { return mColourFormat; }
+            void Present(const std::vector<VkSemaphore> &semaphore);
 
         private:
-            SharedPtr<VKRenderDevice> mBasedDevice;
+            VKRenderDevice *mBasedDevice;
             FrameData mFrames[MaxFlightFrames];
 
             void FindImageFormatAndColourSpace();

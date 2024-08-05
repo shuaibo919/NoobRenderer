@@ -26,7 +26,7 @@ void GLSwapChain::OnResize(uint32_t width, uint32_t height)
     mProperties->height = height;
 }
 
-bool GLSwapChain::Init(bool vsync, const pluto::SharedPtr<RenderDevice> &pDevice)
+bool GLSwapChain::Init(bool vsync)
 {
     mCommand = std::dynamic_pointer_cast<GLCommandBuffer>(
         OpenGL::CreateCommandBuffer(this->mRenderContext, new GLCommandBuffer::Properties()));

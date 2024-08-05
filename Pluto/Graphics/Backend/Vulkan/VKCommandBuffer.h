@@ -14,6 +14,7 @@ namespace pluto
         public:
             void Submit() override;
             bool Init(bool primary) override;
+            bool Init(bool primary, VkCommandPool commandPool);
             void Unload() override;
             void BeginRecording() override;
             void BeginRecordingSecondary(const SharedPtr<RenderPass> &renderPass, const SharedPtr<Framebuffer> &framebuffer) override;
@@ -36,7 +37,13 @@ namespace pluto
             void EndCurrentRenderPass() override;
 
         private:
+            bool mPrimary{false};
+            SharedPtr<VKFence> mFence{nullptr};
+            SharedPtr<VKSemaphore> mSemaphore{nullptr};
+            VkCommandPool mCommandPool{VK_NULL_HANDLE};
+            VkCommandBuffer mCommandBuffer{VK_NULL_HANDLE};
 
+            uint32_t mBoundPipelineLayer{0};
         };
     }
 }

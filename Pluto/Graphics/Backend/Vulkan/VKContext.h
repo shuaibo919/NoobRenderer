@@ -47,6 +47,7 @@ namespace pluto
             /* Context Methods For Vulkan */
             VkInstance GetVKInstance() const { return mVkInstance; }
             uint32_t GetVKVersion() const { return mVKVersion; }
+            VKRenderDevice *GetBasedDevice() const { return mRenderDevice; }
 
         protected:
             static SharedPtr<GraphicsContext> Create();

@@ -6,6 +6,7 @@
 #include "Graphics/Backend/Vulkan/VKContext.h"
 #include "Graphics/Backend/Vulkan/VKRenderDevice.h"
 #include "Graphics/Backend/Vulkan/VKCommandBuffer.h"
+#include "Graphics/Backend/Vulkan/VKRenderContext.h"
 /* Common */
 #include "Graphics/Backend/Vulkan/VKUtilities.h"
 
@@ -26,14 +27,10 @@ void VKSwapChain::OnResize(uint32_t width, uint32_t height)
     mProperties->height = height;
 }
 
-bool VKSwapChain::Init(bool vsync, const SharedPtr<RenderDevice> &pDevice)
+bool VKSwapChain::Init(bool vsync)
 {
-    if (pDevice == nullptr)
-    {
-        return false;
-        log<Error>("Must pass a valid device pointer to create a swapchain in VK-backend!");
-    }
-    mBasedDevice = std::static_pointer_cast<VKRenderDevice>(pDevice);
+    auto pRenderCtx = static_cast<VKRenderContext *>(mRenderContext);
+    mBasedDevice = pRenderCtx->GetBasedDevice();
     this->FindImageFormatAndColourSpace();
 
     if (!mSurface)
@@ -181,41 +178,132 @@ bool VKSwapChain::Init(bool vsync, const SharedPtr<RenderDevice> &pDevice)
 
 void VKSwapChain::PrepareFrameData()
 {
+    for (uint32_t i = 0; i < mSwapChainBufferCount; i++)
+    {
+        VkSemaphoreCreateInfo semaphoreInfo = {};
+        semaphoreInfo.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
+        semaphoreInfo.pNext = nullptr;
+        semaphoreInfo.flags = 0;
+
+        mFrames[i].ImageAcquireSemaphore = std::make_shared<VKSemaphore>(mBasedDevice, false);
+        if (!mFrames[i].MainCommandBuffer)
+        {
+            mFrames[i].CommandPool = std::make_shared<VKCommandPool>(mBasedDevice, mBasedDevice->GetGraphicsQueueFamilyIndex(), VK_COMMAND_POOL_CREATE_TRANSIENT_BIT | VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT);
+            mFrames[i].MainCommandBuffer = std::static_pointer_cast<VKCommandBuffer>(Vulkan::CreateCommandBuffer(mRenderContext, new CommandBuffer::Properties()));
+            mFrames[i].MainCommandBuffer->Init(true, mFrames[i].CommandPool->GetHandle());
+        }
+    }
 }
 
 void VKSwapChain::FindImageFormatAndColourSpace()
 {
+    uint32_t formatCount;
+    VkPhysicalDevice physicalDevice = mBasedDevice->GetGPU();
+    VK_CHECK_RESULT(vkGetPhysicalDeviceSurfaceFormatsKHR(physicalDevice, mSurface, &formatCount, nullptr));
+
+    std::vector<VkSurfaceFormatKHR> surfaceFormats(formatCount);
+    VK_CHECK_RESULT(vkGetPhysicalDeviceSurfaceFormatsKHR(physicalDevice, mSurface, &formatCount, surfaceFormats.data()));
+
+    if ((formatCount == 1) && (surfaceFormats[0].format == VK_FORMAT_UNDEFINED))
+    {
+        mColourFormat = VK_FORMAT_B8G8R8A8_UNORM;
+        mColourSpace = surfaceFormats[0].colorSpace;
+    }
+    else
+    {
+        bool found_B8G8R8A8_UNORM = false;
+        for (auto &&surfaceFormat : surfaceFormats)
+        {
+            if (surfaceFormat.format == VK_FORMAT_B8G8R8A8_UNORM)
+            {
+                mColourFormat = surfaceFormat.format;
+                mColourSpace = surfaceFormat.colorSpace;
+                found_B8G8R8A8_UNORM = true;
+                break;
+            }
+        }
+        if (!found_B8G8R8A8_UNORM)
+        {
+            mColourFormat = surfaceFormats[0].format;
+            mColourSpace = surfaceFormats[0].colorSpace;
+        }
+    }
+}
+
+FrameData &VKSwapChain::GetCurrentFrameData()
+{
+    return mFrames[mCurrentBuffer];
 }
 
 Texture::Ptr VKSwapChain::GetCurrentImage()
 {
-    return nullptr;
+    return mSwapChainBuffers[mAcquireImageIndex];
 }
 
 pluto::SharedPtr<Texture> VKSwapChain::GetImage(uint32_t index)
 {
-    return nullptr;
+    return mSwapChainBuffers[index];
 };
 
 uint32_t VKSwapChain::GetCurrentImageIndex() const
 {
-    return 0;
+    return mAcquireImageIndex;
 }
 
 void VKSwapChain::SetVSync(bool vsync)
 {
+    mVSyncEnabled = vsync;
 }
 
 uint32_t VKSwapChain::GetCurrentBufferIndex() const
 {
-    return 0;
+    return mCurrentBuffer;
 }
 
 size_t VKSwapChain::GetSwapChainBufferCount() const
 {
-    return 1;
+    return mSwapChainBufferCount;
 }
 CommandBuffer::Ptr VKSwapChain::GetCurrentCommandBuffer()
 {
-    return nullptr;
+    return GetCurrentFrameData().MainCommandBuffer;
+}
+
+void VKSwapChain::Present(const std::vector<VkSemaphore> &semaphore)
+{
+    VkSemaphore vkWaitSemaphores[3] = {nullptr, nullptr, nullptr};
+    uint32_t semaphoreCount = 0;
+
+    for (auto semaphore : semaphore)
+    {
+        if (semaphoreCount > 3)
+            break;
+
+        vkWaitSemaphores[semaphoreCount++] = semaphore;
+    }
+
+    VkPresentInfoKHR present;
+    present.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
+    present.pNext = VK_NULL_HANDLE;
+    present.swapchainCount = 1;
+    present.pSwapchains = &mSwapChain;
+    present.pImageIndices = &mAcquireImageIndex;
+    present.waitSemaphoreCount = semaphoreCount;
+    present.pWaitSemaphores = vkWaitSemaphores;
+    present.pResults = VK_NULL_HANDLE;
+
+    auto error = vkQueuePresentKHR(mBasedDevice->GetPresentQueue(), &present);
+
+    if (error == VK_ERROR_OUT_OF_DATE_KHR)
+    {
+        log<Error>("SwapChain out of date");
+    }
+    else if (error == VK_SUBOPTIMAL_KHR)
+    {
+        log<Error>("SwapChain suboptimal");
+    }
+    else
+    {
+        VK_CHECK_RESULT(error);
+    }
 }

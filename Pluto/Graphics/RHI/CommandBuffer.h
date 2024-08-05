@@ -7,24 +7,20 @@ namespace pluto
 {
     namespace Graphics
     {
-        enum class CommandBufferState : uint8_t
-        {
-            Idle,
-            Recording,
-            Ended,
-            Submitted
-        };
-        class CommandBuffer : public std::enable_shared_from_this<CommandBuffer>, public RHIBase
+        class CommandBuffer : public std::enable_shared_from_this<CommandBuffer>,
+                              public RHIBase
         {
         public:
             using Ptr = SharedPtr<CommandBuffer>;
             struct Properties
             {
                 CommandBufferState state;
+                CommandBufferUsageType type;
             };
             struct Builder final : BuildBase<CommandBuffer::Properties, CommandBuffer>
             {
                 Builder() {}
+                Builder &SetUsageType(CommandBufferUsageType type);
                 CommandBuffer::Ptr Create(const SharedPtr<GraphicsContext> &pContext);
             };
             virtual ~CommandBuffer();

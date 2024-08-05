@@ -383,5 +383,19 @@ namespace pluto
             Cpu,
             Unknown
         };
+
+        enum class CommandBufferState : uint8_t
+        {
+            Idle,
+            Recording,
+            Ended,
+            Submitted
+        };
+
+        enum class CommandBufferUsageType : uint8_t
+        {
+            OneTimeSubmit,
+            RecycleSubmit,
+        };
     }
 }

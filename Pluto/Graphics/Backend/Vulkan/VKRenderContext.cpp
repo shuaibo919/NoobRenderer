@@ -24,6 +24,11 @@ void VKRenderContext::Init()
 {
 }
 
+VKRenderDevice *VKRenderContext::GetBasedDevice() const
+{
+    return mContext->GetBasedDevice();
+}
+
 void VKRenderContext::Clear(uint32_t buffer)
 {
 }

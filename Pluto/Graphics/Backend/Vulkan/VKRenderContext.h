@@ -36,6 +36,9 @@ namespace pluto
 
             SharedPtr<SwapChain> GetSwapChain() override;
 
+        public:
+            VKRenderDevice *GetBasedDevice() const;
+
         private:
             VKContext *mContext;
         };

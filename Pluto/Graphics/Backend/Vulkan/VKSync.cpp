@@ -52,3 +52,71 @@ uint64_t VKSemaphore::GetValue()
     VK_CHECK_RESULT(vkGetSemaphoreCounterValue(mBasedDevice, mHandle, &value));
     return value;
 }
+
+VKFence::VKFence(VkDevice device, bool signaled)
+{
+    mSignaled = signaled;
+
+    VkFenceCreateInfo fenceCreateInfo{};
+    fenceCreateInfo.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
+    fenceCreateInfo.flags = signaled ? VK_FENCE_CREATE_SIGNALED_BIT : 0;
+
+    vkCreateFence(device, &fenceCreateInfo, nullptr, &mHandle);
+}
+
+VKFence::~VKFence()
+{
+    vkDestroyFence(mBasedDevice, mHandle, nullptr);
+}
+
+bool VKFence::IsSignaled()
+{
+    if (mSignaled)
+        return true;
+    else
+    {
+        return CheckState();
+    }
+}
+
+bool VKFence::CheckState()
+{
+    const VkResult result = vkGetFenceStatus(mBasedDevice, mHandle);
+    if (result == VK_SUCCESS)
+    {
+        mSignaled = true;
+        return true;
+    }
+
+    return false;
+}
+
+bool VKFence::Wait(uint64_t timeout)
+{
+    const VkResult result = vkWaitForFences(mBasedDevice, 1, &mHandle, true, timeout);
+
+    VK_CHECK_RESULT(result);
+    if (result == VK_SUCCESS)
+    {
+        mSignaled = true;
+        return false;
+    }
+
+    return true;
+}
+
+void VKFence::Reset()
+{
+    if (mSignaled)
+        VK_CHECK_RESULT(vkResetFences(mBasedDevice, 1, &mHandle));
+
+    mSignaled = false;
+}
+
+void VKFence::WaitAndReset()
+{
+    if (!IsSignaled())
+        Wait();
+
+    Reset();
+}

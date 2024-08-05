@@ -25,6 +25,22 @@ namespace pluto
         };
         class VKFence
         {
+        public:
+            VKFence(VkDevice device, bool signaled = false);
+            ~VKFence();
+
+            bool CheckState();
+            bool IsSignaled();
+            VkFence &GetHandle() { return mHandle; }
+
+            bool Wait(uint64_t timeout = 1000);
+            void Reset();
+            void WaitAndReset();
+
+        private:
+            VkDevice mBasedDevice;
+            VkFence mHandle;
+            bool mSignaled;
         };
     }
 }
