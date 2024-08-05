@@ -9,11 +9,14 @@
 #include "Graphics/Backend/Vulkan/VKRenderContext.h"
 /* Common */
 #include "Graphics/Backend/Vulkan/VKUtilities.h"
+/* Window */
+#include "Graphics/Window.h"
 
 using namespace pluto::Graphics;
+
 VKSwapChain::VKSwapChain(RenderContext *ctx, VKSwapChain::Properties *&&pProperties)
-    : SwapChain(ctx, std::move(pProperties)), mSwapChain(VK_NULL_HANDLE), mOldSwapChain(VK_NULL_HANDLE), mSurface(VK_NULL_HANDLE),
-      mCurrentBuffer(0), mAcquireImageIndex(std::numeric_limits<uint32_t>::max())
+    : mSwapChain(VK_NULL_HANDLE), mOldSwapChain(VK_NULL_HANDLE), mSurface(VK_NULL_HANDLE),
+      mCurrentBuffer(0), mAcquireImageIndex(std::numeric_limits<uint32_t>::max()), SwapChain(ctx, std::move(pProperties))
 {
 }
 
@@ -39,7 +42,7 @@ bool VKSwapChain::Init(bool vsync)
     }
 
     if (mSurface == VK_NULL_HANDLE)
-        mSurface = VKUtilities::CreatePlatformSurface();
+        mSurface = VKUtilities::CreatePlatformSurface(pRenderCtx->GetVKInstance(), mProperties->window);
 
     VkBool32 queueIndexSupported;
     vkGetPhysicalDeviceSurfaceSupportKHR(mBasedDevice->GetGPU(), mBasedDevice->GetGraphicsQueueFamilyIndex(), mSurface, &queueIndexSupported);
@@ -185,11 +188,13 @@ void VKSwapChain::PrepareFrameData()
         semaphoreInfo.pNext = nullptr;
         semaphoreInfo.flags = 0;
 
-        mFrames[i].ImageAcquireSemaphore = std::make_shared<VKSemaphore>(mBasedDevice, false);
+        mFrames[i].ImageAcquireSemaphore = std::make_shared<VKSemaphore>(mBasedDevice->GetDevice(), false);
         if (!mFrames[i].MainCommandBuffer)
         {
-            mFrames[i].CommandPool = std::make_shared<VKCommandPool>(mBasedDevice, mBasedDevice->GetGraphicsQueueFamilyIndex(), VK_COMMAND_POOL_CREATE_TRANSIENT_BIT | VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT);
-            mFrames[i].MainCommandBuffer = std::static_pointer_cast<VKCommandBuffer>(Vulkan::CreateCommandBuffer(mRenderContext, new CommandBuffer::Properties()));
+            mFrames[i].CommandPool = std::make_shared<VKCommandPool>(mBasedDevice->GetDevice(), mBasedDevice->GetGraphicsQueueFamilyIndex(), VK_COMMAND_POOL_CREATE_TRANSIENT_BIT | VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT);
+            auto pProperty = new CommandBuffer::Properties();
+            pProperty->type = CommandBufferUsageType::OneTimeSubmit;
+            mFrames[i].MainCommandBuffer = std::static_pointer_cast<VKCommandBuffer>(Vulkan::CreateCommandBuffer(mRenderContext, std::move(pProperty)));
             mFrames[i].MainCommandBuffer->Init(true, mFrames[i].CommandPool->GetHandle());
         }
     }

@@ -7,6 +7,7 @@ namespace pluto
 {
     namespace Graphics
     {
+        class VKContext;
         class VKTexture2D;
         class VKSemaphore;
         class VKCommandPool;

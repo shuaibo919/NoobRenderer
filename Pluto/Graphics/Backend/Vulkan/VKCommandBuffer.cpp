@@ -26,7 +26,7 @@ VkCommandBufferUsageFlags GetCommandBufferUsageFlags(CommandBufferUsageType usag
     return VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT;
 }
 
-VKCommandBuffer::VKCommandBuffer(RenderContext *ctx, Properties *&&pProperties)
+VKCommandBuffer::VKCommandBuffer(RenderContext *ctx, CommandBuffer::Properties *&&pProperties)
     : CommandBuffer(ctx, std::move(pProperties))
 {
 }
@@ -36,6 +36,19 @@ VKCommandBuffer::~VKCommandBuffer()
 }
 
 void VKCommandBuffer::Submit()
+{
+}
+
+void VKCommandBuffer::Reset()
+{
+}
+
+bool VKCommandBuffer::Flush()
+{
+    return true;
+}
+
+void VKCommandBuffer::Unload()
 {
 }
 
@@ -52,8 +65,8 @@ bool VKCommandBuffer::Init(bool primary)
 
     VK_CHECK_RESULT(vkAllocateCommandBuffers(pRenderCtx->GetBasedDevice()->GetDevice(), &commandBufferAllocateInfo, &mCommandBuffer));
 
-    mSemaphore = std::make_shared<VKSemaphore>(false);
-    mFence = std::make_shared<VKFence>(false);
+    mSemaphore = std::make_shared<VKSemaphore>(pRenderCtx->GetBasedDevice()->GetDevice(), false);
+    mFence = std::make_shared<VKFence>(pRenderCtx->GetBasedDevice()->GetDevice(), false);
     mFence->Reset();
 
     return true;
@@ -71,13 +84,9 @@ bool VKCommandBuffer::Init(bool primary, VkCommandPool commandPool)
     commandBufferAllocateInfo.commandBufferCount = 1;
     VK_CHECK_RESULT(vkAllocateCommandBuffers(pRenderCtx->GetBasedDevice()->GetDevice(), &commandBufferAllocateInfo, &mCommandBuffer));
 
-    mSemaphore = std::make_shared<VKSemaphore>(false);
-    mFence = std::make_shared<VKFence>(true);
+    mSemaphore = std::make_shared<VKSemaphore>(pRenderCtx->GetBasedDevice()->GetDevice(), false);
+    mFence = std::make_shared<VKFence>(pRenderCtx->GetBasedDevice()->GetDevice(), true);
     return true;
-}
-
-void VKCommandBuffer::Unload()
-{
 }
 
 void VKCommandBuffer::BeginRecording()

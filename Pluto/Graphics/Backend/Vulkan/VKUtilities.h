@@ -4,12 +4,13 @@
 #include "Graphics/Backend/Vulkan/Vk.h"
 namespace pluto
 {
+    class Window;
     namespace Graphics
     {
         namespace VKUtilities
         {
             std::string GetErrorString(VkResult result);
-            VkSurfaceKHR CreatePlatformSurface();
+            VkSurfaceKHR CreatePlatformSurface(VkInstance inst, Window *window);
             VkPresentModeKHR ChoosePresentMode(std::vector<VkPresentModeKHR> availablePresentModes, bool vsync);
         }
     }

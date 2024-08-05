@@ -1,4 +1,15 @@
 #include "Graphics/Backend/Vulkan/VKUtilities.h"
+#include "Graphics/Window.h"
+/* Third */
+
+#if defined(__APPLE__)
+#define GLFW_EXPOSE_NATIVE_COCOA
+#include <GLFW/glfw3.h>
+#include <GLFW/glfw3native.h>
+#elif defined(_WIN32)
+#elif defined(__linux__)
+#endif
+
 #define VKUtils pluto::Graphics::VKUtilities
 
 std::string VKUtils::GetErrorString(VkResult result)
@@ -79,10 +90,23 @@ std::string VKUtils::GetErrorString(VkResult result)
     return "UNKNOWN ERROR";
 }
 
-VkSurfaceKHR VKUtils::CreatePlatformSurface()
+VkSurfaceKHR VKUtils::CreatePlatformSurface(VkInstance inst, pluto::Window *window)
 {
-    // TODO: Implement this
-    return VK_NULL_HANDLE;
+    VkSurfaceKHR surface;
+#if defined(_WIN32) && defined(WIN32)
+    log<Error>("Win32 Not Implemented");
+#elif defined(__APPLE__)
+    // VkMacOSSurfaceCreateInfoMVK surfaceInfo;
+    // surfaceInfo.sType = VK_STRUCTURE_TYPE_MACOS_SURFACE_CREATE_INFO_MVK;
+    // surfaceInfo.pNext = NULL;
+    // surfaceInfo.flags = 0;
+    // surfaceInfo.pView =
+    // vkCreateMacOSSurfaceMVK(inst, &surfaceInfo, nullptr, &surface);
+#elif defined(__linux__)
+    log<Error>("Unix Surface Not Implemented");
+#endif
+
+    return surface;
 }
 
 VkPresentModeKHR VKUtils::ChoosePresentMode(std::vector<VkPresentModeKHR> availablePresentModes, bool vsync)

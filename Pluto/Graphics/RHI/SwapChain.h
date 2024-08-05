@@ -8,7 +8,6 @@ namespace pluto
     class Window;
     namespace Graphics
     {
-        class RenderDevice;
         class SwapChain : public RHIBase
         {
         public:

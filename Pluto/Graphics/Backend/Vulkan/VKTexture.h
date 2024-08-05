@@ -2,6 +2,8 @@
 
 #include "Graphics/RHI/Texture.h"
 
+#include "Graphics/Backend/Vulkan/Vk.h"
+
 namespace pluto
 {
     namespace Graphics

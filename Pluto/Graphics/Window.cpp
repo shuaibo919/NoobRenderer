@@ -115,3 +115,7 @@ void Window::SwapBuffers()
 {
     glfwSwapBuffers(mImpl->mWindow);
 }
+void *Window::GetWindowPointer()
+{
+    return mImpl->mWindow;
+}
