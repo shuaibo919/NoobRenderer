@@ -9,7 +9,7 @@ Pluto   Neptune  Uranus  Saturn  Jupiter  Mars  Earth   Venus   Mercury
        
 ```
 
-(:The next big version will be named as[**Neptune**](#))
+(:The next version will be named as [**Neptune**](#))
 ## Pluto
 
 ### Todo Feature-List 「Dev」
@@ -17,6 +17,7 @@ Pluto   Neptune  Uranus  Saturn  Jupiter  Mars  Earth   Venus   Mercury
 - [x] Windows
 - [x] MacOS
 - [ ] Linux
+...
 
 #### Create a RHI Object by Fluent Interface 「WIP」
 all the RHI object can be created by fluent interface, for example:
@@ -35,13 +36,15 @@ auto colorTarget = Texture::Builder()
 - [ ] Scene Graph
 - [ ] Entity Component System
 - [ ] More
+...
 
 #### Redesign the Editor 「Waiting」
 - [ ] UI
-  
+...
+
 #### And More 「Waiting」
 - [ ] More
-
+...
 
 ### Timeline 「Dev」
 
