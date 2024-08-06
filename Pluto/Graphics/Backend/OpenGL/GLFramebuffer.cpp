@@ -2,6 +2,7 @@
 #include "Graphics/Backend/OpenGL/GLFramebuffer.h"
 /* Usage */
 #include "Graphics/Backend/OpenGL/GLTexture.h"
+#include "Graphics/Backend/OpenGL/GLCommandBuffer.h"
 /* Common */
 #include "Graphics/Backend/OpenGL/GL.h"
 #include "Graphics/Backend/OpenGL/GLDebug.h"
@@ -44,7 +45,7 @@ GLFramebuffer::GLFramebuffer(RenderContext *ctx, GLFramebuffer::Properties *&&pP
 
         Validate();
 
-        UnBind();
+        GlCall(glBindFramebuffer(GL_FRAMEBUFFER, 0));
     }
 }
 
@@ -56,22 +57,23 @@ GLFramebuffer::~GLFramebuffer()
     }
 }
 
-void GLFramebuffer::Bind() const
+void GLFramebuffer::Bind()
 {
-    GlCall(glBindFramebuffer(GL_DRAW_FRAMEBUFFER, mProperties->screenUse ? 0 : mHandle));
-    GlCall(glViewport(0, 0, mProperties->width, mProperties->height));
+    glBindFramebuffer(GL_FRAMEBUFFER, mProperties->screenUse ? 0 : mHandle);
+    glViewport(0, 0, mProperties->width, mProperties->height);
 
     if (!mProperties->screenUse)
     {
-        GlCall(glDrawBuffers(static_cast<GLsizei>(mAttachmentChannels.size()), mAttachmentChannels.data()));
+        glDrawBuffers(static_cast<GLsizei>(mAttachmentChannels.size()), mAttachmentChannels.data());
     }
 }
-void GLFramebuffer::UnBind() const
+
+void GLFramebuffer::UnBind()
 {
-    GlCall(glBindFramebuffer(GL_FRAMEBUFFER, 0));
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
-void GLFramebuffer::AddTextureAttachment(std::shared_ptr<Texture> &texture, uint32_t mipLevel)
+void GLFramebuffer::AddTextureAttachment(const SharedPtr<Texture> &texture, uint32_t mipLevel)
 {
     GLenum attachment = GetAttachmentPoint(texture->GetProperties().format);
     GLuint handle = (GLuint)(size_t)(texture->GetHandle());
@@ -82,7 +84,8 @@ void GLFramebuffer::AddTextureAttachment(std::shared_ptr<Texture> &texture, uint
     }
     GlCall(glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, attachment, GL_TEXTURE_2D, handle, mipLevel));
 }
-void GLFramebuffer::AddCubeTextureAttachment(CubeFace face, std::shared_ptr<TextureCube> &texture, uint32_t mipLevel)
+
+void GLFramebuffer::AddCubeTextureAttachment(CubeFace face, const SharedPtr<TextureCube> &texture, uint32_t mipLevel)
 {
     // uint32_t faceID = 0;
     // GLenum attachment = GetAttachmentPoint(texture->GetProperties().format);
@@ -116,14 +119,15 @@ void GLFramebuffer::AddCubeTextureAttachment(CubeFace face, std::shared_ptr<Text
 
     // GlCall(glFramebufferTexture2D(GL_FRAMEBUFFER, attachment, faceID, handle, mipLevel));
 }
-void GLFramebuffer::AddDepthAttachment(std::shared_ptr<Texture> &texture)
+
+void GLFramebuffer::AddDepthAttachment(const SharedPtr<Texture> &texture)
 {
     GLuint handle = GLUtilities::PtrToGLuint(texture->GetHandle());
     GlCall(glFramebufferTextureLayer(GL_FRAMEBUFFER_EXT, GL_DEPTH_ATTACHMENT, handle, 0, 0));
     GlCall(glDrawBuffers(0, GL_NONE));
 }
 
-void GLFramebuffer::AddTextureLayer(std::shared_ptr<Texture> &texture, int index)
+void GLFramebuffer::AddTextureLayer(const SharedPtr<Texture> &texture, int index)
 {
     GLuint handle = GLUtilities::PtrToGLuint(texture->GetHandle());
     GlCall(glFramebufferTextureLayer(GL_FRAMEBUFFER_EXT, GL_DEPTH_ATTACHMENT, (GLuint)(size_t)texture->GetHandle(), 0, index));

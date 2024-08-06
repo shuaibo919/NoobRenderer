@@ -16,18 +16,18 @@ namespace pluto
         public:
             GLPipeline(RenderContext *ctx, Properties *&&pProperties);
             ~GLPipeline();
-            void BindVertexArray(std::shared_ptr<VertexBuffer> vbo);
+            void BindVertexArray(SharedPtr<VertexBuffer> vbo);
             void Preparation();
 
         public:
-            void Bind(std::shared_ptr<CommandBuffer> commandBuffer, uint32_t layer) override;
-            void End(std::shared_ptr<CommandBuffer> commandBuffer) override;
-            void ClearRenderTargets(std::shared_ptr<CommandBuffer> commandBuffer) override;
+            void Bind(const SharedPtr<CommandBuffer> &commandBuffer, uint32_t layer = 0) override;
+            void End(const SharedPtr<CommandBuffer> &commandBuffer) override;
+            void ClearRenderTargets(const SharedPtr<CommandBuffer> &commandBuffer) override;
 
         private:
-            std::shared_ptr<GLShader> mShader{nullptr};
-            std::shared_ptr<GLRenderPass> mRenderPass{nullptr};
-            std::vector<std::shared_ptr<Framebuffer>> mFramebuffers;
+            SharedPtr<GLShader> mShader{nullptr};
+            SharedPtr<GLRenderPass> mRenderPass{nullptr};
+            std::vector<SharedPtr<Framebuffer>> mFramebuffers;
             uint32_t mVertexArray;
         };
     }

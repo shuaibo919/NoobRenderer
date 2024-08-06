@@ -331,6 +331,6 @@ bool FileSystem::WriteTextFile(const std::string &path, const std::string &text)
     filestr.close();
     return true;
 }
-#elif define(__linux__)
+#elif defined(__linux__)
 
 #endif

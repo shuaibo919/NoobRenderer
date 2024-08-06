@@ -11,6 +11,7 @@
 #include "Graphics/Backend/OpenGL/GLFramebuffer.h"
 #include "Graphics/Backend/OpenGL/GLRenderPass.h"
 #include "Graphics/Backend/OpenGL/GLSwapChain.h"
+#include "Graphics/Backend/OpenGL/GLCommandBuffer.h"
 /* Common */
 #include "Graphics/Backend/OpenGL/GL.h"
 #include "Graphics/Backend/OpenGL/GLDebug.h"
@@ -29,7 +30,7 @@ GLPipeline::~GLPipeline()
     glDeleteVertexArrays(1, &mVertexArray);
 }
 
-void GLPipeline::BindVertexArray(std::shared_ptr<VertexBuffer> vbo)
+void GLPipeline::BindVertexArray(SharedPtr<VertexBuffer> vbo)
 {
     GlCall(glBindVertexArray(static_cast<GLuint>(mVertexArray)));
     auto &vbo_propertis = vbo->GetProperties();
@@ -53,7 +54,7 @@ void GLPipeline::BindVertexArray(std::shared_ptr<VertexBuffer> vbo)
 void GLPipeline::Preparation()
 {
     std::vector<AttachmentType> attachmentTypes;
-    std::vector<std::shared_ptr<Texture>> attachments;
+    std::vector<SharedPtr<Texture>> attachments;
     auto pRenderContext = static_cast<GLRenderContext *>(mRenderContext);
 
     if (mProperties->swapchainTarget)
@@ -109,7 +110,7 @@ void GLPipeline::Preparation()
     }
     delete frameBufferProperties;
 }
-void GLPipeline::Bind(std::shared_ptr<CommandBuffer> commandBuffer, uint32_t layer)
+void GLPipeline::Bind(const SharedPtr<CommandBuffer> &commandBuffer, uint32_t layer)
 {
     auto pRenderContext = static_cast<GLRenderContext *>(mRenderContext);
     Framebuffer::Ptr framebuffer{nullptr};
@@ -124,7 +125,9 @@ void GLPipeline::Bind(std::shared_ptr<CommandBuffer> commandBuffer, uint32_t lay
 
     mRenderPass->BeginRenderPass(commandBuffer, mProperties->clearColor, framebuffer, Graphics::Inline);
     if (mProperties->shader != nullptr)
+    {
         mProperties->shader->Bind();
+    }
 
     update_state(pRenderContext->state.EnableBlend, mProperties->transparencyEnabled,
                  FuncWrapper(glEnable(GL_BLEND)), FuncWrapper(glDisable(GL_BLEND)));
@@ -153,19 +156,18 @@ void GLPipeline::Bind(std::shared_ptr<CommandBuffer> commandBuffer, uint32_t lay
     if (mProperties->lineWidth != 1.0f)
         glLineWidth(mProperties->lineWidth);
 }
-void GLPipeline::End(std::shared_ptr<CommandBuffer> commandBuffer)
+void GLPipeline::End(const SharedPtr<CommandBuffer> &commandBuffer)
 {
     mRenderPass->EndRenderPass(commandBuffer);
 
-    if (mProperties->lineWidth != 1.0f)
-        glLineWidth(1.0f);
+    // if (mProperties->lineWidth != 1.0f)
+    //     glLineWidth(1.0f);
 }
-void GLPipeline::ClearRenderTargets(std::shared_ptr<CommandBuffer> commandBuffer)
+void GLPipeline::ClearRenderTargets(const SharedPtr<CommandBuffer> &commandBuffer)
 {
-    auto pRenderContext = static_cast<GLRenderContext *>(mRenderContext);
     for (auto &framebuffer : mFramebuffers)
     {
         static_cast<GLFramebuffer *>(framebuffer.get())->Bind();
-        pRenderContext->Clear(RenderBufferColor | RenderBufferDepth | RenderBufferStencil);
+        GLRenderContext::Clear(RenderBufferColor | RenderBufferDepth | RenderBufferStencil);
     }
 }

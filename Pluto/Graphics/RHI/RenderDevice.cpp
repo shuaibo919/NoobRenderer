@@ -18,12 +18,12 @@ void RenderDevice::Init()
 #endif
 }
 
-void RenderDevice::Create()
+RenderDevice *RenderDevice::Create(const SharedPtr<GraphicsContext> &pContext)
 {
-    sInstance = CreateImpl();
+    return CreateImpl(pContext);
 }
 
-void RenderDevice::Release()
+void RenderDevice::Release(RenderDevice *pDevice)
 {
-    delete sInstance;
+    delete pDevice;
 };

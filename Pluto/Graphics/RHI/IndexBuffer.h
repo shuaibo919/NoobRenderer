@@ -12,7 +12,7 @@ namespace pluto
             friend class GraphicsContext;
 
         public:
-            using Ptr = std::shared_ptr<IndexBuffer>;
+            using Ptr = SharedPtr<IndexBuffer>;
             struct Properties
             {
                 void *data{nullptr};
@@ -25,7 +25,7 @@ namespace pluto
                 Builder() {}
                 IndexBuffer::Builder &SetIndicesData(void *data, uint32_t count, uint16_t indicesType = sizeof(uint16_t));
                 IndexBuffer::Builder &SetUsage(BufferUsage usage);
-                IndexBuffer::Ptr Create(std::shared_ptr<GraphicsContext> &pContext);
+                IndexBuffer::Ptr Create(const SharedPtr<GraphicsContext> &pContext);
             };
             virtual ~IndexBuffer();
 

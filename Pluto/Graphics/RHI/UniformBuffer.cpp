@@ -2,7 +2,7 @@
 #include "Graphics/RHI/GraphicsContext.h"
 
 using namespace pluto::Graphics;
-UniformBuffer::Ptr pluto::Graphics::UniformBuffer::Builder::Create(std::shared_ptr<GraphicsContext> &pContext)
+UniformBuffer::Ptr pluto::Graphics::UniformBuffer::Builder::Create(const SharedPtr<GraphicsContext> &pContext)
 {
     return pContext->CreateUniformBuffer(std::move(mProperties));
 }

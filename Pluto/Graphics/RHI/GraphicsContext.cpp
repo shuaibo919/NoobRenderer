@@ -1,5 +1,6 @@
 #include "Graphics/RHI/GraphicsContext.h"
 #include "Graphics/RHI/RenderContext.h"
+#include "Graphics/RHI/SwapChain.h"
 #ifdef OPENGL_BACKEND
 #include "Graphics/Backend/OpenGL/GLContext.h"
 #endif
@@ -9,13 +10,13 @@
 
 using namespace pluto::Graphics;
 
-std::shared_ptr<GraphicsContext> GraphicsContext::Create(RenderAPI api, RenderDevice const *pDevice)
+pluto::SharedPtr<GraphicsContext> GraphicsContext::Create(RenderAPI api)
 {
     switch (api)
     {
 #ifdef VULKAN_BACKEND
     case RenderAPI::VULKAN:
-        return Graphics::VulkanContext::Create(pDevice);
+        return Graphics::VKContext::Create();
         break;
 #endif
 
@@ -33,6 +34,12 @@ std::shared_ptr<GraphicsContext> GraphicsContext::Create(RenderAPI api, RenderDe
     }
     return nullptr;
 }
+
+void GraphicsContext::SetMainSwapChain(const SharedPtr<SwapChain> &swapChain)
+{
+    mSwapChain = swapChain;
+    mSwapChain->Init(false);
+};
 
 GraphicsContext::~GraphicsContext()
 {

@@ -4,15 +4,15 @@
 using namespace pluto::Graphics;
 struct RenderPassAsset
 {
-    std::shared_ptr<RenderPass> renderpass;
-    float timeSinceLastAccessed;
+    // SharedPtr<RenderPass> renderpass;
+    // float timeSinceLastAccessed;
 };
 static std::unordered_map<uint64_t, RenderPassAsset> m_RenderPassCache;
 static const float m_CacheLifeTime = 0.1f;
 
-RenderPass::Builder &RenderPass::Builder::SetAttachment(std::shared_ptr<Texture> &&texture, AttachmentType type)
+RenderPass::Builder &RenderPass::Builder::SetAttachment(SharedPtr<Texture> &&texture, AttachmentType type)
 {
-    mProperties->attachments.push_back(std::forward<std::shared_ptr<Texture>>(texture));
+    mProperties->attachments.push_back(std::forward<SharedPtr<Texture>>(texture));
     mProperties->attachmentTypes.push_back(type);
     return *this;
 }
@@ -46,13 +46,13 @@ RenderPass::Builder &RenderPass::Builder::SetMipIndex(int index)
     mProperties->mipIndex = index;
     return *this;
 }
-RenderPass::Builder &RenderPass::Builder::SetResolveTexture(std::shared_ptr<Texture> &&texture)
+RenderPass::Builder &RenderPass::Builder::SetResolveTexture(SharedPtr<Texture> &&texture)
 {
-    mProperties->resolveTexture = std::forward<std::shared_ptr<Texture>>(texture);
+    mProperties->resolveTexture = std::forward<SharedPtr<Texture>>(texture);
     return *this;
 }
 
-RenderPass::Ptr RenderPass::Builder::Create(std::shared_ptr<GraphicsContext> &pContext)
+RenderPass::Ptr RenderPass::Builder::Create(const SharedPtr<GraphicsContext> &pContext)
 {
     return pContext->CreateRenderPass(std::move(mProperties));
 }
@@ -67,7 +67,7 @@ RenderPass::~RenderPass()
     if (mProperties != nullptr)
         delete mProperties;
 }
-// std::shared_ptr<RenderPass> RenderPass::Get(const RenderPassDesc &renderPassDesc)
+// SharedPtr<RenderPass> RenderPass::Get(const RenderPassDesc &renderPassDesc)
 // {
 //     // uint64_t hash = 0;
 //     // GetMixedHash(hash, renderPassDesc.attachmentCount, renderPassDesc.clear, renderPassDesc.cubeMapIndex, renderPassDesc.mipIndex, renderPassDesc.samples);
@@ -90,7 +90,7 @@ RenderPass::~RenderPass()
 //     //     return found->second.renderpass;
 //     // }
 
-//     // auto renderPass = std::shared_ptr<RenderPass>(Create(renderPassDesc));
+//     // auto renderPass = SharedPtr<RenderPass>(Create(renderPassDesc));
 //     // m_RenderPassCache[hash] = {renderPass, (float)Engine::GetTimeStep().GetElapsedSeconds()};
 //     // return renderPass;
 //     return nullptr;

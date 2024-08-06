@@ -30,7 +30,7 @@ VertexBuffer::Builder &pluto::Graphics::VertexBuffer::Builder::SetAttribute(
     return *this;
 }
 
-VertexBuffer::Ptr pluto::Graphics::VertexBuffer::Builder::Create(std::shared_ptr<GraphicsContext> &pContext)
+VertexBuffer::Ptr pluto::Graphics::VertexBuffer::Builder::Create(const SharedPtr<GraphicsContext> &pContext)
 {
     return pContext->CreateVertexBuffer(std::move(mProperties));
 }

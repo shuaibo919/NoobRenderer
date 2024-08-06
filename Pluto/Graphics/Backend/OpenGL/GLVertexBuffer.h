@@ -14,7 +14,7 @@ namespace pluto
             ~GLVertexBuffer();
 
         public:
-            void Bind(std::shared_ptr<CommandBuffer> commandBuffer, std::shared_ptr<Pipeline> pipeline, uint8_t binding = 0) override;
+            void Bind(const SharedPtr<CommandBuffer> &commandBuffer, const SharedPtr<Pipeline> &pipeline, uint8_t binding = 0) override;
             void Unbind() override;
             const uint32_t GetHandle() const { return mHandle; };
 

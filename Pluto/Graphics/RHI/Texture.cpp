@@ -34,25 +34,25 @@ Texture::Builder &Texture::Builder::SetAdancedOptions(TextureFlags flag, bool sr
     return *this;
 }
 
-Texture::Ptr Texture::Builder::Create(Texture::Type type, std::shared_ptr<GraphicsContext> &pContext)
+Texture::Ptr Texture::Builder::Create(Texture::Type type, const SharedPtr<GraphicsContext> &pContext)
 {
     mProperties->type = type;
     return pContext->CreateTexture(static_cast<uint16_t>(type), std::move(mProperties));
 }
 
-Texture::Ptr Texture::Builder::Create(Texture::Properties &desc, std::shared_ptr<GraphicsContext> &pContext)
+Texture::Ptr Texture::Builder::Create(Texture::Properties &desc, const SharedPtr<GraphicsContext> &pContext)
 {
     *mProperties = desc;
     return pContext->CreateTexture(static_cast<uint16_t>(desc.type), std::move(mProperties));
 }
 
-Texture::Ptr Texture::Builder::Create(Texture::Type type, const std::string &path, std::shared_ptr<GraphicsContext> &pContext)
+Texture::Ptr Texture::Builder::Create(Texture::Type type, const std::string &path, const SharedPtr<GraphicsContext> &pContext)
 {
     mProperties->type = type;
     return pContext->CreateTexture(static_cast<uint16_t>(type), path, std::move(mProperties));
 }
 
-Texture::Ptr Texture::Builder::Create(const std::string &path, Texture::Properties &desc, std::shared_ptr<GraphicsContext> &pContext)
+Texture::Ptr Texture::Builder::Create(const std::string &path, Texture::Properties &desc, const SharedPtr<GraphicsContext> &pContext)
 {
     *mProperties = desc;
     return pContext->CreateTexture(static_cast<uint16_t>(desc.type), path, std::move(mProperties));

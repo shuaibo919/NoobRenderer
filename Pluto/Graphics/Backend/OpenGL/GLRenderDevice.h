@@ -14,7 +14,7 @@ namespace pluto
             static void InitCreateImpl();
 
         protected:
-            static RenderDevice *CreateRenderDeviceGLImpl();
+            static RenderDevice *CreateRenderDeviceGLImpl(const SharedPtr<GraphicsContext> &ctx);
         };
     }
 }

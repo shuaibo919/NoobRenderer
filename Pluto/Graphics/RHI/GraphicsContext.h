@@ -47,7 +47,7 @@ namespace pluto
             virtual ~GraphicsContext();
 
             RenderAPI GetRenderAPI() { return mRenderAPI; }
-            void SetMainSwapChain(std::shared_ptr<SwapChain> swapChain) { mSwapChain = swapChain; };
+            void SetMainSwapChain(const SharedPtr<SwapChain> &swapChain);
             RenderContext *GetRenderContext() const { return mRenderContext; }
 
             virtual void Init() = 0;
@@ -60,27 +60,28 @@ namespace pluto
             virtual void WaitIdle() const = 0;
             virtual void OnImGui() = 0;
 
-            static std::shared_ptr<GraphicsContext> Create(RenderAPI api, RenderDevice const *pDevice);
+            virtual void BindToDevice() = 0;
+
+            static SharedPtr<GraphicsContext> Create(RenderAPI api);
 
         protected:
             RenderAPI mRenderAPI{RenderAPI::None};
-            std::shared_ptr<SwapChain> mSwapChain{nullptr};
+            SharedPtr<SwapChain> mSwapChain{nullptr};
             RenderContext *mRenderContext{nullptr};
 
         protected:
-            virtual std::shared_ptr<Shader>
-            CreateShader(void *&&pPropeties) = 0;
-            virtual std::shared_ptr<Pipeline> CreatePipeline(void *&&pPropeties) = 0;
-            virtual std::shared_ptr<SwapChain> CreateSwapChain(void *&&pPropeties) = 0;
-            virtual std::shared_ptr<RenderPass> CreateRenderPass(void *&&pPropeties) = 0;
-            virtual std::shared_ptr<Framebuffer> CreateFrameBuffer(void *&&pPropeties) = 0;
-            virtual std::shared_ptr<IndexBuffer> CreateIndexBuffer(void *&&pPropeties) = 0;
-            virtual std::shared_ptr<VertexBuffer> CreateVertexBuffer(void *&&pPropeties) = 0;
-            virtual std::shared_ptr<UniformBuffer> CreateUniformBuffer(void *&&pPropeties) = 0;
-            virtual std::shared_ptr<CommandBuffer> CreateCommandBuffer(void *&&pPropeties) = 0;
-            virtual std::shared_ptr<DescriptorSet> CreateDescriptorSet(void *&&pPropeties) = 0;
-            virtual std::shared_ptr<Texture> CreateTexture(uint16_t type, void *&&pPropeties) = 0;
-            virtual std::shared_ptr<Texture> CreateTexture(uint16_t type, const std::string &path, void *&&pPropeties) = 0;
+            virtual SharedPtr<Shader> CreateShader(void *&&pPropeties) = 0;
+            virtual SharedPtr<Pipeline> CreatePipeline(void *&&pPropeties) = 0;
+            virtual SharedPtr<SwapChain> CreateSwapChain(void *&&pPropeties) = 0;
+            virtual SharedPtr<RenderPass> CreateRenderPass(void *&&pPropeties) = 0;
+            virtual SharedPtr<Framebuffer> CreateFrameBuffer(void *&&pPropeties) = 0;
+            virtual SharedPtr<IndexBuffer> CreateIndexBuffer(void *&&pPropeties) = 0;
+            virtual SharedPtr<VertexBuffer> CreateVertexBuffer(void *&&pPropeties) = 0;
+            virtual SharedPtr<UniformBuffer> CreateUniformBuffer(void *&&pPropeties) = 0;
+            virtual SharedPtr<CommandBuffer> CreateCommandBuffer(void *&&pPropeties) = 0;
+            virtual SharedPtr<DescriptorSet> CreateDescriptorSet(void *&&pPropeties) = 0;
+            virtual SharedPtr<Texture> CreateTexture(uint16_t type, void *&&pPropeties) = 0;
+            virtual SharedPtr<Texture> CreateTexture(uint16_t type, const std::string &path, void *&&pPropeties) = 0;
         };
     }
 }

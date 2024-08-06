@@ -13,6 +13,7 @@ namespace pluto
         class DescriptorSet;
         class Pipeline;
         class Shader;
+        class VertexBuffer;
         class UniformBuffer;
         class Framebuffer;
         class RenderPass;
@@ -353,8 +354,8 @@ namespace pluto
 
         struct Descriptor
         {
-            std::shared_ptr<Texture> texture;
-            std::shared_ptr<UniformBuffer> ubo;
+            SharedPtr<Texture> texture;
+            SharedPtr<UniformBuffer> ubo;
 
             uint32_t offset;
             uint32_t size;
@@ -372,6 +373,29 @@ namespace pluto
         struct DescriptorSetInfo
         {
             std::vector<Descriptor> descriptors;
+        };
+
+        enum class PhysicalDeviceType
+        {
+            Discrete,
+            Integrated,
+            Virtual,
+            Cpu,
+            Unknown
+        };
+
+        enum class CommandBufferState : uint8_t
+        {
+            Idle,
+            Recording,
+            Ended,
+            Submitted
+        };
+
+        enum class CommandBufferUsageType : uint8_t
+        {
+            OneTimeSubmit,
+            RecycleSubmit,
         };
     }
 }

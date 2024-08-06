@@ -9,7 +9,7 @@ Shader::Builder &Shader::Builder::SetFile(const std::string &filePath)
     return *this;
 }
 
-Shader::Ptr Shader::Builder::Create(std::shared_ptr<GraphicsContext> &pContext)
+Shader::Ptr Shader::Builder::Create(const SharedPtr<GraphicsContext> &pContext)
 {
     return pContext->CreateShader(std::move(mProperties));
 }

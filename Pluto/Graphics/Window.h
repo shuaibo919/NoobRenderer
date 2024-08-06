@@ -9,22 +9,23 @@ namespace pluto
     class Window
     {
     public:
-        static std::shared_ptr<Window> Create(std::shared_ptr<Graphics::GraphicsContext> &graphicsContext,
-                                              unsigned int width, unsigned int height, const char *title);
+        static SharedPtr<Window> Create(const SharedPtr<Graphics::GraphicsContext> &graphicsContext,
+                                        unsigned int width, unsigned int height, const char *title);
         virtual ~Window();
         virtual int ShouldClose();
         virtual void Terminate();
 
+        void *GetWindowPointer();
         void PollEvents();
         void SwapBuffers();
 
         uint16_t GetWidth() const { return mWidth; };
         uint16_t GetHeight() const { return mHeight; };
 
-        const std::shared_ptr<Graphics::SwapChain> &GetSwapChain() const { return mSwapChain; }
-        const std::shared_ptr<Graphics::GraphicsContext> &GetGraphicsContext() const { return mGraphicsContext; }
+        const SharedPtr<Graphics::SwapChain> &GetSwapChain() const { return mSwapChain; }
+        const SharedPtr<Graphics::GraphicsContext> &GetGraphicsContext() const { return mGraphicsContext; }
 
-        Window(std::shared_ptr<Graphics::GraphicsContext> &graphicsContext, unsigned int width, unsigned int height, const char *title);
+        Window(const SharedPtr<Graphics::GraphicsContext> &graphicsContext, unsigned int width, unsigned int height, const char *title);
 
     private:
         struct WindowImpl;
@@ -33,7 +34,7 @@ namespace pluto
         std::string mTitle;
         WindowImpl *mImpl;
 
-        std::shared_ptr<Graphics::SwapChain> mSwapChain;
-        std::shared_ptr<Graphics::GraphicsContext> mGraphicsContext;
+        SharedPtr<Graphics::SwapChain> mSwapChain;
+        SharedPtr<Graphics::GraphicsContext> mGraphicsContext;
     };
 }

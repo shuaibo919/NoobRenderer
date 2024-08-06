@@ -12,7 +12,7 @@ namespace pluto
             friend class GraphicsContext;
 
         public:
-            using Ptr = std::shared_ptr<VertexBuffer>;
+            using Ptr = SharedPtr<VertexBuffer>;
             struct Properties
             {
                 void *data{nullptr};
@@ -34,14 +34,14 @@ namespace pluto
                                                     uint16_t byteStride,
                                                     bool normalized = false);
 
-                VertexBuffer::Ptr Create(std::shared_ptr<GraphicsContext> &pContext);
+                VertexBuffer::Ptr Create(const SharedPtr<GraphicsContext> &pContext);
             };
             virtual ~VertexBuffer();
             VertexBuffer::Ptr Get()
             {
                 return shared_from_this();
             }
-            virtual void Bind(std::shared_ptr<CommandBuffer> commandBuffer, std::shared_ptr<Pipeline> pipeline, uint8_t binding = 0) = 0;
+            virtual void Bind(const SharedPtr<CommandBuffer> &commandBuffer, const SharedPtr<Pipeline> &pipeline, uint8_t binding = 0) = 0;
             virtual void Unbind() = 0;
 
         public:

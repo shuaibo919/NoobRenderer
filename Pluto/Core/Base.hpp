@@ -22,6 +22,9 @@
 namespace pluto
 {
     template <typename T>
+    using SharedPtr = std::shared_ptr<T>;
+
+    template <typename T>
     class Singleton
     {
     public:
@@ -53,7 +56,7 @@ namespace pluto
         friend void load(Archive &archive, Identity &ID);
 
     public:
-        Identity() : m_identity(0){};
+        Identity() : m_identity(0) {};
         Identity(uint64_t id) : m_identity(id) {}
         Identity(const Identity &other) : m_identity(other.m_identity) {}
 

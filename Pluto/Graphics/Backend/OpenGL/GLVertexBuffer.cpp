@@ -24,11 +24,10 @@ GLVertexBuffer::~GLVertexBuffer()
     GlCall(glDeleteBuffers(1, &mHandle));
 }
 
-void GLVertexBuffer::Bind(std::shared_ptr<CommandBuffer> commandBuffer, std::shared_ptr<Pipeline> pipeline, uint8_t binding)
+void GLVertexBuffer::Bind(const SharedPtr<CommandBuffer> &commandBuffer, const SharedPtr<Pipeline> &pipeline, uint8_t binding)
 {
-    auto pRenderContext = static_cast<GLRenderContext *>(mRenderContext);
-    pRenderContext->CurrentVertexHandle.handle = mHandle;
-    pRenderContext->CurrentVertexHandle.valid = true;
+    GLRenderContext::CurrentVertexHandle.handle = mHandle;
+    GLRenderContext::CurrentVertexHandle.valid = true;
     GlCall(glBindBuffer(GL_ARRAY_BUFFER, mHandle));
 
     if (pipeline != nullptr)
@@ -37,8 +36,7 @@ void GLVertexBuffer::Bind(std::shared_ptr<CommandBuffer> commandBuffer, std::sha
 
 void GLVertexBuffer::Unbind()
 {
-    auto pRenderContext = static_cast<GLRenderContext *>(mRenderContext);
-    pRenderContext->CurrentVertexHandle.handle = 0;
-    pRenderContext->CurrentVertexHandle.valid = false;
+    GLRenderContext::CurrentVertexHandle.handle = 0;
+    GLRenderContext::CurrentVertexHandle.valid = false;
     GlCall(glBindBuffer(GL_ARRAY_BUFFER, 0));
 }

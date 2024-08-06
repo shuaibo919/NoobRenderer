@@ -2,8 +2,7 @@
 #include "Core/Base.hpp"
 #include "Graphics/RHI/RHIBase.h"
 #include "Graphics/RHI/Declarations.h"
-#define MAX_FRAMES_FLIGHT 3
-#define MAX_ELEMENTS_PER_SET 32
+
 namespace pluto
 {
     class Window;
@@ -12,7 +11,7 @@ namespace pluto
         class SwapChain : public RHIBase
         {
         public:
-            using Ptr = std::shared_ptr<SwapChain>;
+            using Ptr = SharedPtr<SwapChain>;
             struct Properties
             {
                 uint16_t width{0};
@@ -24,21 +23,23 @@ namespace pluto
                 Builder() {}
                 SwapChain::Builder &SetBase(uint16_t width, uint16_t height);
                 SwapChain::Builder &SetWindow(Window *window);
-                SwapChain::Ptr Create(std::shared_ptr<GraphicsContext> &pContext);
+                SwapChain::Ptr Create(const SharedPtr<GraphicsContext> &pContext);
             };
             virtual ~SwapChain();
 
         public:
+            const static int16_t MaxFlightFrames{3};
+            const static int16_t MaxElementsPerSet{3};
             const Properties &GetProperties() const { return *mProperties; }
 
         public:
             virtual bool Init(bool vsync) = 0;
-            virtual std::shared_ptr<Texture> GetCurrentImage() = 0;
-            virtual std::shared_ptr<Texture> GetImage(uint32_t index) = 0;
+            virtual SharedPtr<Texture> GetCurrentImage() = 0;
+            virtual SharedPtr<Texture> GetImage(uint32_t index) = 0;
             virtual uint32_t GetCurrentBufferIndex() const = 0;
             virtual uint32_t GetCurrentImageIndex() const = 0;
             virtual size_t GetSwapChainBufferCount() const = 0;
-            virtual std::shared_ptr<CommandBuffer> GetCurrentCommandBuffer() = 0;
+            virtual SharedPtr<CommandBuffer> GetCurrentCommandBuffer() = 0;
             virtual void SetVSync(bool vsync) = 0;
 
         protected:

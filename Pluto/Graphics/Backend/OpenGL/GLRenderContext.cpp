@@ -47,7 +47,7 @@ void GLRenderContext::OnResize(uint32_t width, uint32_t height)
     std::static_pointer_cast<GLSwapChain>(mContext->mSwapChain)->OnResize(width, height);
 }
 
-void GLRenderContext::ClearRenderTarget(std::shared_ptr<Texture> texture, AttachmentType type, std::shared_ptr<CommandBuffer> commandBuffer, glm::vec4 clearColor)
+void GLRenderContext::ClearRenderTarget(const SharedPtr<Texture> &texture, AttachmentType type, const SharedPtr<CommandBuffer> &commandBuffer, glm::vec4 clearColor)
 {
     if (texture == nullptr)
     {
@@ -64,11 +64,11 @@ void GLRenderContext::Present()
 {
 }
 
-void GLRenderContext::Present(std::shared_ptr<CommandBuffer> commandBuffer)
+void GLRenderContext::Present(const SharedPtr<CommandBuffer> &commandBuffer)
 {
 }
 
-void GLRenderContext::BindDescriptorSets(std::shared_ptr<Pipeline> pipeline, std::shared_ptr<CommandBuffer> commandBuffer, uint32_t dynamicOffset, std::vector<std::shared_ptr<DescriptorSet>> descriptorSets)
+void GLRenderContext::BindDescriptorSets(const SharedPtr<Pipeline> &pipeline, const SharedPtr<CommandBuffer> &commandBuffer, uint32_t dynamicOffset, std::vector<SharedPtr<DescriptorSet>> &descriptorSets)
 {
     for (auto &descriptorSet : descriptorSets)
     {
@@ -79,7 +79,7 @@ void GLRenderContext::BindDescriptorSets(std::shared_ptr<Pipeline> pipeline, std
     }
 }
 
-void GLRenderContext::BindDescriptorSet(std::shared_ptr<Pipeline> pipeline, std::shared_ptr<CommandBuffer> commandBuffer, uint32_t dynamicOffset, std::shared_ptr<DescriptorSet> descriptorSet)
+void GLRenderContext::BindDescriptorSet(const SharedPtr<Pipeline> &pipeline, const SharedPtr<CommandBuffer> &commandBuffer, uint32_t dynamicOffset, const SharedPtr<DescriptorSet> &descriptorSet)
 {
     if (descriptorSet != nullptr)
     {
@@ -92,27 +92,27 @@ const std::string &GLRenderContext::GetTitle() const
     return mTitle;
 }
 
-void GLRenderContext::DrawIndexed(std::shared_ptr<CommandBuffer>, DrawType type, uint32_t count, uint32_t start) const
+void GLRenderContext::DrawIndexed(const SharedPtr<CommandBuffer> &cmd, DrawType type, uint32_t count, uint32_t start) const
 {
     if (!CurrentVertexHandle.valid || !CurrentIndiceHandle.valid)
         return;
 
-    GlCall(glDrawElements(GLUtilities::GetDrawType(type), count, GLUtilities::GetDataType(DataType::UnsignedInt), nullptr));
+    glDrawElements(GLUtilities::GetDrawType(type), count, GLUtilities::GetDataType(DataType::UnsignedInt), nullptr);
 }
 
-void GLRenderContext::Draw(std::shared_ptr<CommandBuffer>, DrawType type, uint32_t count) const
+void GLRenderContext::Draw(const SharedPtr<CommandBuffer> &cmd, DrawType type, uint32_t count) const
 {
     if (!CurrentVertexHandle.valid)
         return;
 
-    GlCall(glDrawArrays(GLUtilities::GetDrawType(type), 0, count));
+    glDrawArrays(GLUtilities::GetDrawType(type), 0, count);
 }
 
-void GLRenderContext::Dispatch(std::shared_ptr<CommandBuffer>, uint32_t workGroupSizeX, uint32_t workGroupSizeY, uint32_t workGroupSizeZ)
+void GLRenderContext::Dispatch(const SharedPtr<CommandBuffer> &, uint32_t workGroupSizeX, uint32_t workGroupSizeY, uint32_t workGroupSizeZ)
 {
 }
 
-void GLRenderContext::DrawSplashScreen(std::shared_ptr<Texture> texture)
+void GLRenderContext::DrawSplashScreen(const SharedPtr<Texture> &texture)
 {
 }
 
@@ -131,7 +131,7 @@ RHIFormat GLRenderContext::GetDepthFormat()
     return RHIFormat::Depth32Float;
 }
 
-std::shared_ptr<SwapChain> GLRenderContext::GetSwapChain()
+SwapChain::Ptr GLRenderContext::GetSwapChain()
 {
     return mContext->mSwapChain;
 }

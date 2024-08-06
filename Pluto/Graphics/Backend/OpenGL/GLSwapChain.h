@@ -5,8 +5,10 @@ namespace pluto
 {
     namespace Graphics
     {
-        class GLCommandBuffer;
+        class RenderDevice;
+
         class GLTexture2D;
+        class GLCommandBuffer;
 
         class GLSwapChain : public SwapChain
         {
@@ -20,16 +22,16 @@ namespace pluto
         public:
             bool Init(bool vsync) override;
 
-            std::shared_ptr<Texture> GetCurrentImage() override;
-            std::shared_ptr<Texture> GetImage(uint32_t index) override;
+            SharedPtr<Texture> GetCurrentImage() override;
+            SharedPtr<Texture> GetImage(uint32_t index) override;
             uint32_t GetCurrentBufferIndex() const override;
             uint32_t GetCurrentImageIndex() const override;
-            std::shared_ptr<CommandBuffer> GetCurrentCommandBuffer() override;
+            SharedPtr<CommandBuffer> GetCurrentCommandBuffer() override;
             size_t GetSwapChainBufferCount() const override;
             void SetVSync(bool vsync) override;
 
         private:
-            std::shared_ptr<GLCommandBuffer> mCommand{nullptr};
+            SharedPtr<GLCommandBuffer> mCommand{nullptr};
             uint32_t mCurrentBuffer{0};
         };
     }
