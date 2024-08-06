@@ -1,19 +1,27 @@
 #pragma once
 #include "Graphics/RHI/CommandBuffer.h"
 
+#include "Graphics/Backend/Vulkan/Vk.h"
+
 namespace pluto
 {
     namespace Graphics
     {
+        class VKFence;
+        class VKSemaphore;
+
         class VKCommandBuffer : public CommandBuffer
         {
         public:
-            VKCommandBuffer(RenderContext *ctx, Properties *&&pProperties);
+            VKCommandBuffer(RenderContext *ctx, CommandBuffer::Properties *&&pProperties);
             ~VKCommandBuffer();
 
         public:
             void Submit() override;
-            bool Init(bool primary) override;
+            void Reset() override;
+            bool Flush() override;
+            bool Init(bool primary = true) override;
+            bool Init(bool primary, VkCommandPool commandPool);
             void Unload() override;
             void BeginRecording() override;
             void BeginRecordingSecondary(const SharedPtr<RenderPass> &renderPass, const SharedPtr<Framebuffer> &framebuffer) override;
@@ -36,7 +44,13 @@ namespace pluto
             void EndCurrentRenderPass() override;
 
         private:
+            bool mPrimary{false};
+            SharedPtr<VKFence> mFence{nullptr};
+            SharedPtr<VKSemaphore> mSemaphore{nullptr};
+            VkCommandPool mCommandPool{VK_NULL_HANDLE};
+            VkCommandBuffer mCommandBuffer{VK_NULL_HANDLE};
 
+            uint32_t mBoundPipelineLayer{0};
         };
     }
 }

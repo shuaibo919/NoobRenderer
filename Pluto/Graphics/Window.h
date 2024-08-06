@@ -15,6 +15,7 @@ namespace pluto
         virtual int ShouldClose();
         virtual void Terminate();
 
+        void *GetWindowPointer();
         void PollEvents();
         void SwapBuffers();
 

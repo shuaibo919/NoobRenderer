@@ -16,7 +16,7 @@ using namespace pluto;
 using namespace pluto::Graphics;
 
 GLCommandBuffer::GLCommandBuffer(RenderContext *ctx, Properties *&&pProperties)
-    : primary(false), mRecording(false), CommandBuffer(ctx, std::move(pProperties))
+    : primary(false), CommandBuffer(ctx, std::move(pProperties))
 {
 }
 
@@ -34,6 +34,12 @@ void GLCommandBuffer::Submit()
     }
 }
 
+void GLCommandBuffer::Reset()
+{
+    mCmds.clear();
+    mProperties->state = CommandBufferState::Idle;
+}
+
 bool GLCommandBuffer::Init(bool primary)
 {
     return true;
@@ -45,12 +51,12 @@ void GLCommandBuffer::Unload()
 
 void GLCommandBuffer::BeginRecording()
 {
-    if (mRecording)
+    if (mProperties->state == CommandBufferState::Recording)
     {
         log<Error>("CommandBuffer is in recording state!");
         return;
     }
-    mRecording = true;
+    mProperties->state = CommandBufferState::Recording;
     mCmds.clear();
 }
 
@@ -60,7 +66,7 @@ void GLCommandBuffer::BeginRecordingSecondary(const SharedPtr<RenderPass> &rende
 
 void GLCommandBuffer::EndRecording()
 {
-    mRecording = false;
+    mProperties->state = CommandBufferState::Ended;
 }
 
 void GLCommandBuffer::ExecuteSecondary(const SharedPtr<CommandBuffer> &primaryCmdBuffer)

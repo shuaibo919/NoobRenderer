@@ -2,8 +2,7 @@
 #include "Core/Base.hpp"
 #include "Graphics/RHI/RHIBase.h"
 #include "Graphics/RHI/Declarations.h"
-#define MAX_FRAMES_FLIGHT 3
-#define MAX_ELEMENTS_PER_SET 32
+
 namespace pluto
 {
     class Window;
@@ -29,6 +28,8 @@ namespace pluto
             virtual ~SwapChain();
 
         public:
+            const static int16_t MaxFlightFrames{3};
+            const static int16_t MaxElementsPerSet{3};
             const Properties &GetProperties() const { return *mProperties; }
 
         public:

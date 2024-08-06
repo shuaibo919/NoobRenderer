@@ -3,6 +3,7 @@
 /* Usage */
 #include "Graphics/Backend/OpenGL/GLTexture.h"
 #include "Graphics/Backend/OpenGL/GLContext.h"
+#include "Graphics/Backend/OpenGL/GLRenderDevice.h"
 #include "Graphics/Backend/OpenGL/GLCommandBuffer.h"
 /* Common */
 #include "Graphics/Backend/OpenGL/GL.h"

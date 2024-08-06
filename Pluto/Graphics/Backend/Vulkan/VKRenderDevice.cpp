@@ -306,14 +306,13 @@ VKRenderDevice::VKRenderDevice(const SharedPtr<GraphicsContext> &pContext)
     std::vector<const char *> deviceExtensions = {
         VK_KHR_SWAPCHAIN_EXTENSION_NAME};
 
-    if (mPhysicalDevice->IsExtensionSupported(VK_EXT_DEBUG_UTILS_EXTENSION_NAME))
+    // The Vulkan spec states: If the VK_KHR_portability_subset extension is included in pProperties of vkEnumerateDeviceExtensionProperties,
+    // ppEnabledExtensionNames must include "VK_KHR_portability_subset"
+    // (https://vulkan.lunarg.com/doc/view/1.3.283.0/mac/1.3-extensions/vkspec.html#VUID-VkDeviceCreateInfo-pProperties-04451)}
+    if (mPhysicalDevice->IsExtensionSupported("VK_KHR_portability_subset"))
     {
-        deviceExtensions.push_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
-        mEnableDebugMarkers = true;
-    }
-    else
-    {
-        log<Info>("%s unsupported", VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
+        deviceExtensions.push_back("VK_KHR_portability_subset");
+        log<Info>("VK_KHR_portability_subset extension loaded");
     }
 
     VkPhysicalDeviceDescriptorIndexingFeaturesEXT indexingFeatures = {};
@@ -394,7 +393,33 @@ uint32_t VKRenderDevice::GetGPUCount() const
 {
     return mPhysicalDevice->GetGPUCount();
 }
+
 VkPhysicalDevice VKRenderDevice::GetGPU() const
 {
     return mPhysicalDevice->GetHandle();
+}
+
+int32_t VKRenderDevice::GetGraphicsQueueFamilyIndex()
+{
+    return mPhysicalDevice->GetGraphicsQueueFamilyIndex();
+}
+
+VkPhysicalDeviceProperties VKRenderDevice::GetProperties() const
+{
+    return mPhysicalDevice->GetProperties();
+}
+
+bool VKRenderDevice::IsExtensionSupported(std::string extensionName) const
+{
+    return mPhysicalDevice->IsExtensionSupported(extensionName);
+}
+
+VkPhysicalDeviceMemoryProperties VKRenderDevice::GetMemoryProperties() const
+{
+    return mPhysicalDevice->GetMemoryProperties();
+}
+
+uint32_t VKRenderDevice::GetMemoryTypeIndex(uint32_t typeBits, VkMemoryPropertyFlags properties) const
+{
+    return mPhysicalDevice->GetMemoryTypeIndex(typeBits, properties);
 }

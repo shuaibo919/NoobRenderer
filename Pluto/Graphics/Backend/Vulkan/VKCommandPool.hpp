@@ -8,7 +8,7 @@ namespace pluto
         class VKCommandPool
         {
         public:
-            VKCommandPool(const VkDevice &device, int queueIndex, VkCommandPoolCreateFlags flags)
+            VKCommandPool(VkDevice device, int queueIndex, VkCommandPoolCreateFlags flags)
                 : mBasedDevice(device)
             {
                 VkCommandPoolCreateInfo cmdPoolCI{};

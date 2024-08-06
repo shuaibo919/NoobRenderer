@@ -5,8 +5,10 @@ namespace pluto
 {
     namespace Graphics
     {
-        class GLCommandBuffer;
+        class RenderDevice;
+
         class GLTexture2D;
+        class GLCommandBuffer;
 
         class GLSwapChain : public SwapChain
         {

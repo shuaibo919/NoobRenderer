@@ -1,12 +1,14 @@
 #pragma once
 #include "Graphics/RHI/Declarations.h"
 #include "Graphics/RHI/RenderContext.h"
+#include "Graphics/Backend/Vulkan/Vk.h"
 
 namespace pluto
 {
     namespace Graphics
     {
         class VKContext;
+        class VKRenderDevice;
         class VKRenderContext : public RenderContext
         {
         public:
@@ -35,6 +37,10 @@ namespace pluto
             RHIFormat GetDepthFormat() override;
 
             SharedPtr<SwapChain> GetSwapChain() override;
+
+        public:
+            VKRenderDevice *GetBasedDevice() const;
+            VkInstance GetVKInstance() const;
 
         private:
             VKContext *mContext;

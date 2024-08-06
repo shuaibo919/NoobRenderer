@@ -47,7 +47,7 @@ namespace pluto
             virtual ~GraphicsContext();
 
             RenderAPI GetRenderAPI() { return mRenderAPI; }
-            void SetMainSwapChain(const SharedPtr<SwapChain> &swapChain) { mSwapChain = swapChain; };
+            void SetMainSwapChain(const SharedPtr<SwapChain> &swapChain);
             RenderContext *GetRenderContext() const { return mRenderContext; }
 
             virtual void Init() = 0;

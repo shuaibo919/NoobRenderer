@@ -10,9 +10,11 @@ namespace pluto
     namespace Graphics
     {
         class VKContext;
+        class VKSwapChain;
         class VKPhysicalDevice;
         class VKRenderDevice : public RenderDevice
         {
+
         public:
             VKRenderDevice(const SharedPtr<GraphicsContext> &pContext);
             ~VKRenderDevice();
@@ -33,6 +35,13 @@ namespace pluto
 
         protected:
             static RenderDevice *CreateRenderDeviceVKImpl(const SharedPtr<GraphicsContext> &pContext);
+
+        public:
+            int32_t GetGraphicsQueueFamilyIndex();
+            VkPhysicalDeviceProperties GetProperties() const;
+            bool IsExtensionSupported(std::string extensionName) const;
+            VkPhysicalDeviceMemoryProperties GetMemoryProperties() const;
+            uint32_t GetMemoryTypeIndex(uint32_t typeBits, VkMemoryPropertyFlags properties) const;
 
         private:
             SharedPtr<VKContext> mBasedContext;

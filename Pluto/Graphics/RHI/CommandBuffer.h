@@ -7,25 +7,31 @@ namespace pluto
 {
     namespace Graphics
     {
-        class CommandBuffer : public std::enable_shared_from_this<CommandBuffer>, public RHIBase
+        class CommandBuffer : public std::enable_shared_from_this<CommandBuffer>,
+                              public RHIBase
         {
         public:
             using Ptr = SharedPtr<CommandBuffer>;
             struct Properties
             {
+                CommandBufferState state;
+                CommandBufferUsageType type;
             };
             struct Builder final : BuildBase<CommandBuffer::Properties, CommandBuffer>
             {
                 Builder() {}
+                Builder &SetUsageType(CommandBufferUsageType type);
                 CommandBuffer::Ptr Create(const SharedPtr<GraphicsContext> &pContext);
             };
             virtual ~CommandBuffer();
 
         public:
             const Properties &GetProperties() const { return *mProperties; }
+            CommandBufferState GetState() const { return mProperties->state; }
 
             virtual bool Flush() { return true; }
             virtual void Submit() = 0;
+            virtual void Reset() = 0;
 
         public:
             virtual bool Init(bool primary = true) = 0;
