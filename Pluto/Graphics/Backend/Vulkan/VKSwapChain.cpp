@@ -22,12 +22,41 @@ VKSwapChain::VKSwapChain(RenderContext *ctx, VKSwapChain::Properties *&&pPropert
 
 VKSwapChain::~VKSwapChain()
 {
+    auto pRenderCtx = static_cast<VKRenderContext *>(mRenderContext);
+    vkDeviceWaitIdle(mBasedDevice->GetDevice());
+
+    for (uint32_t i = 0; i < mSwapChainBufferCount; i++)
+    {
+        mFrames[i].MainCommandBuffer->Flush();
+
+        mFrames[i].MainCommandBuffer.reset();
+        mFrames[i].CommandPool.reset();
+        mFrames[i].ImageAcquireSemaphore.reset();
+
+        mSwapChainBuffers[i].reset();
+    }
+    vkDestroySwapchainKHR(mBasedDevice->GetDevice(), mSwapChain, VK_NULL_HANDLE);
+
+    if (mSurface != VK_NULL_HANDLE)
+    {
+        vkDestroySurfaceKHR(pRenderCtx->GetVKInstance(), mSurface, nullptr);
+    }
 }
 
 void VKSwapChain::OnResize(uint32_t width, uint32_t height)
 {
+    if (mProperties->width == width && mProperties->height == height)
+        return;
+
+    vkDeviceWaitIdle(mBasedDevice->GetDevice());
+
     mProperties->width = width;
     mProperties->height = height;
+    mOldSwapChain = mSwapChain;
+    mSwapChain = VK_NULL_HANDLE;
+    this->Init(mVSyncEnabled);
+
+    vkDeviceWaitIdle(mBasedDevice->GetDevice());
 }
 
 bool VKSwapChain::Init(bool vsync)
@@ -152,7 +181,7 @@ bool VKSwapChain::Init(bool vsync)
         VkImageViewCreateInfo viewInfo{};
         viewInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
         viewInfo.format = mColourFormat;
-#ifdef VK_USE_PLATFORM_MACOS_MVK
+#if defined(__APPLE__)
         viewInfo.components = {VK_COMPONENT_SWIZZLE_IDENTITY, VK_COMPONENT_SWIZZLE_IDENTITY, VK_COMPONENT_SWIZZLE_IDENTITY, VK_COMPONENT_SWIZZLE_IDENTITY};
 #else
         viewInfo.components = {VK_COMPONENT_SWIZZLE_R, VK_COMPONENT_SWIZZLE_G, VK_COMPONENT_SWIZZLE_B, VK_COMPONENT_SWIZZLE_A};
