@@ -14,7 +14,6 @@ namespace pluto
         class VKPhysicalDevice;
         class VKRenderDevice : public RenderDevice
         {
-            friend class VKSwapChain;
 
         public:
             VKRenderDevice(const SharedPtr<GraphicsContext> &pContext);
@@ -37,8 +36,7 @@ namespace pluto
         protected:
             static RenderDevice *CreateRenderDeviceVKImpl(const SharedPtr<GraphicsContext> &pContext);
 
-        protected:
-            /* protected caps of the physical device */
+        public:
             int32_t GetGraphicsQueueFamilyIndex();
             VkPhysicalDeviceProperties GetProperties() const;
             bool IsExtensionSupported(std::string extensionName) const;
