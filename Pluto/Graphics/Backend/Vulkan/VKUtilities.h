@@ -13,6 +13,19 @@ namespace pluto
             std::string GetErrorString(VkResult result);
             VkSurfaceKHR CreatePlatformSurface(VkInstance inst, Window *window);
             VkPresentModeKHR ChoosePresentMode(std::vector<VkPresentModeKHR> availablePresentModes, bool vsync);
+            bool HasStencilComponent(VkFormat format);
+            VkFormat GetVKFormat(const RHIFormat format, bool srgb);
+            VkSamplerAddressMode GetVkTextureWrap(const TextureWrap wrap);
+            VkFilter GetVkTextureFilter(const TextureFilter filter);
+            VkCommandBuffer BeginSingleTimeCommands(VkDevice device, VkCommandPool commandPool);
+            void EndSingleTimeCommands(VkDevice device, VkCommandPool commandPool, VkQueue graphicsQueue, VkCommandBuffer commandBuffer);
+            bool IsDepthFormat(VkFormat format);
+            bool IsStencilFormat(VkFormat format);
+            VkPipelineStageFlags LayoutToAccessMask(const VkImageLayout layout, const bool isDestination);
+            VkPipelineStageFlags AccessFlagsToPipelineStage(VkAccessFlags accessFlags, const VkPipelineStageFlags stageFlags);
+            void TransitionImageLayout(VkImage image, VkFormat format, VkImageLayout oldImageLayout, VkImageLayout newImageLayout,
+                                       uint32_t mipLevels, uint32_t layerCount, VkCommandBuffer commandBuffer,
+                                       VkDevice device, VkCommandPool commandPool, VkQueue graphicsQueue);
         }
     }
 }
