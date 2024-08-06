@@ -20,7 +20,7 @@ namespace pluto
 
         public:
             /// @brief If passing a view:VkImageView, the values in pProperties are invalid
-            ///        and will be automatically created based on the VkImageView.
+            ///        and will be automatically created based on this VkImageView.
             VKTexture2D(RenderContext *ctx, VkImageView view, Properties *&&pProperties);
             void TransitionImage(VkImageLayout newLayout, VkCommandBuffer vkCmdHandle);
 
@@ -28,6 +28,23 @@ namespace pluto
             void *GetHandle() const override;
             void Bind(uint32_t slot = 0) const override;
             void Unbind(uint32_t slot = 0) const override;
+
+        private:
+            void LoadTextureData(const std::string &path);
+            void PrepareTexture();
+            VkImageView GetMipImageView(uint32_t mip);
+
+        private:
+            uint32_t mMipLevels;
+            VkFormat mVKFormat;
+            VkImage mTextureImage;
+            VmaAllocation mAllocation;
+            VkSampler mTextureSampler;
+            VkImageLayout mImageLayout;
+            VkImageView mTextureImageView;
+            VkDescriptorImageInfo mDescriptor;
+            VkDeviceMemory mTextureImageMemory;
+            std::unordered_map<uint32_t, VkImageView> mMipImageViews;
         };
 
         class VKTexture2DArray final : public Texture2DArray
