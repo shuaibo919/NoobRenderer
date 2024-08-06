@@ -9,8 +9,8 @@
 
 #elif defined(__APPLE__)
 
-#ifndef VK_USE_PLATFORM_MACOS_MVK
-#define VK_USE_PLATFORM_MACOS_MVK
+#ifndef VK_USE_PLATFORM_METAL_EXT
+#define VK_USE_PLATFORM_METAL_EXT
 #endif
 
 #elif defined(__linux__)

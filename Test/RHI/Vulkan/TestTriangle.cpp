@@ -31,6 +31,7 @@ int main()
     auto window = Window::Create(ctx, 600, 600, "Test");
     ctx->Init();
     ctx->BindToDevice();
+    ctx->SetMainSwapChain(window->GetSwapChain());
 
     while (!window->ShouldClose())
     {

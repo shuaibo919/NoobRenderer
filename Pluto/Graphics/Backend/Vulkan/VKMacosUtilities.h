@@ -1,0 +1,7 @@
+#ifndef NOOBRENDERER_GRAPHICS_VKMACOSUTILITIES_H
+#define NOOBRENDERER_GRAPHICS_VKMACOSUTILITIES_H
+
+// Pluto Series
+void *GetCAMetalLayer(void *handle);
+
+#endif

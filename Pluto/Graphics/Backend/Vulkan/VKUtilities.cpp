@@ -4,6 +4,8 @@
 
 #if defined(__APPLE__)
 #define GLFW_EXPOSE_NATIVE_COCOA
+#include "Graphics/Backend/Vulkan/VKMacosUtilities.h"
+#include <vulkan/vulkan_metal.h>
 #include <GLFW/glfw3.h>
 #include <GLFW/glfw3native.h>
 #elif defined(_WIN32)
@@ -96,12 +98,13 @@ VkSurfaceKHR VKUtils::CreatePlatformSurface(VkInstance inst, pluto::Window *wind
 #if defined(_WIN32) && defined(WIN32)
     log<Error>("Win32 Not Implemented");
 #elif defined(__APPLE__)
-    // VkMacOSSurfaceCreateInfoMVK surfaceInfo;
-    // surfaceInfo.sType = VK_STRUCTURE_TYPE_MACOS_SURFACE_CREATE_INFO_MVK;
-    // surfaceInfo.pNext = NULL;
-    // surfaceInfo.flags = 0;
-    // surfaceInfo.pView =
-    // vkCreateMacOSSurfaceMVK(inst, &surfaceInfo, nullptr, &surface);
+    // {vkCreateMacOSSurfaceMVK() is deprecated. Use vkCreateMetalSurfaceEXT() from the VK_EXT_metal_surface extension.}
+    VkMetalSurfaceCreateInfoEXT surfaceInfo;
+    surfaceInfo.sType = VK_STRUCTURE_TYPE_METAL_SURFACE_CREATE_INFO_EXT;
+    surfaceInfo.pNext = NULL;
+    surfaceInfo.flags = 0;
+    surfaceInfo.pLayer = (CAMetalLayer *)GetCAMetalLayer((void *)glfwGetCocoaWindow(static_cast<GLFWwindow *>(window->GetWindowPointer())));
+    vkCreateMetalSurfaceEXT(inst, &surfaceInfo, nullptr, &surface);
 #elif defined(__linux__)
     log<Error>("Unix Surface Not Implemented");
 #endif

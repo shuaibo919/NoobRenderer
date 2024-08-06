@@ -34,19 +34,19 @@ bool VKSwapChain::Init(bool vsync)
 {
     auto pRenderCtx = static_cast<VKRenderContext *>(mRenderContext);
     mBasedDevice = pRenderCtx->GetBasedDevice();
-    this->FindImageFormatAndColourSpace();
+
+    if (mSurface == VK_NULL_HANDLE)
+        mSurface = VKUtilities::CreatePlatformSurface(pRenderCtx->GetVKInstance(), mProperties->window);
 
     if (!mSurface)
     {
         log<Error>("Failed to create window surface!");
     }
-
-    if (mSurface == VK_NULL_HANDLE)
-        mSurface = VKUtilities::CreatePlatformSurface(pRenderCtx->GetVKInstance(), mProperties->window);
+    this->FindImageFormatAndColourSpace();
 
     VkBool32 queueIndexSupported;
     vkGetPhysicalDeviceSurfaceSupportKHR(mBasedDevice->GetGPU(), mBasedDevice->GetGraphicsQueueFamilyIndex(), mSurface, &queueIndexSupported);
-    // Swap chain
+
     VkSurfaceCapabilitiesKHR surfaceCapabilities;
     vkGetPhysicalDeviceSurfaceCapabilitiesKHR(mBasedDevice->GetGPU(), mSurface, &surfaceCapabilities);
 
@@ -121,6 +121,7 @@ bool VKSwapChain::Init(bool vsync)
 
     if (mOldSwapChain != VK_NULL_HANDLE)
     {
+        log<Info>("Reset old swapchain");
         for (uint32_t i = 0; i < mSwapChainBufferCount; i++)
         {
             // todo: if cmdbuffer is not finished, wait for it to finish
