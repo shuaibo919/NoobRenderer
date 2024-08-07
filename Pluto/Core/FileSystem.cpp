@@ -36,6 +36,19 @@ std::string FileSystem::GetPhysicalPath(const std::string &path)
     return path;
 }
 
+std::string FileSystem::GetParentPath(const std::string &path)
+{
+    size_t pos = path.find_last_of("/\\");
+
+    if (pos == std::string::npos || pos == 0)
+    {
+        if (path.substr(0, 8) == "//Assets")
+            return path;
+        return "";
+    }
+
+    return path.substr(0, pos);
+}
 const char *FileSystem::GetFileOpenModeString(FileOpenFlags flag)
 {
     if (flag == FileOpenFlags::READ)

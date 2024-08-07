@@ -14,8 +14,8 @@ namespace pluto
     {
     public:
         FileSystem() = delete;
-        FileSystem(token){};
-        ~FileSystem(){};
+        FileSystem(token) {};
+        ~FileSystem() {};
 
     public:
         bool AbsolutePathToFileSystem(const std::string &path, std::string &outFileSystemPath, bool folder = false);
@@ -39,6 +39,7 @@ namespace pluto
         static bool WriteTextFile(const std::string &path, const std::string &text);
 
         // static std::string GetWorkingDirectory();
+        static std::string GetParentPath(const std::string &path);
 
         static bool IsRelativePath(const char *path);
         static bool IsAbsolutePath(const char *path);
