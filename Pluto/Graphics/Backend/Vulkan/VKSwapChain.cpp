@@ -199,8 +199,10 @@ bool VKSwapChain::Init(bool vsync)
         VK_CHECK_RESULT(vkCreateImageView(mBasedDevice->GetDevice(), &viewInfo, VK_NULL_HANDLE, &imageView));
 
         auto properties = new VKTexture2D::Properties();
-        auto swapChainBuffer = Vulkan::CreateTexture(static_cast<uint16_t>(Texture::Type::Texture2D), mRenderContext, imageView, std::move(properties));
-        std::static_pointer_cast<VKTexture2D>(swapChainBuffer)->TransitionImage(VK_IMAGE_LAYOUT_PRESENT_SRC_KHR, VK_NULL_HANDLE);
+        properties->width = mProperties->width;
+        properties->height = mProperties->height;
+        auto swapChainBuffer = std::make_shared<VKTexture2D>(mRenderContext, swapChainImages[i], imageView, std::move(properties));
+        swapChainBuffer->TransitionImage(VK_IMAGE_LAYOUT_PRESENT_SRC_KHR, VK_NULL_HANDLE);
         mSwapChainBuffers.push_back(swapChainBuffer);
     }
 

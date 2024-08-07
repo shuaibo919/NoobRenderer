@@ -100,27 +100,6 @@ namespace pluto::Graphics::Vulkan
         return nullptr;
     }
 
-    Texture::Ptr CreateTexture(uint16_t type, RenderContext *ctx, VkImageView view, void *&&pPropeties)
-    {
-        Texture::Type kind = static_cast<Texture::Type>(type);
-        switch (kind)
-        {
-        case Texture::Type::Texture2D:
-            return std::make_shared<VKTexture2D>(ctx, view, std::move((Texture::Properties *)pPropeties));
-            break;
-        case Texture::Type::Texture2DArray:
-            break;
-        case Texture::Type::TextureCube:
-            break;
-        case Texture::Type::Texture3D:
-            break;
-
-        default:
-            break;
-        }
-        return nullptr;
-    }
-
     Texture::Ptr CreateTexture(uint16_t type, const std::string &path, RenderContext *ctx, void *&&pPropeties)
     {
         Texture::Type kind = static_cast<Texture::Type>(type);

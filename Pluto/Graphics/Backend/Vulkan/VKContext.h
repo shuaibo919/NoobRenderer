@@ -19,7 +19,6 @@ namespace pluto
             SharedPtr<CommandBuffer> CreateCommandBuffer(RenderContext *ctx, void *&&pPropeties);
             SharedPtr<DescriptorSet> CreateDescriptorSet(RenderContext *ctx, void *&&pPropeties);
             SharedPtr<Texture> CreateTexture(uint16_t type, RenderContext *ctx, void *&&pPropeties);
-            SharedPtr<Texture> CreateTexture(uint16_t type, RenderContext *ctx, VkImageView view, void *&&pPropeties);
             SharedPtr<Texture> CreateTexture(uint16_t type, const std::string &path, RenderContext *ctx, void *&&pPropeties);
         }
         class VKRenderDevice;

@@ -51,7 +51,7 @@ namespace pluto
 
             void FindImageFormatAndColourSpace();
 
-            std::vector<SharedPtr<Texture>> mSwapChainBuffers;
+            std::vector<SharedPtr<VKTexture2D>> mSwapChainBuffers;
 
             uint32_t mCurrentBuffer = 0;
             uint32_t mAcquireImageIndex = 0;
