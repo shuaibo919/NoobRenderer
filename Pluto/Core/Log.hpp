@@ -13,8 +13,8 @@ namespace pluto
 
     public:
         Logger() = delete;
-        Logger(token){};
-        ~Logger(){};
+        Logger(token) {};
+        ~Logger() {};
         template <typename... Args>
         void log(const char *message_priority_str, const char *message, Args... args)
         {
@@ -133,6 +133,22 @@ namespace pluto
     {
         pluto::Logger::Instance().log(GetLevelTag<Info>(), message);
     }
+
+    constexpr static std::string _GetStrLineInfo(const char *file, const char *line)
+    {
+        return std::string("file") + file + " line:" + line;
+    }
+
 }
+
+#define STRINGIZE(x) _STRINGIZE(x)
+#define _STRINGIZE(x) #x
+#define PLineInfo _GetStrLineInfo(__FILE__, STRINGIZE(__LINE__)).c_str()
+#define PLog pluto::log
+#define PInfo pluto::Info
+#define PWarn pluto::Warn
+#define PDebug pluto::Debug
+#define PError pluto::Error
+#define PCritical pluto::Critical
 
 #endif

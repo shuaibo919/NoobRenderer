@@ -18,6 +18,19 @@ namespace pluto
             GetMixedHash(seed, rest...);
         }
 
+        template <typename Object, typename... Args>
+        inline std::shared_ptr<Object> protected_make_shared(Args &&...args)
+        {
+            struct helper : public Object
+            {
+                helper(Args &&...args): Object(std::forward<Args>(args)...)
+                {
+                }
+            };
+
+            return std::make_shared<helper>(std::forward<Args>(args)...);
+        }
+
         std::string GetFilePathExtension(const std::string &FileName);
         std::string RemoveFilePathExtension(const std::string &FileName);
         std::string GetFileName(const std::string &FilePath);
