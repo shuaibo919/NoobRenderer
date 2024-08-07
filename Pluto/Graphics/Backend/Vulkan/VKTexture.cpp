@@ -12,7 +12,8 @@ using namespace pluto::Graphics;
 // VK Texture Helper
 namespace vkthelper
 {
-    VkImageView CreateImageView(VkDevice device, VkImage image, VkFormat format, uint32_t mipLevels, VkImageViewType viewType, VkImageAspectFlags aspectMask, uint32_t layerCount, uint32_t baseArrayLayer = 0, uint32_t baseMipLevel = 0)
+    VkImageView CreateImageView(VkDevice device, VkImage image, VkFormat format, uint32_t mipLevels, VkImageViewType viewType, VkImageAspectFlags aspectMask,
+                                uint32_t layerCount, uint32_t baseArrayLayer = 0, uint32_t baseMipLevel = 0)
     {
         VkImageViewCreateInfo viewInfo = {};
         viewInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
@@ -40,7 +41,11 @@ namespace vkthelper
         return imageView;
     }
 
-    VkSampler CreateTextureSampler(VkDevice device, VkFilter magFilter = VK_FILTER_LINEAR, VkFilter minFilter = VK_FILTER_LINEAR, float minLod = 0.0f, float maxLod = 1.0f, bool anisotropyEnable = false, float maxAnisotropy = 1.0f, bool compareEnabled = false, VkSamplerAddressMode modeU = VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE, VkSamplerAddressMode modeV = VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE, VkSamplerAddressMode modeW = VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE)
+    VkSampler CreateTextureSampler(VkDevice device, VkFilter magFilter = VK_FILTER_LINEAR, VkFilter minFilter = VK_FILTER_LINEAR, float minLod = 0.0f,
+                                   float maxLod = 1.0f, bool anisotropyEnable = false, float maxAnisotropy = 1.0f, bool compareEnabled = false,
+                                   VkSamplerAddressMode modeU = VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE,
+                                   VkSamplerAddressMode modeV = VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE,
+                                   VkSamplerAddressMode modeW = VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE)
     {
         VkSampler sampler;
         VkSamplerCreateInfo samplerInfo = {};
@@ -85,7 +90,9 @@ namespace vkthelper
         VK_CHECK_RESULT(vmaCreateImage(pDevice->GetAllocator(), &imageInfo, &allocInfovma, &image, &allocation, &alloc_info));
     }
 
-    void CreateImage(VKRenderDevice *pDevice, uint32_t width, uint32_t height, uint32_t mipLevels, VkFormat format, VkImageType imageType, VkImageTiling tiling, VkImageUsageFlags usage, VkMemoryPropertyFlags properties, VkImage &image, VkDeviceMemory &imageMemory, uint32_t arrayLayers, VkImageCreateFlags flags, VmaAllocation &allocation, uint32_t samples)
+    void CreateImage(VKRenderDevice *pDevice, uint32_t width, uint32_t height, uint32_t mipLevels, VkFormat format, VkImageType imageType,
+                     VkImageTiling tiling, VkImageUsageFlags usage, VkMemoryPropertyFlags properties, VkImage &image, uint32_t arrayLayers, VkImageCreateFlags flags,
+                     VmaAllocation &allocation, uint32_t samples)
 
     {
         VkImageCreateInfo imageInfo = {};
@@ -108,7 +115,8 @@ namespace vkthelper
         CreateImageVma(pDevice, imageInfo, image, allocation);
     }
 
-    void GenerateMipmaps(VKRenderDevice *pDevice, VkImage image, VkFormat imageFormat, int32_t texWidth, int32_t texHeight, uint32_t mipLevels, uint32_t layer = 0, uint32_t layerCount = 1)
+    void GenerateMipmaps(VKRenderDevice *pDevice, VkImage image, VkFormat imageFormat, int32_t texWidth, int32_t texHeight, uint32_t mipLevels,
+                         uint32_t layer = 0, uint32_t layerCount = 1)
     {
         VkFormatProperties formatProperties;
         vkGetPhysicalDeviceFormatProperties(pDevice->GetGPU(), imageFormat, &formatProperties);
@@ -128,7 +136,7 @@ namespace vkthelper
         barrier.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
         barrier.subresourceRange.baseArrayLayer = layer;
         barrier.subresourceRange.layerCount = layerCount;
-        barrier.subresourceRange.levelCount = 1;
+        barrier.subresourceRange.levelCount = VK_REMAINING_MIP_LEVELS;
 
         int32_t mipWidth = texWidth;
         int32_t mipHeight = texHeight;
@@ -226,17 +234,9 @@ void *VKTexture2D::GetHandle() const
     return nullptr;
 }
 
-void VKTexture2D::Bind(uint32_t slot) const
-{
-}
-
-void VKTexture2D::Unbind(uint32_t slot) const
-{
-}
-
 VKTexture2D::VKTexture2D(RenderContext *ctx, Properties *&&pProperties)
     : Texture2D(ctx, std::move(pProperties)), mTextureImage(VK_NULL_HANDLE),
-      mTextureImageView(VK_NULL_HANDLE), mTextureSampler(VK_NULL_HANDLE)
+      mTextureImageView(VK_NULL_HANDLE), mTextureSampler(VK_NULL_HANDLE), mImageLayout(VK_IMAGE_LAYOUT_UNDEFINED)
 {
     this->PrepareTexture();
     this->UpdateDescriptor();
@@ -253,7 +253,6 @@ VKTexture2D::VKTexture2D(RenderContext *ctx, VkImage img, VkImageView view, VkFo
     : Texture2D(ctx, std::move(pProperties)), mTextureImage(img), mTextureImageView(view),
       mTextureSampler(VK_NULL_HANDLE), mVKFormat(format), mImageLayout(VK_IMAGE_LAYOUT_UNDEFINED)
 {
-    mProperties->format = VKUtilities::GetRHIFormat(format);
     UpdateDescriptor();
 }
 
@@ -264,6 +263,36 @@ VKTexture2D::~VKTexture2D()
 
 void VKTexture2D::Destroy()
 {
+    auto pBasedDevice = static_cast<VKRenderContext *>(mRenderContext)->GetBasedDevice();
+    if (mTextureSampler != VK_NULL_HANDLE)
+    {
+        vkDestroySampler(pBasedDevice->GetDevice(), mTextureSampler, nullptr);
+    }
+
+    if (mTextureImageView)
+    {
+        vkDestroyImageView(pBasedDevice->GetDevice(), mTextureImageView, nullptr);
+    }
+
+    for (auto &view : mMipImageViews)
+    {
+        if (view.second)
+        {
+            vkDestroyImageView(pBasedDevice->GetDevice(), view.second, nullptr);
+        }
+    }
+
+    mMipImageViews.clear();
+
+    auto image = mTextureImage;
+    auto alloc = mAllocation;
+
+    if (image != VK_NULL_HANDLE && alloc != VK_NULL_HANDLE)
+    {
+        vmaDestroyImage(pBasedDevice->GetAllocator(), image, alloc);
+    }
+
+    mImageLayout = VK_IMAGE_LAYOUT_UNDEFINED;
 }
 
 void VKTexture2D::UpdateDescriptor()
@@ -287,7 +316,7 @@ void VKTexture2D::PrepareTexture()
     auto flags = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_TRANSFER_SRC_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT;
     vkthelper::CreateImage(pBasedDevice, mProperties->width, mProperties->height, mMipLevels, mVKFormat,
                            VK_IMAGE_TYPE_2D, VK_IMAGE_TILING_OPTIMAL, flags, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
-                           mTextureImage, mTextureImageMemory, 1, 0, mAllocation, mProperties->samples);
+                           mTextureImage, 1, 0, mAllocation, mProperties->samples);
 
     mTextureImageView = vkthelper::CreateImageView(pBasedDevice->GetDevice(), mTextureImage, mVKFormat, mMipLevels, VK_IMAGE_VIEW_TYPE_2D, VK_IMAGE_ASPECT_COLOR_BIT, 1);
     mTextureSampler = vkthelper::CreateTextureSampler(pBasedDevice->GetDevice(),
@@ -339,7 +368,7 @@ void VKTexture2D::PrepareTexture(const std::string &path)
     auto flag = VK_IMAGE_USAGE_TRANSFER_SRC_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_STORAGE_BIT;
     vkthelper::CreateImage(pBasedDevice, mProperties->width, mProperties->height, mMipLevels, mVKFormat,
                            VK_IMAGE_TYPE_2D, VK_IMAGE_TILING_OPTIMAL, flag, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
-                           mTextureImage, mTextureImageMemory, 1, 0, mAllocation, mProperties->samples);
+                           mTextureImage, 1, 0, mAllocation, mProperties->samples);
 
     VKUtilities::TransitionImageLayout(mTextureImage, mVKFormat, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, mMipLevels, 1,
                                        nullptr, pBasedDevice->GetDevice(), pBasedDevice->GetCommandPool()->GetHandle(), pBasedDevice->GetGraphicsQueue());

@@ -8,7 +8,7 @@ namespace pluto
 {
     namespace Graphics
     {
-        class VKTexture2D final : public Texture2D
+        class VKTexture2D : public Texture2D
         {
             friend class VKContext;
             friend class VKSwapChain;
@@ -22,15 +22,15 @@ namespace pluto
         protected:
             /// @brief This protected part is intended for use with swapchain to create a swapchain image.
             ///        The Texture2D::Properties may not be complete in this context,
-            ///        with only width, height, and format being considered valid properties.
+            ///        with only width, height being considered valid properties.
             ///        Todo: A better solution.
             VKTexture2D(RenderContext *ctx, VkImage img, VkImageView view, VkFormat format, Properties *&&pProperties);
             void TransitionImage(VkImageLayout newLayout, VkCommandBuffer vkCmdHandle);
 
         public:
             void *GetHandle() const override;
-            void Bind(uint32_t slot = 0) const override;
-            void Unbind(uint32_t slot = 0) const override;
+            void Bind(uint32_t slot = 0) const override {};
+            void Unbind(uint32_t slot = 0) const override {};
 
         private:
             void Destroy();
@@ -43,12 +43,11 @@ namespace pluto
             uint32_t mMipLevels;
             VkFormat mVKFormat;
             VkImage mTextureImage;
-            VmaAllocation mAllocation;
             VkSampler mTextureSampler;
             VkImageLayout mImageLayout;
+            VmaAllocation mAllocation{};
             VkImageView mTextureImageView;
             VkDescriptorImageInfo mDescriptor;
-            VkDeviceMemory mTextureImageMemory;
             std::unordered_map<uint32_t, VkImageView> mMipImageViews;
         };
 
