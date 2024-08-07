@@ -544,3 +544,71 @@ void VKUtils::EndSingleTimeCommands(VkDevice device, VkCommandPool commandPool, 
     vkFreeCommandBuffers(device,
                          commandPool, 1, &commandBuffer);
 }
+
+void VKUtils::CopyBufferToImage(VkBuffer buffer, VkImage image, uint16_t width, uint16_t height, VkDevice device, VkCommandPool commandPool, VkQueue graphicsQueue)
+{
+    VkCommandBuffer commandBuffer = BeginSingleTimeCommands(device, commandPool);
+
+    VkBufferImageCopy region;
+    region.bufferOffset = 0;
+    region.bufferRowLength = 0;
+    region.bufferImageHeight = 0;
+    region.imageSubresource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+    region.imageSubresource.mipLevel = 0;
+    region.imageSubresource.baseArrayLayer = 0;
+    region.imageSubresource.layerCount = 1;
+    region.imageOffset = {0, 0, 0};
+    region.imageExtent = {
+        width,
+        height,
+        1};
+
+    vkCmdCopyBufferToImage(commandBuffer, buffer, image, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &region);
+
+    VKUtilities::EndSingleTimeCommands(device, commandPool, graphicsQueue, commandBuffer);
+}
+
+pluto::Graphics::RHIFormat VKUtils::GetRHIFormat(VkFormat format)
+{
+    switch (format)
+    {
+    case VK_FORMAT_R8_SRGB:
+        return RHIFormat::R8Unorm;
+    case VK_FORMAT_R8G8_SRGB:
+        return RHIFormat::R8G8Unorm;
+    case VK_FORMAT_R8G8B8_SRGB:
+        return RHIFormat::R8G8B8Unorm;
+    case VK_FORMAT_R8G8B8A8_SRGB:
+        return RHIFormat::R8G8B8A8Unorm;
+    case VK_FORMAT_R16G16B16_SFLOAT:
+        return RHIFormat::R16G16B16Float;
+    case VK_FORMAT_R16G16B16A16_SFLOAT:
+        return RHIFormat::R16G16B16A16Float;
+    case VK_FORMAT_R32G32B32_SFLOAT:
+        return RHIFormat::R32G32B32Float;
+    case VK_FORMAT_R32G32B32A32_SFLOAT:
+        return RHIFormat::R32G32B32A32Float;
+    case VK_FORMAT_R8_UNORM:
+        return RHIFormat::R8Unorm;
+    case VK_FORMAT_R8G8_UNORM:
+        return RHIFormat::R8G8Unorm;
+    case VK_FORMAT_R8G8B8A8_UNORM:
+        return RHIFormat::R8G8B8A8Unorm;
+    case VK_FORMAT_B10G11R11_UFLOAT_PACK32:
+        return RHIFormat::R11G11B10Float;
+    case VK_FORMAT_A2R10G10B10_UNORM_PACK32:
+        return RHIFormat::R10G10B10A2Unorm;
+    case VK_FORMAT_D16_UNORM:
+        return RHIFormat::Depth16Unorm;
+    case VK_FORMAT_D32_SFLOAT:
+        return RHIFormat::Depth32Float;
+    case VK_FORMAT_D24_UNORM_S8_UINT:
+        return RHIFormat::Depth24UnormStencil8UInt;
+    case VK_FORMAT_D32_SFLOAT_S8_UINT:
+        return RHIFormat::Depth32FloatStencil8UInt;
+    default:
+        pluto::log<pluto::Error>("[Texture] Unsupported texture type!");
+        break;
+    }
+    return RHIFormat::R8G8B8A8Unorm;
+}

@@ -15,10 +15,13 @@ namespace pluto
             VkPresentModeKHR ChoosePresentMode(std::vector<VkPresentModeKHR> availablePresentModes, bool vsync);
             bool HasStencilComponent(VkFormat format);
             VkFormat GetVKFormat(const RHIFormat format, bool srgb);
+            RHIFormat GetRHIFormat(VkFormat format);
             VkSamplerAddressMode GetVkTextureWrap(const TextureWrap wrap);
             VkFilter GetVkTextureFilter(const TextureFilter filter);
             VkCommandBuffer BeginSingleTimeCommands(VkDevice device, VkCommandPool commandPool);
             void EndSingleTimeCommands(VkDevice device, VkCommandPool commandPool, VkQueue graphicsQueue, VkCommandBuffer commandBuffer);
+            void CopyBufferToImage(VkBuffer buffer, VkImage image, uint16_t width, uint16_t height,
+                                   VkDevice device, VkCommandPool commandPool, VkQueue graphicsQueue);
             bool IsDepthFormat(VkFormat format);
             bool IsStencilFormat(VkFormat format);
             VkPipelineStageFlags LayoutToAccessMask(const VkImageLayout layout, const bool isDestination);
