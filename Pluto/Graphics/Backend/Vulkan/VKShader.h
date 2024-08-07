@@ -1,10 +1,7 @@
 #pragma once
 #include "Graphics/RHI/Shader.h"
-#include "Graphics/Backend/OpenGL/GLUniformBuffer.h"
 
-#include <glm/ext/matrix_float3x3.hpp>
-#include <glm/ext/matrix_float4x4.hpp>
-#include <map>
+#include "Graphics/Backend/Vulkan/Vk.h"
 
 namespace pluto
 {
@@ -22,6 +19,16 @@ namespace pluto
             void Bind() const override;
             void Unbind() const override;
             bool IsCompiled() override;
+
+        private:
+            bool LoadSpriv(const std::string &name, uint32_t *source, uint32_t fileSize, ShaderType shaderType, int currentShaderStage);
+
+        private:
+            bool mCompiled;
+            uint8_t mStageCount;
+            VkPipelineLayout mPipelineLayout;
+            VkPipelineShaderStageCreateInfo *mShaderStages;
+            std::vector<VkDescriptorSetLayout> mDescriptorSetLayouts;
         };
     }
 }
