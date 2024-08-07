@@ -181,11 +181,7 @@ bool VKSwapChain::Init(bool vsync)
         VkImageViewCreateInfo viewInfo{};
         viewInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
         viewInfo.format = mColourFormat;
-#if defined(__APPLE__)
-        viewInfo.components = {VK_COMPONENT_SWIZZLE_IDENTITY, VK_COMPONENT_SWIZZLE_IDENTITY, VK_COMPONENT_SWIZZLE_IDENTITY, VK_COMPONENT_SWIZZLE_IDENTITY};
-#else
         viewInfo.components = {VK_COMPONENT_SWIZZLE_R, VK_COMPONENT_SWIZZLE_G, VK_COMPONENT_SWIZZLE_B, VK_COMPONENT_SWIZZLE_A};
-#endif
         viewInfo.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
         viewInfo.subresourceRange.baseMipLevel = 0;
         viewInfo.subresourceRange.levelCount = 1;
@@ -201,7 +197,7 @@ bool VKSwapChain::Init(bool vsync)
         auto properties = new VKTexture2D::Properties();
         properties->width = mProperties->width;
         properties->height = mProperties->height;
-        auto swapChainBuffer = std::make_shared<VKTexture2D>(mRenderContext, swapChainImages[i], imageView, std::move(properties));
+        auto swapChainBuffer = utilities::protected_make_shared<VKTexture2D>(mRenderContext, swapChainImages[i], imageView, mColourFormat, std::move(properties));
         swapChainBuffer->TransitionImage(VK_IMAGE_LAYOUT_PRESENT_SRC_KHR, VK_NULL_HANDLE);
         mSwapChainBuffers.push_back(swapChainBuffer);
     }
@@ -248,19 +244,20 @@ void VKSwapChain::FindImageFormatAndColourSpace()
     }
     else
     {
-        bool found_B8G8R8A8_UNORM = false;
+        bool found = false;
         for (auto &&surfaceFormat : surfaceFormats)
         {
             if (surfaceFormat.format == VK_FORMAT_B8G8R8A8_UNORM)
             {
                 mColourFormat = surfaceFormat.format;
                 mColourSpace = surfaceFormat.colorSpace;
-                found_B8G8R8A8_UNORM = true;
+                found = true;
                 break;
             }
         }
-        if (!found_B8G8R8A8_UNORM)
+        if (!found)
         {
+            PLog<PInfo>("Not found default format, use the first");
             mColourFormat = surfaceFormats[0].format;
             mColourSpace = surfaceFormats[0].colorSpace;
         }
