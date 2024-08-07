@@ -657,3 +657,36 @@ pluto::Graphics::RHIFormat VKUtils::GetRHIFormat(VkFormat format)
     }
     return RHIFormat::R8G8B8A8Unorm;
 }
+
+VkShaderStageFlagBits VKUtils::GetShaderType(const ShaderType &shaderName)
+{
+    switch (shaderName)
+    {
+    case ShaderType::Vertex:
+        return VK_SHADER_STAGE_VERTEX_BIT;
+    case ShaderType::Geometry:
+        return VK_SHADER_STAGE_GEOMETRY_BIT;
+    case ShaderType::Fragment:
+        return VK_SHADER_STAGE_FRAGMENT_BIT;
+    case ShaderType::Compute:
+        return VK_SHADER_STAGE_COMPUTE_BIT;
+    default:
+        PLog<PError>("[%s] Unsupported shader type: ShaderType::Unkonwn ", PLineInfo);
+        break;
+    }
+    return VK_SHADER_STAGE_VERTEX_BIT;
+}
+
+void VKUtils::SetDebugUtilsObjectNameInfo(VkInstance inst, const VkDevice device, const VkObjectType objectType, const char *name, const void *handle)
+{
+    VkDebugUtilsObjectNameInfoEXT nameInfo;
+    nameInfo.sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_OBJECT_NAME_INFO_EXT;
+    nameInfo.objectType = objectType;
+    nameInfo.pObjectName = name;
+    nameInfo.objectHandle = (uint64_t)handle;
+    nameInfo.pNext = VK_NULL_HANDLE;
+
+    auto pSetDebugUtilsObjectNameEXT = (PFN_vkSetDebugUtilsObjectNameEXT)(vkGetInstanceProcAddr(inst, "vkSetDebugUtilsObjectNameEXT"));
+    if (pSetDebugUtilsObjectNameEXT != nullptr)
+        VK_CHECK_RESULT(pSetDebugUtilsObjectNameEXT(device, &nameInfo));
+}

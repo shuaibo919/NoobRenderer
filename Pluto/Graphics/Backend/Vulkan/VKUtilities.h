@@ -24,7 +24,9 @@ namespace pluto
                                    VkDevice device, VkCommandPool commandPool, VkQueue graphicsQueue);
             bool IsDepthFormat(VkFormat format);
             bool IsStencilFormat(VkFormat format);
+            VkShaderStageFlagBits GetShaderType(const ShaderType &shaderName);
             VkPipelineStageFlags LayoutToAccessMask(const VkImageLayout layout, const bool isDestination);
+            void SetDebugUtilsObjectNameInfo(VkInstance inst, const VkDevice device, const VkObjectType objectType, const char *name, const void *handle);
             VkPipelineStageFlags AccessFlagsToPipelineStage(VkAccessFlags accessFlags, const VkPipelineStageFlags stageFlags);
             void TransitionImageLayout(VkImage image, VkFormat format, VkImageLayout oldImageLayout, VkImageLayout newImageLayout,
                                        uint32_t mipLevels, uint32_t layerCount, VkCommandBuffer commandBuffer,
