@@ -14,6 +14,50 @@
 
 #define VKUtils pluto::Graphics::VKUtilities
 
+constexpr std::string GetVKFormatString(VkFormat format)
+{
+    switch (format)
+    {
+    case VK_FORMAT_R8_SRGB:
+        return "VK_FORMAT_R8_SRGB";
+    case VK_FORMAT_R8G8_SRGB:
+        return "VK_FORMAT_R8G8_SRGB";
+    case VK_FORMAT_R8G8B8_SRGB:
+        return "VK_FORMAT_R8G8B8_SRGB";
+    case VK_FORMAT_R8G8B8A8_SRGB:
+        return "VK_FORMAT_R8G8B8A8_SRGB";
+    case VK_FORMAT_R16G16B16_SFLOAT:
+        return "VK_FORMAT_R8G8B8A8_SRGB";
+    case VK_FORMAT_R16G16B16A16_SFLOAT:
+        return "VK_FORMAT_R16G16B16A16_SFLOAT";
+    case VK_FORMAT_R32G32B32_SFLOAT:
+        return "VK_FORMAT_R32G32B32_SFLOAT";
+    case VK_FORMAT_R32G32B32A32_SFLOAT:
+        return "VK_FORMAT_R32G32B32A32_SFLOAT";
+    case VK_FORMAT_R8_UNORM:
+        return "VK_FORMAT_R8_UNORM";
+    case VK_FORMAT_R8G8_UNORM:
+        return "VK_FORMAT_R8G8_UNORM";
+    case VK_FORMAT_R8G8B8A8_UNORM:
+        return "VK_FORMAT_R8G8B8A8_UNORM";
+    case VK_FORMAT_B10G11R11_UFLOAT_PACK32:
+        return "VK_FORMAT_B10G11R11_UFLOAT_PACK32";
+    case VK_FORMAT_A2R10G10B10_UNORM_PACK32:
+        return "VK_FORMAT_A2R10G10B10_UNORM_PACK32";
+    case VK_FORMAT_D16_UNORM:
+        return "VK_FORMAT_D16_UNORM";
+    case VK_FORMAT_D32_SFLOAT:
+        return "VK_FORMAT_D32_SFLOAT";
+    case VK_FORMAT_D24_UNORM_S8_UINT:
+        return "VK_FORMAT_D24_UNORM_S8_UINT";
+    case VK_FORMAT_D32_SFLOAT_S8_UINT:
+        return "VK_FORMAT_D32_SFLOAT_S8_UINT";
+    default:
+        break;
+    }
+    return "Unkonwn";
+}
+
 std::string VKUtils::GetErrorString(VkResult result)
 {
     switch (result)
@@ -443,6 +487,7 @@ void VKUtils::TransitionImageLayout(VkImage image, VkFormat format, VkImageLayou
     subresourceRange.levelCount = mipLevels;
     subresourceRange.baseArrayLayer = 0;
     subresourceRange.layerCount = layerCount;
+    subresourceRange.levelCount = VK_REMAINING_MIP_LEVELS;
 
     // Create an image barrier object
     VkImageMemoryBarrier imageMemoryBarrier = {};
@@ -607,7 +652,7 @@ pluto::Graphics::RHIFormat VKUtils::GetRHIFormat(VkFormat format)
     case VK_FORMAT_D32_SFLOAT_S8_UINT:
         return RHIFormat::Depth32FloatStencil8UInt;
     default:
-        pluto::log<pluto::Error>("[Texture] Unsupported texture type!");
+        PLog<PError>("[%s] Unsupported texture type: %s|%d  ", PLineInfo, GetVKFormatString(format).c_str(), format);
         break;
     }
     return RHIFormat::R8G8B8A8Unorm;
