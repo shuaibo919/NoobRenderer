@@ -32,12 +32,15 @@ namespace pluto
             void Bind(uint32_t slot = 0) const override {};
             void Unbind(uint32_t slot = 0) const override {};
 
+        public:
+            VkImageView GetMipImageView(uint32_t mip);
+            VkImageView GetImageView() const { return mTextureImageView; }
+
         private:
             void Destroy();
             void UpdateDescriptor();
             void PrepareTexture();
             void PrepareTexture(const std::string &path);
-            VkImageView GetMipImageView(uint32_t mip);
 
         private:
             uint32_t mMipLevels;
@@ -63,6 +66,8 @@ namespace pluto
 
         public:
             void TransitionImage(VkImageLayout newLayout, VkCommandBuffer vkCmdHandle);
+            /* TODO */
+            VkImageView GetImageView(uint32_t layer) const { return VK_NULL_HANDLE; }
 
         public:
             void *GetHandle() const override;
@@ -83,6 +88,10 @@ namespace pluto
         public:
             void TransitionImage(VkImageLayout newLayout, VkCommandBuffer vkCmdHandle);
 
+            /* TODO */
+            VkImageView GetImageView(uint32_t layer) const { return VK_NULL_HANDLE; }
+            VkImageView GetImageView(uint32_t layer, uint32_t mip) const { return VK_NULL_HANDLE; }
+
         public:
             void *GetHandle() const override;
             void Bind(uint32_t slot = 0) const override;
@@ -101,6 +110,8 @@ namespace pluto
 
         public:
             void TransitionImage(VkImageLayout newLayout, VkCommandBuffer vkCmdHandle);
+            /* TODO */
+            VkImageView GetImageView(uint32_t layer) const { return VK_NULL_HANDLE; }
 
         public:
             void *GetHandle() const override;
