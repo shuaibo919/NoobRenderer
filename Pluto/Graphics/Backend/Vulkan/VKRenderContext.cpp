@@ -107,3 +107,18 @@ SwapChain::Ptr VKRenderContext::GetSwapChain()
 {
     return mContext->mSwapChain;
 }
+
+void VKRenderContext::PushDestoryTask(std::function<void()> &&task)
+{
+    mDelayedDestoryTasks.push_back(std::forward<std::function<void()>>(task));
+}
+
+void VKRenderContext::ExecuteDestoryTasks()
+{
+    for (auto &deleteFunc : mDelayedDestoryTasks)
+    {
+        deleteFunc();
+    }
+
+    mDelayedDestoryTasks.clear();
+}

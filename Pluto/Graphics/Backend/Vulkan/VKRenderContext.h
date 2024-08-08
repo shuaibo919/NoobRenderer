@@ -41,9 +41,12 @@ namespace pluto
         public:
             VKRenderDevice *GetBasedDevice() const;
             VkInstance GetVKInstance() const;
+            void PushDestoryTask(std::function<void()> &&task);
+            void ExecuteDestoryTasks();
 
         private:
             VKContext *mContext;
+            std::vector<std::function<void()>> mDelayedDestoryTasks;
         };
     }
 }
