@@ -5,16 +5,17 @@ namespace pluto
 {
     namespace Graphics
     {
+        class VKRenderContext;
         class VKBuffer
         {
         public:
-            VKBuffer(VkBufferUsageFlags usage, VkMemoryPropertyFlags memoryProperyFlags, uint32_t size, const void *data);
-            VKBuffer();
+            VKBuffer(VKRenderContext *pContext, VkBufferUsageFlags usage, VkMemoryPropertyFlags memoryProperyFlags, uint32_t size, const void *data);
+            VKBuffer(VKRenderContext *pContext);
             virtual ~VKBuffer();
 
             void Init(VkBufferUsageFlags usage, VkMemoryPropertyFlags memoryProperyFlags, uint32_t size, const void *data);
             void Resize(uint32_t size, const void *data);
-            void SetData(uint32_t size, const void *data, bool addBarrier = false);
+            void SetData(uint32_t size, const void *data, bool useBarrier = false);
             const VkBuffer &GetBuffer() const { return mBuffer; }
 
             const VkDescriptorBufferInfo &GetBufferInfo() const { return mDesciptorBufferInfo; };
@@ -29,6 +30,8 @@ namespace pluto
             void SetDeleteWithoutQueue(bool value) { mDeleteWithoutQueue = value; }
 
         protected:
+            VKRenderContext *mContext;
+
             VkBuffer mBuffer{};
             VkDeviceMemory mMemory{};
             VkDescriptorBufferInfo mDesciptorBufferInfo{};
