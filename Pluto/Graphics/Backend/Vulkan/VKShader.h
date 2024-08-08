@@ -16,12 +16,17 @@ namespace pluto
             ~VKShader();
 
         public:
-            void Bind() const override;
-            void Unbind() const override;
-            bool IsCompiled() override;
+            void Bind() const override {};
+            void Unbind() const override {};
+
+        public:
+            bool IsCompiled() override { return mCompiled; }
+            uint8_t GetStageCount() { return mStageCount; }
 
         private:
+            void ReadReflectInfo(ShaderJson &info, ShaderType type) override;
             bool LoadSpriv(const std::string &name, uint32_t *source, uint32_t fileSize, ShaderType shaderType, int currentShaderStage);
+            void PreparePipelineLayout();
 
         private:
             bool mCompiled;
@@ -29,6 +34,7 @@ namespace pluto
             VkPipelineLayout mPipelineLayout;
             VkPipelineShaderStageCreateInfo *mShaderStages;
             std::vector<VkDescriptorSetLayout> mDescriptorSetLayouts;
+            std::vector<std::vector<DescriptorLayoutInfo>> mDescriptorLayoutInfos;
         };
     }
 }
