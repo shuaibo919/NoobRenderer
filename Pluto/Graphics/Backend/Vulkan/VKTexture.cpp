@@ -338,7 +338,8 @@ void VKTexture2D::PrepareTexture()
 
 void VKTexture2D::PrepareTexture(const std::string &path)
 {
-    auto pBasedDevice = static_cast<VKRenderContext *>(mRenderContext)->GetBasedDevice();
+    auto pContext = static_cast<VKRenderContext *>(mRenderContext);
+    auto pBasedDevice = pContext->GetBasedDevice();
     uint8_t *pixels = nullptr;
     mProperties->width = 0;
     mProperties->height = 0;
@@ -360,7 +361,7 @@ void VKTexture2D::PrepareTexture(const std::string &path)
     if (!(mProperties->flags & TextureFlags::TextureCreateMips) && mProperties->generateMipMaps == false)
         mMipLevels = 1;
 
-    VKBuffer *stagingBuffer = new VKBuffer(VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT, static_cast<uint32_t>(imageSize), pixels);
+    VKBuffer *stagingBuffer = new VKBuffer(pContext, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT, static_cast<uint32_t>(imageSize), pixels);
     stagingBuffer->SetDeleteWithoutQueue(true);
 
     delete[] pixels;
