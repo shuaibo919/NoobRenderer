@@ -44,7 +44,7 @@ namespace pluto
             inline static Shader *sCurrently{nullptr};
 
         protected:
-            void ReadReflectInfo(ShaderJson &info, ShaderType type);
+            virtual void ReadReflectInfo(ShaderJson &info, ShaderType type);
 
         protected:
             Properties *mProperties;
