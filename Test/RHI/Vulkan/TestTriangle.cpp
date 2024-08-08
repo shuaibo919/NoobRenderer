@@ -33,6 +33,25 @@ int main()
     ctx->BindToDevice();
     ctx->SetMainSwapChain(window->GetSwapChain());
 
+    VertexBuffer::Ptr vertexBuffer = VertexBuffer::Builder()
+                                         .SetVertexData(vertices, 3, sizeof(vertices))
+                                         .SetUsage(BufferUsage::Static)
+                                         .SetAttribute(VertexAttributeType::Position, 0, ElementType::Float3, 0, 3 * sizeof(float))
+                                         .Create(ctx);
+
+    Shader::Ptr shader = Shader::Builder()
+                             .SetFile("Asset/Shader/TestTriangle.shader.json")
+                             .Create(ctx);
+
+    Texture2D::Ptr colorTarget = Texture::Builder()
+                                     .SetBase(600, 600, 1, RHIFormat::R16G16B16A16Float)
+                                     .SetFilter(TextureFilter::Linear, TextureFilter::Linear)
+                                     .SetWrap(TextureWrap::ClampToedge)
+                                     .Create(Texture::Type::Texture2D, ctx);
+
+    CommandBuffer::Ptr cmdBuffer = CommandBuffer::Builder()
+                                       .Create(ctx);
+
     while (!window->ShouldClose())
     {
         {
