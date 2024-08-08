@@ -176,6 +176,7 @@ pluto::Graphics::ShaderDataType SPIRVTypeToDataType(const spirv_cross::SPIRType 
 
 nlohmann::json ReflectFromSpirv(std::vector<uint32_t> spv, std::string type, std::string &toGLSL)
 {
+    uint32_t max_set;
     nlohmann::json j;
     spirv_cross::CompilerGLSL *glsl = new spirv_cross::CompilerGLSL(std::move(spv));
 
@@ -204,6 +205,7 @@ nlohmann::json ReflectFromSpirv(std::vector<uint32_t> spv, std::string type, std
         tmp_j["name"] = resource.name;
         tmp_j["shaderType"] = GetShaderType(type);
         SampledImages.push_back(tmp_j);
+        max_set = std::max(max_set, set);
     }
     j["SampledImages"] = SampledImages;
 
@@ -226,6 +228,15 @@ nlohmann::json ReflectFromSpirv(std::vector<uint32_t> spv, std::string type, std
         tmp_j["shaderType"] = GetShaderType(type);
         tmp_j["offset"] = 0;
         tmp_j["members"] = nlohmann::json();
+        tmp_j["structSize"] = bufferSize;
+        tmp_j["dimension"] = bufferType.array.size();
+        tmp_j["per_dimension_size"] = nlohmann::json::array();
+        for (int i = 0; i < bufferType.array.size(); i++)
+        {
+            // https://github.com/KhronosGroup/SPIRV-Cross/wiki/Reflection-API-user-guide#querying-array-types
+            tmp_j["per_dimension_size"].push_back(uint32_t(bufferType.array[i]));
+        }
+
         for (int i = 0; i < memberCount; ++i)
         {
             nlohmann::json member;
@@ -244,6 +255,7 @@ nlohmann::json ReflectFromSpirv(std::vector<uint32_t> spv, std::string type, std
         }
 
         UniformBuffers.push_back(tmp_j);
+        max_set = std::max(max_set, set);
     }
     j["UniformBuffers"] = UniformBuffers;
 
@@ -292,8 +304,10 @@ nlohmann::json ReflectFromSpirv(std::vector<uint32_t> spv, std::string type, std
             tmp_j["members"].push_back(member);
         }
         PushConstantBuffers.push_back(tmp_j);
+        max_set = std::max(max_set, set);
     }
     j["PushConstantBuffers"] = PushConstantBuffers;
+    j["max_set"] = max_set;
 
     spirv_cross::CompilerGLSL::Options options;
     options.version = 410;
