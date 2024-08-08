@@ -7,7 +7,7 @@ project(Pluto)
 
 # Build options
 option(BUILD_WITH_TESTS "Generate Tests" ON)
-option(BUILD_WITH_VULKAN_BACKEND "Vulkan(ON) / OpenGL(OFF)" ON)
+option(BUILD_WITH_VULKAN_BACKEND "Vulkan(ON) / OpenGL(OFF)" OFF)
 
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
     add_definitions(-DPLUTO_DEBUG)
