@@ -690,3 +690,22 @@ void VKUtils::SetDebugUtilsObjectNameInfo(VkInstance inst, const VkDevice device
     if (pSetDebugUtilsObjectNameEXT != nullptr)
         VK_CHECK_RESULT(pSetDebugUtilsObjectNameEXT(device, &nameInfo));
 }
+
+VkDescriptorType VKUtils::GetDescriptorType(DescriptorType type)
+{
+    switch (type)
+    {
+    case DescriptorType::UniformBuffer:
+        return VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+    case DescriptorType::UniformBufferDynamic:
+        return VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC;
+    case DescriptorType::ImageSampler:
+        return VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+    case DescriptorType::ImageStorage:
+        return VK_DESCRIPTOR_TYPE_STORAGE_IMAGE;
+    default:
+        break;
+    }
+    PLog<PError>("[%s] Unsupported Descriptor Type ", PLineInfo);
+    return VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+}
