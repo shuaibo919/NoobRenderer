@@ -1,6 +1,7 @@
 #pragma once
 #include "Graphics/RHI/Framebuffer.h"
 
+#include "Graphics/Backend/Vulkan/Vk.h"
 namespace pluto
 {
     namespace Graphics
@@ -14,8 +15,11 @@ namespace pluto
             ~VKFramebuffer();
 
         public:
-            void Validate() override;
+            void Validate() override {};
             void SetClearColor(const glm::vec4 &color) override;
+
+        private:
+            VkFramebuffer mFramebuffer;
         };
     }
 }
