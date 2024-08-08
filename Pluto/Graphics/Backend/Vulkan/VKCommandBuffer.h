@@ -43,6 +43,9 @@ namespace pluto
             void UnBindPipeline() override;
             void EndCurrentRenderPass() override;
 
+        public:
+            VkCommandBuffer GetHandle() const { return mCommandBuffer; }
+
         private:
             bool mPrimary{false};
             SharedPtr<VKFence> mFence{nullptr};
