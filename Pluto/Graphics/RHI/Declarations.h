@@ -305,7 +305,7 @@ namespace pluto
             ShaderType stage;
             uint32_t binding = 0;
             uint32_t setID = 0;
-            uint32_t count = 1;
+            std::vector<uint32_t> counts;
         };
 
         struct DescriptorLayout
