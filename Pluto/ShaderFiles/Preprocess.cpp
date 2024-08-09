@@ -112,17 +112,12 @@ pluto::Graphics::ShaderDataType VertexToShaderDataType(const spirv_cross::SPIRTy
         {
         case 1:
             return ShaderDataType::Float32;
-
-            break;
         case 2:
             return ShaderDataType::Vec2;
-            break;
         case 3:
             return ShaderDataType::Vec3;
-            break;
         case 4:
             return ShaderDataType::Vec4;
-            break;
         }
     case spirv_cross::SPIRType::Double:
         break;
@@ -190,6 +185,11 @@ nlohmann::json ReflectFromSpirv(std::vector<uint32_t> spv, std::string type, std
         {
             const spirv_cross::SPIRType &InputType = glsl->get_type(resource.type_id);
             VertexInput.push_back(static_cast<uint8_t>(VertexToShaderDataType(InputType)));
+
+            Description.binding = comp.get_decoration(resource.id, spv::DecorationBinding);
+            Description.location = comp.get_decoration(resource.id, spv::DecorationLocation);
+            Description.offset = m_VertexInputStride;
+            Description.format = GetVulkanFormat(InputType);
         }
         j["VertexInput"] = VertexInput;
     }
