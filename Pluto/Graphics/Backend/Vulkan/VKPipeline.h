@@ -1,26 +1,29 @@
 #pragma once
 #include "Graphics/RHI/Pipeline.h"
-
+#include "Graphics/Backend/Vulkan/Vk.h"
 namespace pluto
 {
     namespace Graphics
     {
-        class Framebuffer;
-        class VertexBuffer;
-        class CommandBuffer;
-
+        class VKShader;
         class VKPipeline : public Pipeline
         {
         public:
             VKPipeline(RenderContext *ctx, Properties *&&pProperties);
             ~VKPipeline();
-            void BindVertexArray(SharedPtr<VertexBuffer> vbo);
-            void Preparation();
 
         public:
             void Bind(const SharedPtr<CommandBuffer> &commandBuffer, uint32_t layer = 0) override;
             void End(const SharedPtr<CommandBuffer> &commandBuffer) override;
             void ClearRenderTargets(const SharedPtr<CommandBuffer> &commandBuffer) override;
+
+        private:
+            void TransitionAttachments();
+            void PrepareFramebuffer();
+
+        private:
+            VkPipeline mPipeline;
+            SharedPtr<VKShader> mShader{nullptr};
         };
     }
 }
