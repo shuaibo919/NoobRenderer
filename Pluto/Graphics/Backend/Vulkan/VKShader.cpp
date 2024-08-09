@@ -32,6 +32,7 @@ VKShader::VKShader(RenderContext *ctx, VKShader::Properties *&&pProperties)
             auto spvName = shader["spirv"].get<std::string>();
             auto spvPath = dirPath + "/" + spvName;
 
+            mCompute |= type == ShaderType::Compute;
             uint32_t fileSize = uint32_t(FileSystem::GetFileSize(spvPath));
             uint32_t *source = reinterpret_cast<uint32_t *>(FileSystem::Instance().ReadFile(spvPath));
 
@@ -99,6 +100,15 @@ void VKShader::ReadReflectInfo(ShaderJson &info, ShaderType type)
     for (auto &vertexInput : info["VertexInput"])
     {
         auto inputType = static_cast<ShaderDataType>(vertexInput);
+
+        // VkVertexInputAttributeDescription Description = {};
+        // Description.binding = comp.get_decoration(resource.id, spv::DecorationBinding);
+        // Description.location = comp.get_decoration(resource.id, spv::DecorationLocation);
+        // Description.offset = mVertexInputStride;
+        // Description.format = VKUtilities::GetVKFormat(InputType);
+        // m_VertexInputAttributeDescriptions.push_back(Description);
+
+        // mVertexInputStride += GetStrideFromVulkanFormat(Description.format);
     }
 
     for (auto &resource : info["SampledImages"])

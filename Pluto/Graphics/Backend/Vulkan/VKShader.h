@@ -18,10 +18,13 @@ namespace pluto
         public:
             void Bind() const override {};
             void Unbind() const override {};
+            bool IsCompiled() override { return mCompiled; }
 
         public:
-            bool IsCompiled() override { return mCompiled; }
-            uint8_t GetStageCount() { return mStageCount; }
+            bool HasComputeStage() const { return mCompute; }
+            uint8_t GetStageCount() const { return mStageCount; }
+            VkPipelineLayout GetPipelineLayout() const { return mPipelineLayout; }
+            VkPipelineShaderStageCreateInfo *GetShaderStages() const { return mShaderStages; }
 
         private:
             void ReadReflectInfo(ShaderJson &info, ShaderType type) override;
@@ -30,11 +33,15 @@ namespace pluto
 
         private:
             bool mCompiled;
+            bool mCompute;
             uint8_t mStageCount;
             VkPipelineLayout mPipelineLayout;
             VkPipelineShaderStageCreateInfo *mShaderStages;
             std::vector<VkDescriptorSetLayout> mDescriptorSetLayouts;
             std::vector<std::vector<DescriptorLayoutInfo>> mDescriptorLayoutInfos;
+
+            uint32_t mVertexInputStride{0};
+            std::vector<VkVertexInputAttributeDescription> mVertexInputAttributeDescriptions;
         };
     }
 }
