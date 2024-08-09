@@ -134,7 +134,7 @@ namespace pluto
         pluto::Logger::Instance().log(GetLevelTag<Info>(), message);
     }
 
-    constexpr static std::string _GetStrLineInfo(const char *file, const char *line)
+    constexpr static std::string __GET_LINE_INFO_STD_STR__(const char *file, const char *line)
     {
         return std::string("file") + file + " line:" + line;
     }
@@ -143,7 +143,7 @@ namespace pluto
 
 #define STRINGIZE(x) _STRINGIZE(x)
 #define _STRINGIZE(x) #x
-#define PLineInfo _GetStrLineInfo(__FILE__, STRINGIZE(__LINE__)).c_str()
+#define PLineInfo pluto::__GET_LINE_INFO_STD_STR__(__FILE__, STRINGIZE(__LINE__)).c_str()
 #define PLog pluto::log
 #define PInfo pluto::Info
 #define PWarn pluto::Warn
