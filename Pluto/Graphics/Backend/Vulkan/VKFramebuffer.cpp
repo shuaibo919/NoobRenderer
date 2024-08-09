@@ -49,7 +49,6 @@ VKFramebuffer::VKFramebuffer(RenderContext *ctx, VKFramebuffer::Properties *&&pP
             auto texture = std::static_pointer_cast<VKTexture2D>(mProperties->attachments[i]);
             attachments.push_back(texture->GetImageView());
             break;
-            break;
         }
         default:
             break;
