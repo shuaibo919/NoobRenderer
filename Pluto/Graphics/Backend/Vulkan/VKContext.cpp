@@ -14,6 +14,7 @@
 #include "Graphics/Backend/Vulkan/VKUniformBuffer.h"
 #include "Graphics/Backend/Vulkan/VKDescriptorSet.h"
 #include "Graphics/Backend/Vulkan/VKRenderDevice.h"
+#include "Graphics/Backend/Vulkan/VKRenderContext.h"
 /* Common */
 
 using namespace pluto;
@@ -243,6 +244,7 @@ VKContext::VKContext()
 
 VKContext::~VKContext()
 {
+    static_cast<VKRenderContext *>(this->mRenderContext)->ExecuteDestoryTasks();
     if (mDebugCallback != nullptr)
         Vulkan::DestroyDebugReportCallbackEXT(mVkInstance, mDebugCallback, VK_NULL_HANDLE);
 
