@@ -1,6 +1,5 @@
 #pragma once
 #include "Graphics/RHI/RenderPass.h"
-
 #include "Graphics/Backend/Vulkan/Vk.h"
 namespace pluto
 {
@@ -19,8 +18,19 @@ namespace pluto
             void EndRenderPass(const SharedPtr<CommandBuffer> &commandBuffer) override;
 
         public:
-            /* TODO */
-            VkRenderPass GetHandle() const { return VK_NULL_HANDLE; }
+            VkRenderPass GetHandle() const { return mRenderPass; }
+            uint32_t GetColorAttachments() const { return mColorAttachments; }
+            uint32_t GetDepthAttachments() const { return mDepthAttachments; }
+            uint32_t GetTotalAttachments() const { return mProperties->attachments.size(); }
+
+        private:
+            bool mDepthOnly;
+            bool mClearDepth;
+            uint32_t mColorAttachments;
+            uint32_t mDepthAttachments;
+            VkRenderPass mRenderPass;
+            VkClearValue *mClearValue;
+            uint32_t mClearValueCount;
         };
 
     }
