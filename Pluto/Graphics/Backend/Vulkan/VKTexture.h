@@ -35,6 +35,10 @@ namespace pluto
         public:
             VkImageView GetMipImageView(uint32_t mip);
             VkImageView GetImageView() const { return mTextureImageView; }
+            VkFormat GetFormat() const { return mVKFormat; }
+            VkImageLayout GetImageLayout() const { return mImageLayout; }
+            VkImage GetImage() const { return mTextureImage; }
+            VkSampler GetSampler() const { return mTextureSampler; }
 
         private:
             void Destroy();
