@@ -9,10 +9,10 @@
 /* Common */
 #include "Graphics/Backend/Vulkan/VKUtilities.h"
 
+using namespace pluto::Graphics;
 VkSubpassContents GetSubPassContents(SubPassContents contents);
 VkAttachmentDescription GetAttachmentDescription(AttachmentType type, const Texture::Ptr &texture, uint8_t samples = 1, bool clear = true);
 
-using namespace pluto::Graphics;
 VKRenderPass::VKRenderPass(RenderContext *ctx, VKRenderPass::Properties *&&pProperties)
     : RenderPass(ctx, std::move(pProperties))
 {
@@ -108,7 +108,7 @@ VKRenderPass::VKRenderPass(RenderContext *ctx, VKRenderPass::Properties *&&pProp
         }
     }
 
-    uint32_t attachmentCount = mProperties->attachments.size();
+    uint32_t attachmentCount = static_cast<uint32_t>(mProperties->attachments.size());
 
     bool resolveTexture = false;
     VkAttachmentReference colourAttachmentResolvedRef = {};
@@ -165,7 +165,7 @@ void VKRenderPass::BeginRenderPass(const SharedPtr<CommandBuffer> &commandBuffer
 {
     if (!mDepthOnly)
     {
-        for (auto i = 0; i < mClearValueCount; ++i)
+        for (uint32_t i = 0; i < mClearValueCount; ++i)
         {
             mClearValue[i].color.float32[0] = clearColor[0];
             mClearValue[i].color.float32[1] = clearColor[1];
@@ -213,7 +213,7 @@ VkSubpassContents GetSubPassContents(SubPassContents contents)
     }
 }
 
-VkAttachmentDescription GetAttachmentDescription(AttachmentType type, const Texture::Ptr &texture, uint8_t samples = 1, bool clear = true)
+VkAttachmentDescription GetAttachmentDescription(AttachmentType type, const Texture::Ptr &texture, uint8_t samples, bool clear)
 {
     VkAttachmentDescription attachment = {};
     if (type == AttachmentType::Color)

@@ -21,7 +21,7 @@ namespace pluto
             VkRenderPass GetHandle() const { return mRenderPass; }
             uint32_t GetColorAttachments() const { return mColorAttachments; }
             uint32_t GetDepthAttachments() const { return mDepthAttachments; }
-            uint32_t GetTotalAttachments() const { return mProperties->attachments.size(); }
+            uint32_t GetTotalAttachments() const { return static_cast<uint32_t>(mProperties->attachments.size()); }
 
         private:
             bool mDepthOnly;
