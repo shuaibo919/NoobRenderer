@@ -138,7 +138,7 @@ std::string VKUtils::GetErrorString(VkResult result)
 
 VkSurfaceKHR VKUtils::CreatePlatformSurface(VkInstance inst, pluto::Window *window)
 {
-    VkSurfaceKHR surface;
+    VkSurfaceKHR surface{VK_NULL_HANDLE};
 #if defined(_WIN32) && defined(WIN32)
     log<Error>("Win32 Not Implemented");
 #elif defined(__APPLE__)
