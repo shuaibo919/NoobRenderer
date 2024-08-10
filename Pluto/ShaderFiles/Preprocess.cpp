@@ -185,11 +185,11 @@ nlohmann::json ReflectFromSpirv(std::vector<uint32_t> spv, std::string type, std
         {
             const spirv_cross::SPIRType &InputType = glsl->get_type(resource.type_id);
             VertexInput.push_back(static_cast<uint8_t>(VertexToShaderDataType(InputType)));
-
-            Description.binding = comp.get_decoration(resource.id, spv::DecorationBinding);
-            Description.location = comp.get_decoration(resource.id, spv::DecorationLocation);
-            Description.offset = m_VertexInputStride;
-            Description.format = GetVulkanFormat(InputType);
+            // TODO: Add Vertex input to json
+            // Description.binding = comp.get_decoration(resource.id, spv::DecorationBinding);
+            // Description.location = comp.get_decoration(resource.id, spv::DecorationLocation);
+            // Description.offset = m_VertexInputStride;
+            // Description.format = GetVulkanFormat(InputType);
         }
         j["VertexInput"] = VertexInput;
     }
