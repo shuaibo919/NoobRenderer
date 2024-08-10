@@ -141,9 +141,9 @@ namespace pluto
 
 }
 
-#define STRINGIZE(x) _STRINGIZE(x)
-#define _STRINGIZE(x) #x
-#define PLineInfo pluto::__GET_LINE_INFO_STD_STR__(__FILE__, STRINGIZE(__LINE__)).c_str()
+#define PLUTO_STRINGIZE(x) _PLUTO_STRINGIZE(x)
+#define _PLUTO_STRINGIZE(x) #x
+#define PLineInfo pluto::__GET_LINE_INFO_STD_STR__(__FILE__, PLUTO_STRINGIZE(__LINE__)).c_str()
 #define PLog pluto::log
 #define PInfo pluto::Info
 #define PWarn pluto::Warn
