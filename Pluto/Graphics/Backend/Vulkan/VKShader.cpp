@@ -197,7 +197,7 @@ void VKShader::PreparePipelineLayout()
                 setLayoutBinding.stageFlags = VKUtilities::GetShaderType(info.stage);
 
             setLayoutBinding.binding = info.binding;
-            setLayoutBinding.descriptorCount = info.counts.size();
+            setLayoutBinding.descriptorCount = static_cast<uint32_t>(info.counts.size());
 
             bool isArray = info.counts.size() > 1;
 
