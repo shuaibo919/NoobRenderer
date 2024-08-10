@@ -308,7 +308,7 @@ void VKTexture2D::PrepareTexture()
     auto pBasedDevice = static_cast<VKRenderContext *>(mRenderContext)->GetBasedDevice();
     if (mProperties->flags & TextureFlags::TextureCreateMips)
     {
-        mMipLevels = static_cast<uint32_t>(std::floor(std::log2(std::max(mProperties->width, mProperties->height)))) + 1;
+        mMipLevels = static_cast<uint32_t>(std::floor(std::log2((std::max)(mProperties->width, mProperties->height)))) + 1;
     }
     else
         mMipLevels = 1;
@@ -356,7 +356,7 @@ void VKTexture2D::PrepareTexture(const std::string &path)
         log<Error>("Failed to load texture image!");
     }
 
-    mMipLevels = static_cast<uint32_t>(std::floor(std::log2(std::max(mProperties->width, mProperties->height)))) + 1;
+    mMipLevels = static_cast<uint32_t>(std::floor(std::log2((std::max)(mProperties->width, mProperties->height)))) + 1;
 
     if (!(mProperties->flags & TextureFlags::TextureCreateMips) && mProperties->generateMipMaps == false)
         mMipLevels = 1;
