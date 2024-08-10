@@ -2,8 +2,9 @@
 #include <string>
 #include <cstdint>
 #include <unordered_map>
-
+#include <memory>
 #include "Core/Utilities/LoadImage.h"
+
 namespace pluto
 {
     namespace utilities
@@ -23,7 +24,7 @@ namespace pluto
         {
             struct helper : public Object
             {
-                helper(Args &&...args): Object(std::forward<Args>(args)...)
+                helper(Args &&...args) : Object(std::forward<Args>(args)...)
                 {
                 }
             };
