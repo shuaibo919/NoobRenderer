@@ -41,6 +41,14 @@ VKPipeline::~VKPipeline()
 {
 }
 
+void VKPipeline::TransitionAttachments()
+{
+}
+
+void VKPipeline::PrepareFramebuffer()
+{
+}
+
 void VKPipeline::Bind(const SharedPtr<CommandBuffer> &commandBuffer, uint32_t layer)
 {
 }
