@@ -15,8 +15,10 @@
 using namespace pluto::Graphics;
 
 VKSwapChain::VKSwapChain(RenderContext *ctx, VKSwapChain::Properties *&&pProperties)
-    : mSwapChain(VK_NULL_HANDLE), mOldSwapChain(VK_NULL_HANDLE), mSurface(VK_NULL_HANDLE),
-      mCurrentBuffer(0), mAcquireImageIndex(std::numeric_limits<uint32_t>::max()), SwapChain(ctx, std::move(pProperties))
+    : SwapChain(ctx, std::move(pProperties)), mSwapChain(VK_NULL_HANDLE), mOldSwapChain(VK_NULL_HANDLE),
+      mSurface(VK_NULL_HANDLE),
+      mCurrentBuffer(0),
+      mAcquireImageIndex((std::numeric_limits<uint32_t>::max)())
 {
 }
 
