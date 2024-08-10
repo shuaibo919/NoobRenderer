@@ -58,7 +58,7 @@ VKFramebuffer::VKFramebuffer(RenderContext *ctx, VKFramebuffer::Properties *&&pP
     VkFramebufferCreateInfo framebufferCreateInfo = {};
     framebufferCreateInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
     framebufferCreateInfo.renderPass = std::static_pointer_cast<VKRenderPass>(mProperties->renderPass)->GetHandle();
-    framebufferCreateInfo.attachmentCount = attachments.size();
+    framebufferCreateInfo.attachmentCount = static_cast<uint32_t>(attachments.size());
     framebufferCreateInfo.pAttachments = attachments.data();
     framebufferCreateInfo.width = mProperties->width;
     framebufferCreateInfo.height = mProperties->height;
