@@ -19,7 +19,6 @@ VKShader::VKShader(RenderContext *ctx, VKShader::Properties *&&pProperties)
         std::string dirPath = FileSystem::Instance().GetParentPath(realpath);
         std::string jsonContent = FileSystem::Instance().ReadTextFile(realpath);
         ShaderJson shaderDesc = ShaderJson::parse(jsonContent);
-
         mShaderStages = new VkPipelineShaderStageCreateInfo[shaderDesc.size()];
 
         for (uint32_t i = 0; i < shaderDesc.size(); i++)
@@ -96,19 +95,22 @@ bool VKShader::LoadSpriv(const std::string &name, uint32_t *source, uint32_t fil
 void VKShader::ReadReflectInfo(ShaderJson &info, ShaderType type)
 {
     uint32_t maxSetNum = info["max_set"].get<uint32_t>();
-    mDescriptorLayoutInfos.resize(maxSetNum);
-    for (auto &vertexInput : info["VertexInput"])
+    mDescriptorLayoutInfos.resize(maxSetNum + 1);
+    if (type == ShaderType::Vertex)
     {
-        auto inputType = static_cast<ShaderDataType>(vertexInput);
+        for (auto &vertexInput : info["VertexInput"])
+        {
+            auto inputType = static_cast<ShaderDataType>(vertexInput);
 
-        // VkVertexInputAttributeDescription Description = {};
-        // Description.binding = comp.get_decoration(resource.id, spv::DecorationBinding);
-        // Description.location = comp.get_decoration(resource.id, spv::DecorationLocation);
-        // Description.offset = mVertexInputStride;
-        // Description.format = VKUtilities::GetVKFormat(InputType);
-        // m_VertexInputAttributeDescriptions.push_back(Description);
+            // VkVertexInputAttributeDescription Description = {};
+            // Description.binding = comp.get_decoration(resource.id, spv::DecorationBinding);
+            // Description.location = comp.get_decoration(resource.id, spv::DecorationLocation);
+            // Description.offset = mVertexInputStride;
+            // Description.format = VKUtilities::GetVKFormat(InputType);
+            // m_VertexInputAttributeDescriptions.push_back(Description);
 
-        // mVertexInputStride += GetStrideFromVulkanFormat(Description.format);
+            // mVertexInputStride += GetStrideFromVulkanFormat(Description.format);
+        }
     }
 
     for (auto &resource : info["SampledImages"])
