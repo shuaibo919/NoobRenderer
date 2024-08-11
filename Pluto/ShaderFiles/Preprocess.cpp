@@ -171,7 +171,7 @@ pluto::Graphics::ShaderDataType SPIRVTypeToDataType(const spirv_cross::SPIRType 
 
 nlohmann::json ReflectFromSpirv(std::vector<uint32_t> spv, std::string type, std::string &toGLSL)
 {
-    uint32_t max_set;
+    uint32_t max_set = 0;
     nlohmann::json j;
     spirv_cross::CompilerGLSL *glsl = new spirv_cross::CompilerGLSL(std::move(spv));
 
