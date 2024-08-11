@@ -9,6 +9,7 @@
 #include <GLFW/glfw3.h>
 #include <GLFW/glfw3native.h>
 #elif defined(_WIN32)
+#include <GLFW/glfw3.h>
 #elif defined(__linux__)
 #endif
 
@@ -140,7 +141,7 @@ VkSurfaceKHR VKUtils::CreatePlatformSurface(VkInstance inst, pluto::Window *wind
 {
     VkSurfaceKHR surface{VK_NULL_HANDLE};
 #if defined(_WIN32) && defined(WIN32)
-    log<Error>("Win32 Not Implemented");
+    glfwCreateWindowSurface(inst, static_cast<GLFWwindow *>(window->GetWindowPointer()), nullptr, &surface);
 #elif defined(__APPLE__)
     // {vkCreateMacOSSurfaceMVK() is deprecated. Use vkCreateMetalSurfaceEXT() from the VK_EXT_metal_surface extension.}
     VkMetalSurfaceCreateInfoEXT surfaceInfo;
