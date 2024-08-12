@@ -6,6 +6,7 @@ namespace pluto
     namespace Graphics
     {
         class VKShader;
+        class VKRenderPass;
         class VKPipeline : public Pipeline
         {
         public:
@@ -24,6 +25,8 @@ namespace pluto
         private:
             VkPipeline mPipeline;
             SharedPtr<VKShader> mShader{nullptr};
+            SharedPtr<VKRenderPass> mRenderPass{nullptr};
+            std::vector<SharedPtr<Framebuffer>> mFramebuffers;
         };
     }
 }
