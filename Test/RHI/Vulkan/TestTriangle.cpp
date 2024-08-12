@@ -52,6 +52,16 @@ int main()
     CommandBuffer::Ptr cmdBuffer = CommandBuffer::Builder()
                                        .Create(ctx);
 
+    Pipeline::Ptr pipeline = Pipeline::Builder()
+                                 .SetClearColor(0.2f, 0.2f, 0.2f, 1.0f)
+                                 .SetDepthOptions(false, false)
+                                 .SetShader(shader)
+                                 .SetDrawType(DrawType::Triangle)
+                                 .SetSwapchainTarget(true)
+                                 .SetColorTarget(std::move(colorTarget), AttachmentType::Color)
+                                 .SetClearTargets(true)
+                                 .Create(ctx);
+
     while (!window->ShouldClose())
     {
         {
