@@ -144,6 +144,55 @@ namespace pluto
             Struct
         };
 
+        enum class ReflectDataType : uint8_t
+        {
+            Unkown,
+            Bit8Int,
+            Bit8Uint,
+            Bit16SInt,
+            Bit16Uint,
+            Bit16SFloat,
+            Bit32Int,
+            Bit32Uint,
+            Bit32SFloat,
+            Bit64SInt,
+            Bit64Uint,
+            Bit64SFloat,
+            Vec2Bit8Int,
+            Vec2Bit8Uint,
+            Vec2Bit16SInt,
+            Vec2Bit16Uint,
+            Vec2Bit16SFloat,
+            Vec2Bit32Int,
+            Vec2Bit32Uint,
+            Vec2Bit32SFloat,
+            Vec2Bit64SInt,
+            Vec2Bit64Uint,
+            Vec2Bit64SFloat,
+            Vec3Bit8Int,
+            Vec3Bit8Uint,
+            Vec3Bit16SInt,
+            Vec3Bit16Uint,
+            Vec3Bit16SFloat,
+            Vec3Bit32Int,
+            Vec3Bit32Uint,
+            Vec3Bit32SFloat,
+            Vec3Bit64SInt,
+            Vec3Bit64Uint,
+            Vec3Bit64SFloat,
+            Vec4Bit8Int,
+            Vec4Bit8Uint,
+            Vec4Bit16SInt,
+            Vec4Bit16Uint,
+            Vec4Bit16SFloat,
+            Vec4Bit32Int,
+            Vec4Bit32Uint,
+            Vec4Bit32SFloat,
+            Vec4Bit64SInt,
+            Vec4Bit64Uint,
+            Vec4Bit64SFloat
+        };
+
         enum class ShaderType : uint8_t
         {
             Vertex = 0,
@@ -190,6 +239,7 @@ namespace pluto
         {
             Point = 0,
             Triangle,
+            TriangleStrip,
             Lines
         };
 
