@@ -163,6 +163,166 @@ VkPresentModeKHR VKUtils::ChoosePresentMode(std::vector<VkPresentModeKHR> availa
     return VK_PRESENT_MODE_FIFO_KHR;
 }
 
+VkPrimitiveTopology VKUtils::GetVKPrimitiveTopology(DrawType type)
+{
+    switch (type)
+    {
+    case DrawType::Triangle:
+        return VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
+    case DrawType::TriangleStrip:
+        return VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP;
+    case DrawType::Lines:
+        return VK_PRIMITIVE_TOPOLOGY_LINE_LIST;
+    case DrawType::Point:
+        return VK_PRIMITIVE_TOPOLOGY_POINT_LIST;
+    default:
+        PLog<PError>("%s Unknown Draw Type", PLineInfo);
+        break;
+    }
+    return VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
+}
+
+VkPolygonMode VKUtils::GetVKPolygonMode(PolygonMode mode)
+{
+    switch (mode)
+    {
+    case PolygonMode::Fill:
+        return VK_POLYGON_MODE_FILL;
+    case PolygonMode::Line:
+        return VK_POLYGON_MODE_LINE;
+    case PolygonMode::Point:
+        return VK_POLYGON_MODE_POINT;
+    default:
+        PLog<PError>("%s Unknown Polygon Type", PLineInfo);
+        break;
+    }
+    return VK_POLYGON_MODE_FILL;
+}
+
+VkCullModeFlags VKUtils::GetVKCullMode(CullMode mode)
+{
+    switch (mode)
+    {
+    case CullMode::Back:
+        return VK_CULL_MODE_BACK_BIT;
+    case CullMode::Front:
+        return VK_CULL_MODE_FRONT_BIT;
+    case CullMode::FrontAndBack:
+        return VK_CULL_MODE_FRONT_AND_BACK;
+    case CullMode::None:
+        break;
+    default:
+        break;
+    }
+
+    return VK_CULL_MODE_NONE;
+}
+
+VkFormat VKUtils::GetVKFormat(ReflectDataType type)
+{
+    switch (type)
+    {
+    case pluto::Graphics::ReflectDataType::Bit8Int:
+        return VK_FORMAT_R8_SINT;
+    case pluto::Graphics::ReflectDataType::Bit8Uint:
+        return VK_FORMAT_R8_UINT;
+    case pluto::Graphics::ReflectDataType::Bit16SInt:
+        return VK_FORMAT_R16_SINT;
+    case pluto::Graphics::ReflectDataType::Bit16Uint:
+        return VK_FORMAT_R16_UINT;
+    case pluto::Graphics::ReflectDataType::Bit16SFloat:
+        return VK_FORMAT_R16_SFLOAT;
+    case pluto::Graphics::ReflectDataType::Bit32Int:
+        return VK_FORMAT_R32_SINT;
+    case pluto::Graphics::ReflectDataType::Bit32Uint:
+        return VK_FORMAT_R32_UINT;
+    case pluto::Graphics::ReflectDataType::Bit32SFloat:
+        return VK_FORMAT_R32_SFLOAT;
+    case pluto::Graphics::ReflectDataType::Bit64SInt:
+        return VK_FORMAT_R64_SINT;
+    case pluto::Graphics::ReflectDataType::Bit64Uint:
+        return VK_FORMAT_R64_UINT;
+    case pluto::Graphics::ReflectDataType::Bit64SFloat:
+        return VK_FORMAT_R64_SFLOAT;
+
+    // Vector Types
+    case pluto::Graphics::ReflectDataType::Vec2Bit8Int:
+        return VK_FORMAT_R8G8_SINT;
+    case pluto::Graphics::ReflectDataType::Vec2Bit8Uint:
+        return VK_FORMAT_R8G8_UINT;
+    case pluto::Graphics::ReflectDataType::Vec2Bit16SInt:
+        return VK_FORMAT_R16G16_SINT;
+    case pluto::Graphics::ReflectDataType::Vec2Bit16Uint:
+        return VK_FORMAT_R16G16_UINT;
+    case pluto::Graphics::ReflectDataType::Vec2Bit16SFloat:
+        return VK_FORMAT_R16G16_SFLOAT;
+    case pluto::Graphics::ReflectDataType::Vec2Bit32Int:
+        return VK_FORMAT_R32G32_SINT;
+    case pluto::Graphics::ReflectDataType::Vec2Bit32Uint:
+        return VK_FORMAT_R32G32_UINT;
+    case pluto::Graphics::ReflectDataType::Vec2Bit32SFloat:
+        return VK_FORMAT_R32G32_SFLOAT;
+    case pluto::Graphics::ReflectDataType::Vec2Bit64SInt:
+        return VK_FORMAT_R64G64_SINT;
+    case pluto::Graphics::ReflectDataType::Vec2Bit64Uint:
+        return VK_FORMAT_R64G64_UINT;
+    case pluto::Graphics::ReflectDataType::Vec2Bit64SFloat:
+        return VK_FORMAT_R64G64_SFLOAT;
+        // Vector Types - Vec3
+    case pluto::Graphics::ReflectDataType::Vec3Bit8Int:
+        return VK_FORMAT_R8G8B8_SINT;
+    case pluto::Graphics::ReflectDataType::Vec3Bit8Uint:
+        return VK_FORMAT_R8G8B8_UINT;
+    case pluto::Graphics::ReflectDataType::Vec3Bit16SInt:
+        return VK_FORMAT_R16G16B16_SINT;
+    case pluto::Graphics::ReflectDataType::Vec3Bit16Uint:
+        return VK_FORMAT_R16G16B16_UINT;
+    case pluto::Graphics::ReflectDataType::Vec3Bit16SFloat:
+        return VK_FORMAT_R16G16B16_SFLOAT;
+    case pluto::Graphics::ReflectDataType::Vec3Bit32Int:
+        return VK_FORMAT_R32G32B32_SINT;
+    case pluto::Graphics::ReflectDataType::Vec3Bit32Uint:
+        return VK_FORMAT_R32G32B32_UINT;
+    case pluto::Graphics::ReflectDataType::Vec3Bit32SFloat:
+        return VK_FORMAT_R32G32B32_SFLOAT;
+    case pluto::Graphics::ReflectDataType::Vec3Bit64SInt:
+        return VK_FORMAT_R64G64B64_SINT;
+    case pluto::Graphics::ReflectDataType::Vec3Bit64Uint:
+        return VK_FORMAT_R64G64B64_UINT;
+    case pluto::Graphics::ReflectDataType::Vec3Bit64SFloat:
+        return VK_FORMAT_R64G64B64_SFLOAT;
+
+    // Vector Types - Vec4
+    case pluto::Graphics::ReflectDataType::Vec4Bit8Int:
+        return VK_FORMAT_R8G8B8A8_SINT;
+    case pluto::Graphics::ReflectDataType::Vec4Bit8Uint:
+        return VK_FORMAT_R8G8B8A8_UINT;
+    case pluto::Graphics::ReflectDataType::Vec4Bit16SInt:
+        return VK_FORMAT_R16G16B16A16_SINT;
+    case pluto::Graphics::ReflectDataType::Vec4Bit16Uint:
+        return VK_FORMAT_R16G16B16A16_UINT;
+    case pluto::Graphics::ReflectDataType::Vec4Bit16SFloat:
+        return VK_FORMAT_R16G16B16A16_SFLOAT;
+    case pluto::Graphics::ReflectDataType::Vec4Bit32Int:
+        return VK_FORMAT_R32G32B32A32_SINT;
+    case pluto::Graphics::ReflectDataType::Vec4Bit32Uint:
+        return VK_FORMAT_R32G32B32A32_UINT;
+    case pluto::Graphics::ReflectDataType::Vec4Bit32SFloat:
+        return VK_FORMAT_R32G32B32A32_SFLOAT;
+    case pluto::Graphics::ReflectDataType::Vec4Bit64SInt:
+        return VK_FORMAT_R64G64B64A64_SINT;
+    case pluto::Graphics::ReflectDataType::Vec4Bit64Uint:
+        return VK_FORMAT_R64G64B64A64_UINT;
+    case pluto::Graphics::ReflectDataType::Vec4Bit64SFloat:
+        return VK_FORMAT_R64G64B64A64_SFLOAT;
+
+    default:
+        break;
+    }
+    log<Info>("Vk-Texture Unsupported Type");
+    return VK_FORMAT_UNDEFINED;
+}
+
 VkFormat VKUtils::GetVKFormat(const RHIFormat format, bool srgb)
 {
     if (srgb)

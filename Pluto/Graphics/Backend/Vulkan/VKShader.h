@@ -25,11 +25,14 @@ namespace pluto
             uint8_t GetStageCount() const { return mStageCount; }
             VkPipelineLayout GetPipelineLayout() const { return mPipelineLayout; }
             VkPipelineShaderStageCreateInfo *GetShaderStages() const { return mShaderStages; }
+            uint32_t GetVertexInputStride() const { return mVertexInputStride; }
+            std::vector<VkVertexInputAttributeDescription> &GetVertexInputDescription() { return mVertexInputAttributeDescriptions; }
 
         private:
             void ReadReflectInfo(ShaderJson &info, ShaderType type) override;
             bool LoadSpriv(const std::string &name, uint32_t *source, uint32_t fileSize, ShaderType shaderType, int currentShaderStage);
             void PreparePipelineLayout();
+            uint32_t GetStride(VkFormat format);
 
         private:
             bool mCompiled;

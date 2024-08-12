@@ -12,6 +12,7 @@ namespace pluto
         {
             friend class VKContext;
             friend class VKSwapChain;
+            friend class VKPipeline;
 
         public:
             using Ptr = SharedPtr<VKTexture2D>;

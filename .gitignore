@@ -6,6 +6,8 @@ Release
 Release/
 build/
 build
+build-vk/
+build-gl/
 
 # visual studio code
 .vscode/
