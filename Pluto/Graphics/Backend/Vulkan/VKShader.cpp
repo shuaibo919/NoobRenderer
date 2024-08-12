@@ -19,7 +19,6 @@ VKShader::VKShader(RenderContext *ctx, VKShader::Properties *&&pProperties)
         std::string dirPath = FileSystem::Instance().GetParentPath(realpath);
         std::string jsonContent = FileSystem::Instance().ReadTextFile(realpath);
         ShaderJson shaderDesc = ShaderJson::parse(jsonContent);
-
         mShaderStages = new VkPipelineShaderStageCreateInfo[shaderDesc.size()];
 
         for (uint32_t i = 0; i < shaderDesc.size(); i++)
@@ -61,6 +60,12 @@ VKShader::~VKShader()
 
     delete[] mShaderStages;
 
+    for (auto &descriptorLayout : mDescriptorSetLayouts)
+        vkDestroyDescriptorSetLayout(pBasedDevice->GetDevice(), descriptorLayout, VK_NULL_HANDLE);
+
+    if (mPipelineLayout)
+        vkDestroyPipelineLayout(pBasedDevice->GetDevice(), mPipelineLayout, VK_NULL_HANDLE);
+
     // todo
     mStageCount = 0;
 }
@@ -96,19 +101,20 @@ bool VKShader::LoadSpriv(const std::string &name, uint32_t *source, uint32_t fil
 void VKShader::ReadReflectInfo(ShaderJson &info, ShaderType type)
 {
     uint32_t maxSetNum = info["max_set"].get<uint32_t>();
-    mDescriptorLayoutInfos.resize(maxSetNum);
-    for (auto &vertexInput : info["VertexInput"])
+    mDescriptorLayoutInfos.resize(maxSetNum + 1);
+    if (type == ShaderType::Vertex)
     {
-        auto inputType = static_cast<ShaderDataType>(vertexInput);
-
-        // VkVertexInputAttributeDescription Description = {};
-        // Description.binding = comp.get_decoration(resource.id, spv::DecorationBinding);
-        // Description.location = comp.get_decoration(resource.id, spv::DecorationLocation);
-        // Description.offset = mVertexInputStride;
-        // Description.format = VKUtilities::GetVKFormat(InputType);
-        // m_VertexInputAttributeDescriptions.push_back(Description);
-
-        // mVertexInputStride += GetStrideFromVulkanFormat(Description.format);
+        for (auto &vertexInput : info["VertexInput"])
+        {
+            auto inputType = static_cast<ReflectDataType>(vertexInput["data_type"].get<uint8_t>());
+            VkVertexInputAttributeDescription Description = {};
+            Description.binding = vertexInput["binding"].get<uint32_t>();
+            Description.location = vertexInput["location"].get<uint32_t>();
+            Description.format = VKUtilities::GetVKFormat(inputType);
+            Description.offset = mVertexInputStride;
+            mVertexInputAttributeDescriptions.push_back(Description);
+            mVertexInputStride += this->GetStride(Description.format);
+        }
     }
 
     for (auto &resource : info["SampledImages"])
@@ -197,7 +203,7 @@ void VKShader::PreparePipelineLayout()
                 setLayoutBinding.stageFlags = VKUtilities::GetShaderType(info.stage);
 
             setLayoutBinding.binding = info.binding;
-            setLayoutBinding.descriptorCount = info.counts.size();
+            setLayoutBinding.descriptorCount = static_cast<uint32_t>(info.counts.size());
 
             bool isArray = info.counts.size() > 1;
 
@@ -234,4 +240,38 @@ void VKShader::PreparePipelineLayout()
     // pipelineLayoutCreateInfo.pPushConstantRanges = ;
 
     VK_CHECK_RESULT(vkCreatePipelineLayout(pBasedDevice->GetDevice(), &pipelineLayoutCreateInfo, VK_NULL_HANDLE, &mPipelineLayout));
+}
+
+uint32_t VKShader::GetStride(VkFormat format)
+{
+    switch (format)
+    {
+    case VK_FORMAT_R8_SINT:
+        return sizeof(int);
+    case VK_FORMAT_R32_SFLOAT:
+        return sizeof(float);
+    case VK_FORMAT_R32G32_SFLOAT:
+        return sizeof(glm::vec2);
+    case VK_FORMAT_R32G32B32_SFLOAT:
+        return sizeof(glm::vec3);
+    case VK_FORMAT_R32G32B32A32_SFLOAT:
+        return sizeof(glm::vec4);
+    case VK_FORMAT_R32G32_SINT:
+        return sizeof(glm::ivec2);
+    case VK_FORMAT_R32G32B32_SINT:
+        return sizeof(glm::ivec3);
+    case VK_FORMAT_R32G32B32A32_SINT:
+        return sizeof(glm::ivec4);
+    case VK_FORMAT_R32G32_UINT:
+        return sizeof(glm::ivec2);
+    case VK_FORMAT_R32G32B32_UINT:
+        return sizeof(glm::ivec3);
+    case VK_FORMAT_R32G32B32A32_UINT:
+        return sizeof(glm::ivec4);
+    default:
+        PLog<PError>("[%s] Vulkan Shader: Unknown format", PLineInfo);
+        return 0;
+    }
+
+    return 0;
 }
