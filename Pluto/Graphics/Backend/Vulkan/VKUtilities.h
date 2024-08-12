@@ -15,6 +15,11 @@ namespace pluto
             VkPresentModeKHR ChoosePresentMode(std::vector<VkPresentModeKHR> availablePresentModes, bool vsync);
             bool HasStencilComponent(VkFormat format);
             VkFormat GetVKFormat(const RHIFormat format, bool srgb);
+            VkFormat GetVKFormat(ReflectDataType type);
+            VkCullModeFlags GetVKCullMode(CullMode mode);
+            VkPrimitiveTopology GetVKPrimitiveTopology(DrawType type);
+
+            VkPolygonMode GetVKPolygonMode(PolygonMode mode);
             RHIFormat GetRHIFormat(VkFormat format);
             VkSamplerAddressMode GetVkTextureWrap(const TextureWrap wrap);
             VkFilter GetVkTextureFilter(const TextureFilter filter);
