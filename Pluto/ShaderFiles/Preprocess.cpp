@@ -102,29 +102,68 @@ std::vector<uint32_t> CompileToSpirv(std::string exec, std::string name, std::st
     return buffer;
 }
 
-pluto::Graphics::ShaderDataType VertexToShaderDataType(const spirv_cross::SPIRType type)
+uint8_t VertexToReflectDataType(const spirv_cross::SPIRType type)
 {
+    using namespace spirv_cross;
     using namespace pluto::Graphics;
-    switch (type.basetype)
+    uint8_t offset = (type.vecsize - 1) * 11;
+    if (type.width == 8)
     {
-    case spirv_cross::SPIRType::Float:
-        switch (type.vecsize)
+        switch (type.basetype)
         {
-        case 1:
-            return ShaderDataType::Float32;
-        case 2:
-            return ShaderDataType::Vec2;
-        case 3:
-            return ShaderDataType::Vec3;
-        case 4:
-            return ShaderDataType::Vec4;
+        case SPIRType::Int:
+            return static_cast<uint8_t>(ReflectDataType::Bit8Int) + offset;
+        case SPIRType::UInt:
+            return static_cast<uint8_t>(ReflectDataType::Bit8Uint) + offset;
+        default:
+            break;
         }
-    case spirv_cross::SPIRType::Double:
-        break;
-    default:
-        break;
     }
-    return ShaderDataType::None;
+    else if (type.width == 16)
+    {
+        switch (type.basetype)
+        {
+        case SPIRType::Int:
+            return static_cast<uint8_t>(ReflectDataType::Bit16SInt) + offset;
+        case SPIRType::UInt:
+            return static_cast<uint8_t>(ReflectDataType::Bit16Uint) + offset;
+        case SPIRType::Float:
+            return static_cast<uint8_t>(ReflectDataType::Bit16SFloat) + offset;
+        default:
+            break;
+        }
+    }
+    else if (type.width == 32)
+    {
+        switch (type.basetype)
+        {
+        case SPIRType::Int:
+            return static_cast<uint8_t>(ReflectDataType::Bit32Int) + offset;
+        case SPIRType::UInt:
+            return static_cast<uint8_t>(ReflectDataType::Bit32Uint) + offset;
+        case SPIRType::Float:
+            return static_cast<uint8_t>(ReflectDataType::Bit32SFloat) + offset;
+        default:
+            break;
+        }
+    }
+    else if (type.width == 64)
+    {
+        switch (type.basetype)
+        {
+        case SPIRType::Int64:
+            return static_cast<uint8_t>(ReflectDataType::Bit64SInt) + offset;
+        case SPIRType::UInt64:
+            return static_cast<uint8_t>(ReflectDataType::Bit64Uint) + offset;
+        case SPIRType::Double:
+            return static_cast<uint8_t>(ReflectDataType::Bit64SFloat) + offset;
+        default:
+            break;
+        }
+    }
+
+    std::cout << "Invalid type width for conversion of SPIR-Type to ReflectDataType enum value!";
+    return static_cast<uint8_t>(ReflectDataType::Unkown);
 }
 
 pluto::Graphics::ShaderDataType SPIRVTypeToDataType(const spirv_cross::SPIRType type)
@@ -171,7 +210,7 @@ pluto::Graphics::ShaderDataType SPIRVTypeToDataType(const spirv_cross::SPIRType 
 
 nlohmann::json ReflectFromSpirv(std::vector<uint32_t> spv, std::string type, std::string &toGLSL)
 {
-    uint32_t max_set;
+    uint32_t max_set = 0;
     nlohmann::json j;
     spirv_cross::CompilerGLSL *glsl = new spirv_cross::CompilerGLSL(std::move(spv));
 
@@ -180,16 +219,16 @@ nlohmann::json ReflectFromSpirv(std::vector<uint32_t> spv, std::string type, std
 
     if (type == "Vertex")
     {
-        std::vector<uint8_t> VertexInput;
+        std::vector<nlohmann::json> VertexInput;
         for (const spirv_cross::Resource &resource : resources.stage_inputs)
         {
+            nlohmann::json tmp_j;
             const spirv_cross::SPIRType &InputType = glsl->get_type(resource.type_id);
-            VertexInput.push_back(static_cast<uint8_t>(VertexToShaderDataType(InputType)));
-
-            Description.binding = comp.get_decoration(resource.id, spv::DecorationBinding);
-            Description.location = comp.get_decoration(resource.id, spv::DecorationLocation);
-            Description.offset = m_VertexInputStride;
-            Description.format = GetVulkanFormat(InputType);
+            tmp_j["data_type"] = VertexToReflectDataType(InputType);
+            tmp_j["binding"] = glsl->get_decoration(resource.id, spv::DecorationBinding);
+            tmp_j["location"] = glsl->get_decoration(resource.id, spv::DecorationLocation);
+            tmp_j["offset"] = glsl->get_decoration(resource.id, spv::DecorationLocation);
+            VertexInput.push_back(tmp_j);
         }
         j["VertexInput"] = VertexInput;
     }
