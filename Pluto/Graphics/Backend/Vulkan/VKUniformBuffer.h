@@ -6,7 +6,7 @@ namespace pluto
     namespace Graphics
     {
         class VKShader;
-
+        class VKBuffer;
         class VKUniformBuffer : public UniformBuffer
         {
             friend class VKContext;
@@ -19,6 +19,12 @@ namespace pluto
             void ReInit(uint32_t size, void *data) override;
             void SetData(uint32_t size, void *data) override;
             void SetDynamicData(uint32_t size, uint32_t typeSize, void *data) override;
+
+        public:
+            VKBuffer *&GetBuffer() { return mBuffer; }
+
+        private:
+            VKBuffer *mBuffer{nullptr};
         };
     }
 }
