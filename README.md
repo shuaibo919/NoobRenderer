@@ -12,7 +12,7 @@ Pluto   Neptune  Uranus  Saturn  Jupiter  Mars  Earth   Venus   Mercury
 (:The next version will be named as [**Neptune**](#))
 ## Pluto
 (:d still developed!
-(:d progress can be found in [pluto-dev](https://github.com/shuaibo919/NoobRenderer/tree/pluto-dev), [pluto-gl-dev](https://github.com/shuaibo919/NoobRenderer/tree/pluto-gl-dev)  and [pluto-gl-dev](https://github.com/shuaibo919/NoobRenderer/tree/pluto-vk-dev)
+(:d progress can be found in [pluto-dev](https://github.com/shuaibo919/NoobRenderer/tree/pluto-dev), [pluto-gl-dev](https://github.com/shuaibo919/NoobRenderer/tree/pluto-gl-dev)  and [pluto-vk-dev](https://github.com/shuaibo919/NoobRenderer/tree/pluto-vk-dev)
 
 ### Todo Feature-List 「Dev」
 #### Cross Platform Support「WIP」
