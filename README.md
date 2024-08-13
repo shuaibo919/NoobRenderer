@@ -11,6 +11,8 @@ Pluto   Neptune  Uranus  Saturn  Jupiter  Mars  Earth   Venus   Mercury
 
 (:The next version will be named as [**Neptune**](#))
 ## Pluto
+(:d still developed!
+(:d progress can be found in [pluto-dev](https://github.com/shuaibo919/NoobRenderer/tree/pluto-dev), [pluto-gl-dev](https://github.com/shuaibo919/NoobRenderer/tree/pluto-gl-dev)  and [pluto-gl-dev](https://github.com/shuaibo919/NoobRenderer/tree/pluto-vk-dev)
 
 ### Todo Feature-List 「Dev」
 #### Cross Platform Support「WIP」
@@ -45,14 +47,6 @@ auto colorTarget = Texture::Builder()
 #### And More 「Waiting」
 - [ ] More
 ...
-
-### Timeline 「Dev」
-
-- 2024.7.5: create pluto branch
-- 2024.7.7: add RHI layer, refactor the entire project (RHI-OpenGL wrapper progress: 50%, RHI-Vulkan wrapper progress: 0%)
-- 2024.7.8: GL-Backend WIP
-- 2024.7.17: GL-Backend WIP (RHI-OpenGL wrapper progress: 75%)
-- 2024.7.26: Vk-Backend WIP
 
 
 ## Reference
