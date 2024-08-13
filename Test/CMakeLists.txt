@@ -2,7 +2,7 @@ set(TARGET_NAME Test)
 message(STATUS "Generate Test File Enabled")
 
 # Dev
-if(${BUILD_WITH_VULKAN_BACKEND} EQUAL TRUE)
+if(${BUILD_WITH_VULKAN_BACKEND})
     message(STATUS "Generate Vulkan Test Example")
     set(TestSourcePath ${CMAKE_CURRENT_SOURCE_DIR}/RHI/Vulkan/*.cpp)
 else()
