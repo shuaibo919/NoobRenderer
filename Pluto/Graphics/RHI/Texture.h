@@ -21,6 +21,14 @@ namespace pluto
                 Texture3D,
                 TextureCube
             };
+            enum class Hints
+            {
+                ShaderUse,
+                ShadowMap,
+                DepthMap,
+                CubeMap,
+                NoHints,
+            };
             struct Properties
             {
                 uint16_t width;
@@ -33,6 +41,7 @@ namespace pluto
                 uint16_t zAxisSize{1};
                 TextureFlags flags{TextureFlags::TextureCreateMips};
                 Texture::Type type{Texture::Type::Invalid};
+                Texture::Hints hints{Texture::Hints::NoHints};
                 bool srgb{false};
                 bool generateMipMaps{true};
                 bool anisotropicFiltering{true};
@@ -43,6 +52,7 @@ namespace pluto
                 Texture::Builder &SetBase(uint16_t width, uint16_t height, uint16_t samples, RHIFormat format, uint16_t zAxisSize = 1);
                 Texture::Builder &SetFilter(TextureFilter minFilter, TextureFilter magFilter);
                 Texture::Builder &SetWrap(TextureWrap wrap);
+                Texture::Builder &SetHints(Texture::Hints hints);
                 Texture::Builder &SetAdancedOptions(TextureFlags flag = TextureFlags::TextureCreateMips, bool srgb = true, bool mipmap = true, bool anisotropic = true);
                 Texture::Ptr Create(Texture::Type type, const SharedPtr<GraphicsContext> &pContext);
                 Texture::Ptr Create(Texture::Properties &desc, const SharedPtr<GraphicsContext> &pContext);
@@ -58,6 +68,7 @@ namespace pluto
 
         public:
             // SET_ASSET_TYPE(AssetType::Texture);
+            virtual void *GetDescriptorInfo() { return nullptr; }
             Identity GetIdentity() const { return mIdentity; }
             const Properties &GetProperties() const { return *mProperties; }
             uint32_t GetWidth(uint32_t mip = 0) const { return mProperties->width >> mip; }

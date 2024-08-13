@@ -25,6 +25,12 @@ Texture::Builder &Texture::Builder::SetWrap(TextureWrap wrap)
     return *this;
 }
 
+Texture::Builder &Texture::Builder::SetHints(Texture::Hints hints)
+{
+    mProperties->hints = hints;
+    return *this;
+}
+
 Texture::Builder &Texture::Builder::SetAdancedOptions(TextureFlags flag, bool srgb, bool mipmap, bool anisotropic)
 {
     mProperties->flags = flag;
