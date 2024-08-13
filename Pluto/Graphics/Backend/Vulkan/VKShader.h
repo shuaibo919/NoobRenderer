@@ -26,6 +26,9 @@ namespace pluto
             VkPipelineLayout GetPipelineLayout() const { return mPipelineLayout; }
             VkPipelineShaderStageCreateInfo *GetShaderStages() const { return mShaderStages; }
             uint32_t GetVertexInputStride() const { return mVertexInputStride; }
+            VkDescriptorSetLayout &GetDescriptorSetLayout(uint32_t set) { return mDescriptorSetLayouts[set]; }
+            DescriptorLayoutInfo &GetDescriptorLayoutInfo(uint32_t set) { return mDescriptorLayoutInfos[set]; }
+            std::vector<DescriptorLayoutInfo> &GetDescriptorLayoutInfos() { return mDescriptorLayoutInfos; }
             std::vector<VkVertexInputAttributeDescription> &GetVertexInputDescription() { return mVertexInputAttributeDescriptions; }
 
         private:
@@ -41,7 +44,8 @@ namespace pluto
             VkPipelineLayout mPipelineLayout;
             VkPipelineShaderStageCreateInfo *mShaderStages;
             std::vector<VkDescriptorSetLayout> mDescriptorSetLayouts;
-            std::vector<std::vector<DescriptorLayoutInfo>> mDescriptorLayoutInfos;
+            std::unordered_map<uint32_t, DescriptorSetInfo> mDescriptorSetInfos;
+            std::vector<DescriptorLayoutInfo> mDescriptorLayoutInfos;
 
             uint32_t mVertexInputStride{0};
             std::vector<VkVertexInputAttributeDescription> mVertexInputAttributeDescriptions;

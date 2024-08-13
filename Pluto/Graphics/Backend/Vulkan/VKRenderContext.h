@@ -39,10 +39,20 @@ namespace pluto
             SharedPtr<SwapChain> GetSwapChain() override;
 
         public:
+            bool AllocateDescriptorSet(VkDescriptorSet *set, VkDescriptorSetLayout layout, uint32_t descriptorCount);
+
+        public:
             VKRenderDevice *GetBasedDevice() const;
             VkInstance GetVKInstance() const;
             void PushDestoryTask(std::function<void()> &&task);
             void ExecuteDestoryTasks();
+
+        private:
+            VkDescriptorPool CreateDescriptorPool(uint32_t count, VkDescriptorPoolCreateFlags flags);
+            VkDescriptorPool GetDescriptorPool();
+            VkDescriptorPool mCurrentPool;
+            std::vector<VkDescriptorPool> mUsedDescriptorPools;
+            std::vector<VkDescriptorPool> mFreeDescriptorPools;
 
         private:
             VKContext *mContext;

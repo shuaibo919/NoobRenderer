@@ -205,7 +205,6 @@ VKPipeline::VKPipeline(RenderContext *ctx, VKPipeline::Properties *&&pProperties
         graphicsPipelineCreateInfo.pNext = NULL;
         graphicsPipelineCreateInfo.layout = mShader->GetPipelineLayout();
         graphicsPipelineCreateInfo.basePipelineHandle = VK_NULL_HANDLE;
-        graphicsPipelineCreateInfo.basePipelineIndex = -1;
         graphicsPipelineCreateInfo.pVertexInputState = &vertexInputInfo;
         graphicsPipelineCreateInfo.pInputAssemblyState = &inputAssemblyInfo;
         graphicsPipelineCreateInfo.pRasterizationState = &rasterStateInfo;

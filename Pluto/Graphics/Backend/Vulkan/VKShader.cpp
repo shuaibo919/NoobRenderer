@@ -18,7 +18,7 @@ VKShader::VKShader(RenderContext *ctx, VKShader::Properties *&&pProperties)
         std::string realpath = FileSystem::Instance().GetPhysicalPath(mProperties->filePath);
         std::string dirPath = FileSystem::Instance().GetParentPath(realpath);
         std::string jsonContent = FileSystem::Instance().ReadTextFile(realpath);
-        ShaderJson shaderDesc = ShaderJson::parse(jsonContent);
+        ShaderJson shaderDesc = ShaderJson::parse(jsonContent, nullptr, false, true);
         mShaderStages = new VkPipelineShaderStageCreateInfo[shaderDesc.size()];
 
         for (uint32_t i = 0; i < shaderDesc.size(); i++)
@@ -27,7 +27,7 @@ VKShader::VKShader(RenderContext *ctx, VKShader::Properties *&&pProperties)
         bool success = true;
         for (auto &shader : shaderDesc)
         {
-            auto type = shader["type"].get<ShaderType>();
+            auto type = static_cast<ShaderType>(shader["type"].get<uint8_t>());
             auto spvName = shader["spirv"].get<std::string>();
             auto spvPath = dirPath + "/" + spvName;
 
@@ -101,7 +101,6 @@ bool VKShader::LoadSpriv(const std::string &name, uint32_t *source, uint32_t fil
 void VKShader::ReadReflectInfo(ShaderJson &info, ShaderType type)
 {
     uint32_t maxSetNum = info["max_set"].get<uint32_t>();
-    mDescriptorLayoutInfos.resize(maxSetNum + 1);
     if (type == ShaderType::Vertex)
     {
         for (auto &vertexInput : info["VertexInput"])
@@ -126,11 +125,11 @@ void VKShader::ReadReflectInfo(ShaderJson &info, ShaderType type)
         descriptor.name = resource["name"].get<std::string>();
         descriptor.shaderType = static_cast<ShaderType>(resource["shaderType"].get<uint8_t>());
         descriptor.descType = DescriptorType::ImageSampler;
-        mDescriptorLayoutInfos[set].push_back({DescriptorType::ImageSampler,
-                                               type,
-                                               descriptor.binding,
-                                               set,
-                                               resource["per_dimension_size"].get<std::vector<uint32_t>>()});
+        mDescriptorLayoutInfos.push_back({DescriptorType::ImageSampler,
+                                          type,
+                                          descriptor.binding,
+                                          set,
+                                          resource["per_dimension_size"].get<std::vector<uint32_t>>()});
     }
 
     for (auto &uniform_buffer : info["UniformBuffers"])
@@ -146,11 +145,11 @@ void VKShader::ReadReflectInfo(ShaderJson &info, ShaderType type)
         descriptor.name = uniform_buffer["name"].get<std::string>();
         descriptor.binding = uniform_buffer["binding"].get<uint32_t>();
         descriptor.shaderType = static_cast<ShaderType>(uniform_buffer["shaderType"].get<uint8_t>());
-        mDescriptorLayoutInfos[set].push_back({DescriptorType::UniformBuffer,
-                                               type,
-                                               descriptor.binding,
-                                               set,
-                                               uniform_buffer["per_dimension_size"].get<std::vector<uint32_t>>()});
+        mDescriptorLayoutInfos.push_back({DescriptorType::UniformBuffer,
+                                          type,
+                                          descriptor.binding,
+                                          set,
+                                          uniform_buffer["per_dimension_size"].get<std::vector<uint32_t>>()});
         for (auto &json_member : uniform_buffer["members"])
         {
             auto &member = descriptor.mMembers.emplace_back();
@@ -174,12 +173,24 @@ void VKShader::PreparePipelineLayout()
     auto pRenderContext = static_cast<VKRenderContext *>(mRenderContext);
     auto pBasedDevice = pRenderContext->GetBasedDevice();
 
-    for (auto &l : mDescriptorLayoutInfos)
+    std::vector<std::vector<Graphics::DescriptorLayoutInfo>> layouts;
+
+    for (auto &descriptorLayout : this->mDescriptorLayoutInfos)
+    {
+        while ((uint32_t)layouts.size() < descriptorLayout.setID + 1)
+        {
+            layouts.emplace_back();
+        }
+
+        layouts[descriptorLayout.setID].push_back(descriptorLayout);
+    }
+
+    for (auto &l : layouts)
     {
         std::vector<VkDescriptorSetLayoutBinding> setLayoutBindings;
         std::vector<VkDescriptorBindingFlags> layoutBindingFlags;
-        setLayoutBindings.reserve(l.size());
-        layoutBindingFlags.reserve(l.size());
+        setLayoutBindings.resize(l.size());
+        layoutBindingFlags.resize(l.size());
 
         for (uint32_t i = 0; i < (uint32_t)l.size(); i++)
         {
@@ -203,7 +214,8 @@ void VKShader::PreparePipelineLayout()
                 setLayoutBinding.stageFlags = VKUtilities::GetShaderType(info.stage);
 
             setLayoutBinding.binding = info.binding;
-            setLayoutBinding.descriptorCount = static_cast<uint32_t>(info.counts.size());
+            auto descriptorCount = static_cast<uint32_t>(info.counts.size());
+            setLayoutBinding.descriptorCount = descriptorCount == 0 ? 1 : descriptorCount;
 
             bool isArray = info.counts.size() > 1;
 
@@ -236,8 +248,8 @@ void VKShader::PreparePipelineLayout()
     pipelineLayoutCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
     pipelineLayoutCreateInfo.setLayoutCount = static_cast<uint32_t>(mDescriptorSetLayouts.size());
     pipelineLayoutCreateInfo.pSetLayouts = mDescriptorSetLayouts.data();
-    // pipelineLayoutCreateInfo.pushConstantRangeCount = ;
-    // pipelineLayoutCreateInfo.pPushConstantRanges = ;
+    pipelineLayoutCreateInfo.pushConstantRangeCount = 0;
+    pipelineLayoutCreateInfo.pPushConstantRanges = nullptr;
 
     VK_CHECK_RESULT(vkCreatePipelineLayout(pBasedDevice->GetDevice(), &pipelineLayoutCreateInfo, VK_NULL_HANDLE, &mPipelineLayout));
 }

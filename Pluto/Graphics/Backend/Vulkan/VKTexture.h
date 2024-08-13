@@ -26,10 +26,10 @@ namespace pluto
             ///        with only width, height being considered valid properties.
             ///        Todo: A better solution.
             VKTexture2D(RenderContext *ctx, VkImage img, VkImageView view, VkFormat format, Properties *&&pProperties);
-            void TransitionImage(VkImageLayout newLayout, VkCommandBuffer vkCmdHandle);
 
         public:
             void *GetHandle() const override;
+            void *GetDescriptorInfo() override { return &mDescriptor; }
             void Bind(uint32_t slot = 0) const override {};
             void Unbind(uint32_t slot = 0) const override {};
 
@@ -40,6 +40,8 @@ namespace pluto
             VkImageLayout GetImageLayout() const { return mImageLayout; }
             VkImage GetImage() const { return mTextureImage; }
             VkSampler GetSampler() const { return mTextureSampler; }
+
+            void TransitionImage(VkImageLayout newLayout, VkCommandBuffer vkCmdHandle);
 
         private:
             void Destroy();
