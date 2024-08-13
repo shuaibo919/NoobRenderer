@@ -1,9 +1,12 @@
 set(TARGET_NAME Test)
 message(STATUS "Generate Test File Enabled")
 
-if(${BUILD_WITH_VULKAN_BACKEND})
+# Dev
+if(${BUILD_WITH_VULKAN_BACKEND} EQUAL TRUE)
+    message(STATUS "Generate Vulkan Test Example")
     set(TestSourcePath ${CMAKE_CURRENT_SOURCE_DIR}/RHI/Vulkan/*.cpp)
-elseif()
+else()
+    message(STATUS "Generate Opengl Test Example")
     set(TestSourcePath ${CMAKE_CURRENT_SOURCE_DIR}/RHI/OpenGL/*.cpp)
 endif()
 
