@@ -30,7 +30,7 @@ void Shader::ReadReflectInfo(ShaderJson &info, ShaderType type)
 
     for (auto &vertexInput : info["VertexInput"])
     {
-        auto inputType = static_cast<ShaderDataType>(vertexInput);
+        // auto inputType = static_cast<ShaderDataType>(vertexInput);
     }
 
     for (auto &resource : info["SampledImages"])

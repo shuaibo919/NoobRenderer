@@ -332,14 +332,6 @@ void VKPipeline::PrepareFramebuffer()
     delete framebufferProperties;
 }
 
-void VKPipeline::TransitionAttachments()
-{
-}
-
-void VKPipeline::PrepareFramebuffer()
-{
-}
-
 void VKPipeline::Bind(const SharedPtr<CommandBuffer> &commandBuffer, uint32_t layer)
 {
     auto pContext = static_cast<VKRenderContext *>(mRenderContext);
