@@ -11,7 +11,7 @@
 using namespace pluto::Graphics;
 
 VKShader::VKShader(RenderContext *ctx, VKShader::Properties *&&pProperties)
-    : Shader(ctx, std::move(pProperties)), mStageCount(0), mCompiled(false)
+    : Shader(ctx, std::move(pProperties)), mStageCount(0), mCompiled(false), mCompute(false)
 {
     if (!mProperties->filePath.empty())
     {
@@ -31,7 +31,7 @@ VKShader::VKShader(RenderContext *ctx, VKShader::Properties *&&pProperties)
             auto spvName = shader["spirv"].get<std::string>();
             auto spvPath = dirPath + "/" + spvName;
 
-            mCompute |= type == ShaderType::Compute;
+            mCompute |= (type == ShaderType::Compute);
             uint32_t fileSize = uint32_t(FileSystem::GetFileSize(spvPath));
             uint32_t *source = reinterpret_cast<uint32_t *>(FileSystem::Instance().ReadFile(spvPath));
 

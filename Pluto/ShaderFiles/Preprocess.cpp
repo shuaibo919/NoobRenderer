@@ -18,6 +18,7 @@ int main(int argc, char *argv[])
     const char *output_directory = argv[2];
     const char *glslc = argv[3];
     const std::string mapping[4] = {"Vertex", "Fragment", "Geometry", "Compute"}; // this relative order is important
+    const Graphics::ShaderType shader_type[4] = {Graphics::ShaderType::Vertex, Graphics::ShaderType::Fragment, Graphics::ShaderType::Geometry, Graphics::ShaderType::Compute};
     LoadShaderFiles::Init();
     std::cout << "Preprocess shader files in: " << shader_directory << std::endl;
     std::cout << "Output shader files in: " << output_directory << std::endl;
@@ -37,7 +38,7 @@ int main(int argc, char *argv[])
             auto content = ReadShaderContent(shader_names[i], shader_directory);
             if (content.empty())
                 continue;
-            j[mapping[i]]["type"] = i;
+            j[mapping[i]]["type"] = static_cast<uint8_t>(shader_type[i]);
             j[mapping[i]]["name"] = shader_names[i];
             std::string glsl_content;
             auto spirv = CompileToSpirv(glslc, shader_names[i], mapping[i], shader_directory + shader_names[i], output_directory);

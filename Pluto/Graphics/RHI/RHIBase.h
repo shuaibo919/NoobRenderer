@@ -27,15 +27,16 @@ namespace pluto
             };
 
         public:
-            static SharedPtr<T> TryGet(RenderContext *ctx, const T::Properties &Properties)
+            static SharedPtr<T> TryGet(RenderContext *ctx, void *Properties)
             {
-                auto hash = T::GetHash(Properties);
+                auto pProperties = static_cast<T::Properties *>(Properties);
+                auto hash = T::GetHash(*pProperties);
                 auto found = mCacheMap.find(hash);
                 if (found != mCacheMap.end() && found->second.object != nullptr)
                 {
                     return found->second.object;
                 }
-                return std::make_shared<T>(ctx, new T::Properties(Properties));
+                return std::make_shared<T>(ctx, new T::Properties(*Properties));
             }
 
             static void ClearCache()

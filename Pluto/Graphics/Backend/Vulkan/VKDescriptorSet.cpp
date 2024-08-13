@@ -118,7 +118,7 @@ void VKDescriptorSet::Update(SharedPtr<CommandBuffer> buffer)
                 writeDescriptorSet.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
                 writeDescriptorSet.dstBinding = descInfo.binding;
                 writeDescriptorSet.pImageInfo = &imageInfos[imageIndex];
-                writeDescriptorSet.descriptorCount = mProperties->descriptorInfo.descriptors.size();
+                writeDescriptorSet.descriptorCount = static_cast<uint32_t>(mProperties->descriptorInfo.descriptors.size());
 
                 writeDescriptorSets[descriptorWritesCount] = writeDescriptorSet;
                 imageIndex++;
@@ -143,7 +143,7 @@ void VKDescriptorSet::Update(SharedPtr<CommandBuffer> buffer)
                 writeDescriptorSet.descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_IMAGE;
                 writeDescriptorSet.dstBinding = descInfo.binding;
                 writeDescriptorSet.pImageInfo = &imageInfos[imageIndex];
-                writeDescriptorSet.descriptorCount = mProperties->descriptorInfo.descriptors.size();
+                writeDescriptorSet.descriptorCount = static_cast<uint32_t>(mProperties->descriptorInfo.descriptors.size());
 
                 writeDescriptorSets[descriptorWritesCount] = writeDescriptorSet;
                 imageIndex++;
