@@ -84,7 +84,7 @@ void VKBuffer::Init(VkBufferUsageFlags usage, VkMemoryPropertyFlags memoryProper
 
     vmaCreateBuffer(pBasedDevice->GetAllocator(), &bufferCreateInfo, &vmaAllocInfo, &stagingBuffer, &stagingAlloc, nullptr);
 
-    uint8_t *destData;
+    uint8_t *destData = nullptr;
     {
         VkResult res = static_cast<VkResult>(vmaMapMemory(pBasedDevice->GetAllocator(), stagingAlloc, (void **)&destData));
         if (res != VK_SUCCESS)
