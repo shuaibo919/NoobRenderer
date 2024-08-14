@@ -51,7 +51,7 @@ namespace pluto
         private:
             VkDescriptorPool CreateDescriptorPool(uint32_t count, VkDescriptorPoolCreateFlags flags);
             VkDescriptorPool GetDescriptorPool();
-            VkDescriptorPool mCurrentPool;
+            VkDescriptorPool mCurrentPool{VK_NULL_HANDLE};
             std::vector<VkDescriptorPool> mUsedDescriptorPools;
             std::vector<VkDescriptorPool> mFreeDescriptorPools;
 
