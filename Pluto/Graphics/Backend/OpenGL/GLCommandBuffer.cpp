@@ -188,7 +188,3 @@ void GLCommandBuffer::DrawSplashScreen(const SharedPtr<Texture> &texture)
 void GLCommandBuffer::UnBindPipeline()
 {
 }
-
-void GLCommandBuffer::EndCurrentRenderPass()
-{
-}

@@ -35,7 +35,6 @@ namespace pluto
             void Dispatch(uint32_t workGroupSizeX, uint32_t workGroupSizeY, uint32_t workGroupSizeZ) override;
             void DrawSplashScreen(const SharedPtr<Texture> &texture) override;
             void UnBindPipeline() override;
-            void EndCurrentRenderPass() override;
 
         public:
             GLCommandBuffer::Ptr Get();
@@ -43,7 +42,7 @@ namespace pluto
         private:
             bool primary;
             std::vector<GLEmulatedCommand> mCmds;
-            
+
             uint32_t mBoundPipelineLayer{0};
             SharedPtr<Pipeline> mBoundPipeline{nullptr};
         };

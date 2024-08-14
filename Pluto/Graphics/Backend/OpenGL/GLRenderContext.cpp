@@ -42,6 +42,11 @@ void GLRenderContext::Begin()
     GlCall(glClear(GL_COLOR_BUFFER_BIT));
 }
 
+void GLRenderContext::WaitIdle()
+{
+    GlCall(glFinish());
+}
+
 void GLRenderContext::OnResize(uint32_t width, uint32_t height)
 {
     std::static_pointer_cast<GLSwapChain>(mContext->mSwapChain)->OnResize(width, height);
