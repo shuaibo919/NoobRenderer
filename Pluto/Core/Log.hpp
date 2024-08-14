@@ -3,6 +3,7 @@
 
 #include "Core/Base.hpp"
 #include <cstdio>
+#include <cassert>
 
 namespace pluto
 {
@@ -150,5 +151,6 @@ namespace pluto
 #define PDebug pluto::Debug
 #define PError pluto::Error
 #define PCritical pluto::Critical
+#define PAssert(exp, msg) assert(((void)msg, exp))
 
 #endif
