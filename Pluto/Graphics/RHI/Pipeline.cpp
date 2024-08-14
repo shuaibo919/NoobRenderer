@@ -125,7 +125,7 @@ uint32_t Pipeline::GetHeight()
 
     if (mProperties->colorTargets[0] != nullptr)
     {
-        return mProperties->mipIndex > 0 ? mProperties->colorTargets[0]->GetWidth(mProperties->mipIndex) : mProperties->colorTargets[0]->GetWidth();
+        return mProperties->mipIndex > 0 ? mProperties->colorTargets[0]->GetHeight(mProperties->mipIndex) : mProperties->colorTargets[0]->GetHeight();
     }
     return 0;
 }

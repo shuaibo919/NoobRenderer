@@ -16,6 +16,7 @@ namespace pluto
 
             virtual void Init() = 0;
             virtual void Begin() = 0;
+            virtual void WaitIdle() = 0;
             virtual void OnResize(uint32_t width, uint32_t height) = 0;
             virtual void ClearRenderTarget(const SharedPtr<Texture> &texture, AttachmentType type, const SharedPtr<CommandBuffer> &commandBuffer, glm::vec4 clearColor) = 0;
 

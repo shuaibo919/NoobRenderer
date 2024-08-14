@@ -19,6 +19,7 @@ namespace pluto
         public:
             void Init() override;
             void Begin() override;
+            void WaitIdle() override;
             void OnResize(uint32_t width, uint32_t height) override;
             void ClearRenderTarget(const SharedPtr<Texture> &texture, AttachmentType type, const SharedPtr<CommandBuffer> &commandBuffer, glm::vec4 clearColor) override;
 

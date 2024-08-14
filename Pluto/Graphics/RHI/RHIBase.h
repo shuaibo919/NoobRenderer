@@ -36,7 +36,7 @@ namespace pluto
                 {
                     return found->second.object;
                 }
-                return std::make_shared<T>(ctx, new T::Properties(*Properties));
+                return std::make_shared<T>(ctx, new T::Properties(*pProperties));
             }
 
             static void ClearCache()

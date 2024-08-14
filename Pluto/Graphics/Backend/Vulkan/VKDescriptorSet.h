@@ -29,7 +29,15 @@ namespace pluto
             void SetUniformDynamic(const std::string &bufferName, uint32_t size) override {}
             Buffer *GetUniformBufferLocalData(const std::string &name) override { return nullptr; }
 
+        public:
+            VkDescriptorSet GetHandle(uint32_t frameIndex) const { return mDescriptorSet[frameIndex]; }
+            bool GetHasUpdated(uint32_t frame) const { return mDescriptorUpdated[frame]; }
+            bool GetDynamic() const { return mDynamic; }
+            uint32_t GetDynamicOffset() const { return mDynamicOffset; }
+
         private:
+            bool mDynamic{false};
+            uint32_t mDynamicOffset{0};
             struct UniformBufferInfo
             {
                 std::vector<BufferMemberInfo> mMembers;

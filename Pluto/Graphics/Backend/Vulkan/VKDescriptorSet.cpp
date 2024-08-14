@@ -171,7 +171,7 @@ void VKDescriptorSet::Update(SharedPtr<CommandBuffer> buffer)
 
                 if (descInfo.descType == DescriptorType::UniformBufferDynamic)
                 {
-                    // TODO:
+                    mDynamic = true;
                 }
             }
         }
@@ -279,7 +279,7 @@ void VKDescriptorSet::WrtieUboInfoData(UniformBufferInfo &info, void *data, uint
     memcpy((uint8_t *)info.data + offset, data, size);
 }
 
-void VKDescriptorSet::TransitionImageLayoutByHints(const Texture::Ptr &texture, const CommandBuffer::Ptr &cmdBuffer)
+void VKDescriptorSet::TransitionImageLayoutByHints(const SharedPtr<Texture> &texture, const SharedPtr<CommandBuffer> &cmdBuffer)
 {
     if (!texture)
         return;

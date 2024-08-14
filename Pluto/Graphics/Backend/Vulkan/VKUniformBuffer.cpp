@@ -10,8 +10,6 @@ using namespace pluto::Graphics;
 VKUniformBuffer::VKUniformBuffer(RenderContext *ctx, UniformBuffer::Properties *&&pProperties)
     : UniformBuffer(ctx, std::move(pProperties))
 {
-    if (mProperties->data == nullptr) // safe guard
-        mProperties->size = 0;
     mBuffer = new VKBuffer(static_cast<VKRenderContext *>(ctx), VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT,
                            mProperties->size, mProperties->data);
 }

@@ -13,9 +13,6 @@ using namespace pluto::Graphics;
 VKVertexBuffer::VKVertexBuffer(RenderContext *ctx, VertexBuffer::Properties *&&pProperties)
     : VertexBuffer(ctx, std::move(pProperties))
 {
-    if (mProperties->data == nullptr) // safe guard
-        mProperties->vetexSize = 0;
-
     mBuffer = new VKBuffer(static_cast<VKRenderContext *>(ctx), VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,
                            pProperties->usage == BufferUsage::Dynamic ? VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT : 0,
                            mProperties->vetexSize, mProperties->data);

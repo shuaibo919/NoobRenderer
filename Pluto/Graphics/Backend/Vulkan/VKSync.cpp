@@ -54,6 +54,7 @@ uint64_t VKSemaphore::GetValue()
 }
 
 VKFence::VKFence(VkDevice device, bool signaled)
+    : mBasedDevice(device)
 {
     mSignaled = signaled;
 

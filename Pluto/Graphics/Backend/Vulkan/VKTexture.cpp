@@ -376,6 +376,7 @@ void VKTexture2D::PrepareTexture(const std::string &path)
 
     VKUtilities::CopyBufferToImage(stagingBuffer->GetBuffer(), mTextureImage, mProperties->width, mProperties->height,
                                    pBasedDevice->GetDevice(), pBasedDevice->GetCommandPool()->GetHandle(), pBasedDevice->GetGraphicsQueue());
+    stagingBuffer->Destroy();
     delete stagingBuffer;
 
     if (mProperties->flags & TextureFlags::TextureCreateMips && mProperties->width > 1 && mProperties->height > 1)

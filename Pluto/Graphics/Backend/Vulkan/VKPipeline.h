@@ -22,6 +22,11 @@ namespace pluto
             void TransitionAttachments();
             void PrepareFramebuffer();
 
+        public:
+            VkPipeline GetHandle() const;
+            bool IsComputePipeline() const;
+            VkPipelineLayout GetPipelineLayout() const;
+
         private:
             VkPipeline mPipeline;
             SharedPtr<VKShader> mShader{nullptr};

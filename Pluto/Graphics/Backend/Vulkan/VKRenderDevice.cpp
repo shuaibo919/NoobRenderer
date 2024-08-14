@@ -346,7 +346,6 @@ VKRenderDevice::VKRenderDevice(const SharedPtr<GraphicsContext> &pContext)
     allocatorInfo.device = mDevice;
     allocatorInfo.instance = mBasedContext->GetVKInstance();
     allocatorInfo.vulkanApiVersion = mBasedContext->GetVKVersion();
-
     allocatorInfo.preferredLargeHeapBlockSize = 64 * 1024 * 1024;
     if (vmaCreateAllocator(&allocatorInfo, &mAllocator) != VK_SUCCESS)
     {

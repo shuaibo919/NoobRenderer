@@ -41,10 +41,12 @@ namespace pluto
             void Dispatch(uint32_t workGroupSizeX, uint32_t workGroupSizeY, uint32_t workGroupSizeZ) override;
             void DrawSplashScreen(const SharedPtr<Texture> &texture) override;
             void UnBindPipeline() override;
-            void EndCurrentRenderPass() override;
 
         public:
+            bool Wait();
+            VKCommandBuffer::Ptr GetSharedThis();
             VkCommandBuffer GetHandle() const { return mCommandBuffer; }
+            void Execute(VkPipelineStageFlags flags, VkSemaphore signalSemaphore, bool waitFence);
 
         private:
             bool mPrimary{false};
@@ -52,8 +54,8 @@ namespace pluto
             SharedPtr<VKSemaphore> mSemaphore{nullptr};
             VkCommandPool mCommandPool{VK_NULL_HANDLE};
             VkCommandBuffer mCommandBuffer{VK_NULL_HANDLE};
-
             uint32_t mBoundPipelineLayer{0};
+            SharedPtr<Pipeline> mBoundPipeline{nullptr};
         };
     }
 }

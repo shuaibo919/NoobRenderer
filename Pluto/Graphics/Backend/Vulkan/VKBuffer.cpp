@@ -23,7 +23,6 @@ VKBuffer::VKBuffer(VKRenderContext *pContext)
 
 VKBuffer::~VKBuffer()
 {
-    this->Destroy(!mDeleteWithoutQueue);
 }
 
 void VKBuffer::Destroy(bool deletionQueue)
@@ -61,7 +60,7 @@ void VKBuffer::Init(VkBufferUsageFlags usage, VkMemoryPropertyFlags memoryProper
     bufferCreateInfo.size = size;
     bufferCreateInfo.usage = usage;
     bufferCreateInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
-    if (data != nullptr)
+    if (data == nullptr)
     {
         VmaAllocationCreateInfo vmaAllocInfo = {};
         vmaAllocInfo.usage = VMA_MEMORY_USAGE_AUTO;
@@ -72,17 +71,18 @@ void VKBuffer::Init(VkBufferUsageFlags usage, VkMemoryPropertyFlags memoryProper
     }
     VmaAllocationCreateInfo vmaAllocInfo = {};
     vmaAllocInfo.usage = VMA_MEMORY_USAGE_CPU_TO_GPU;
+    vmaAllocInfo.flags = !mGPUOnlyMemory ? VMA_ALLOCATION_CREATE_HOST_ACCESS_SEQUENTIAL_WRITE_BIT : 0;
     vmaAllocInfo.preferredFlags = memoryProperyFlags;
-    vmaAllocInfo.flags = 0;
 
-    bufferCreateInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
-    bufferCreateInfo.size = size;
-    bufferCreateInfo.usage = VK_BUFFER_USAGE_TRANSFER_SRC_BIT;
-    bufferCreateInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+    VkBufferCreateInfo stagingBufferInfo = {};
+    stagingBufferInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
+    stagingBufferInfo.size = size;
+    stagingBufferInfo.usage = VK_BUFFER_USAGE_TRANSFER_SRC_BIT;
+    stagingBufferInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
     VkBuffer stagingBuffer;
     VmaAllocation stagingAlloc;
 
-    vmaCreateBuffer(pBasedDevice->GetAllocator(), &bufferCreateInfo, &vmaAllocInfo, &stagingBuffer, &stagingAlloc, nullptr);
+    vmaCreateBuffer(pBasedDevice->GetAllocator(), &stagingBufferInfo, &vmaAllocInfo, &stagingBuffer, &stagingAlloc, nullptr);
 
     uint8_t *destData = nullptr;
     {
@@ -91,11 +91,9 @@ void VKBuffer::Init(VkBufferUsageFlags usage, VkMemoryPropertyFlags memoryProper
         {
             PLog<PCritical>("%s Failed to map buffer", PLineInfo);
         }
-
         memcpy(destData, data, size);
         vmaUnmapMemory(pBasedDevice->GetAllocator(), stagingAlloc);
     }
-
     vmaAllocInfo.flags = mGPUOnlyMemory ? 0 : VMA_ALLOCATION_CREATE_HOST_ACCESS_SEQUENTIAL_WRITE_BIT;
     vmaAllocInfo.usage = mGPUOnlyMemory ? VMA_MEMORY_USAGE_GPU_ONLY : VMA_MEMORY_USAGE_AUTO;
     bufferCreateInfo.usage |= VK_BUFFER_USAGE_TRANSFER_DST_BIT;

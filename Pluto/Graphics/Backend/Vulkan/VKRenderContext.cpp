@@ -43,6 +43,11 @@ void VKRenderContext::Begin()
 {
 }
 
+void VKRenderContext::WaitIdle()
+{
+    vkDeviceWaitIdle(GetBasedDevice()->GetDevice());
+}
+
 void VKRenderContext::OnResize(uint32_t width, uint32_t height)
 {
     std::static_pointer_cast<VKSwapChain>(mContext->mSwapChain)->OnResize(width, height);

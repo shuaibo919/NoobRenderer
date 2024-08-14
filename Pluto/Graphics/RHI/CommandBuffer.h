@@ -54,7 +54,6 @@ namespace pluto
             virtual void Dispatch(uint32_t workGroupSizeX, uint32_t workGroupSizeY, uint32_t workGroupSizeZ) = 0;
             virtual void DrawSplashScreen(const SharedPtr<Texture> &texture) = 0;
             virtual void UnBindPipeline() = 0;
-            virtual void EndCurrentRenderPass() = 0;
 
         protected:
             Properties *mProperties;

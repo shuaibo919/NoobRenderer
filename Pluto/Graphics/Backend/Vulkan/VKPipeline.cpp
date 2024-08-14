@@ -334,7 +334,7 @@ void VKPipeline::PrepareFramebuffer()
 void VKPipeline::Bind(const SharedPtr<CommandBuffer> &commandBuffer, uint32_t layer)
 {
     auto pContext = static_cast<VKRenderContext *>(mRenderContext);
-    Framebuffer::Ptr framebuffer;
+    Framebuffer::Ptr &framebuffer = mFramebuffers[0];
 
     if (!mShader->HasComputeStage())
     {
@@ -343,10 +343,6 @@ void VKPipeline::Bind(const SharedPtr<CommandBuffer> &commandBuffer, uint32_t la
         if (mProperties->swapchainTarget)
         {
             framebuffer = mFramebuffers[pContext->GetSwapChain()->GetCurrentImageIndex()];
-        }
-        else
-        {
-            framebuffer = mFramebuffers[0];
         }
 
         mRenderPass->BeginRenderPass(commandBuffer, mProperties->clearColor, framebuffer, Graphics::Inline);
@@ -386,4 +382,19 @@ void VKPipeline::ClearRenderTargets(const SharedPtr<CommandBuffer> &commandBuffe
             }
         }
     }
+}
+
+bool VKPipeline::IsComputePipeline() const
+{
+    return mShader->HasComputeStage();
+}
+
+VkPipeline VKPipeline::GetHandle() const
+{
+    return mPipeline;
+}
+
+VkPipelineLayout VKPipeline::GetPipelineLayout() const
+{
+    return mShader->GetPipelineLayout();
 }

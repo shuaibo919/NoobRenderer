@@ -283,6 +283,8 @@ pluto::SharedPtr<Texture> VKSwapChain::GetImage(uint32_t index)
 
 uint32_t VKSwapChain::GetCurrentImageIndex() const
 {
+    if (mAcquireImageIndex == (std::numeric_limits<uint32_t>::max)()) [[unlikely]]
+        return 0;
     return mAcquireImageIndex;
 }
 
