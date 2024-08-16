@@ -2,10 +2,10 @@
 In this pluto branch, the first step will be to add RHI (Render Hardware Interface) layer to implement abstraction for Opengl and Vulkan, then refactor the entire project.
 
 ```shell
-  ☼ <- now in here!
+  ☼ <- now in here! (still developing in my spare time, so it may not compile successfully
   |
 Pluto   Neptune  Uranus  Saturn  Jupiter  Mars  Earth   Venus   Mercury   
-  🌑       🔵         ...           🪐      🔴     🌍        ...      
+  🌑       🔵         ...          🪐     🔴    🌍        ...      
        
 ```
 
