@@ -1,5 +1,6 @@
 #pragma once
 #include "Core/Base.hpp"
+#include "Graphics/RHI/SwapChain.h"
 
 namespace pluto
 {
@@ -44,16 +45,16 @@ namespace pluto
             friend class VKRenderContext;
 
         public:
-            virtual ~GraphicsContext();
+            virtual ~GraphicsContext() = default;
 
             RenderAPI GetRenderAPI() { return mRenderAPI; }
-            void SetMainSwapChain(const SharedPtr<SwapChain> &swapChain);
             RenderContext *GetRenderContext() const { return mRenderContext; }
 
             virtual void Init() = 0;
             virtual void Present() = 0;
             virtual float GetGPUMemoryUsed() = 0;
             virtual float GetTotalGPUMemory() = 0;
+            virtual void SetMainSwapChain(SwapChain::Properties &&properties) = 0;
 
             virtual size_t GetMinUniformBufferOffsetAlignment() const = 0;
             virtual bool FlipImGUITexture() const = 0;
@@ -66,7 +67,7 @@ namespace pluto
 
         protected:
             RenderAPI mRenderAPI{RenderAPI::None};
-            SharedPtr<SwapChain> mSwapChain{nullptr};
+            SwapChain *mSwapChain{nullptr};
             RenderContext *mRenderContext{nullptr};
 
         protected:

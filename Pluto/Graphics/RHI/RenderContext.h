@@ -31,7 +31,7 @@ namespace pluto
             virtual void Dispatch(const SharedPtr<CommandBuffer> &, uint32_t workGroupSizeX, uint32_t workGroupSizeY, uint32_t workGroupSizeZ) = 0;
             virtual void DrawSplashScreen(const SharedPtr<Texture> &texture) = 0;
 
-            virtual SharedPtr<SwapChain> GetSwapChain() = 0;
+            virtual SwapChain *GetSwapChain() = 0;
 
             virtual uint32_t GetGPUCount() const { return 1; }
             virtual bool SupportsCompute() { return false; }

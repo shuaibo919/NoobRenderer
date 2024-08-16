@@ -22,8 +22,7 @@ namespace pluto
         uint16_t GetWidth() const { return mWidth; };
         uint16_t GetHeight() const { return mHeight; };
 
-        const SharedPtr<Graphics::SwapChain> &GetSwapChain() const { return mSwapChain; }
-        const SharedPtr<Graphics::GraphicsContext> &GetGraphicsContext() const { return mGraphicsContext; }
+        Graphics::SwapChain::Properties GetSwapChainProperties();
 
         Window(const SharedPtr<Graphics::GraphicsContext> &graphicsContext, unsigned int width, unsigned int height, const char *title);
 
@@ -33,8 +32,5 @@ namespace pluto
         uint16_t mHeight;
         std::string mTitle;
         WindowImpl *mImpl;
-
-        SharedPtr<Graphics::SwapChain> mSwapChain;
-        SharedPtr<Graphics::GraphicsContext> mGraphicsContext;
     };
 }

@@ -37,7 +37,7 @@ namespace pluto
             bool SupportsCompute() override;
             RHIFormat GetDepthFormat() override;
 
-            SharedPtr<SwapChain> GetSwapChain() override;
+            SwapChain *GetSwapChain() override;
 
         public:
             bool AllocateDescriptorSet(VkDescriptorSet *set, VkDescriptorSetLayout layout, uint32_t descriptorCount);

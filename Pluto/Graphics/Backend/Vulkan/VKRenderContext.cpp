@@ -50,7 +50,7 @@ void VKRenderContext::WaitIdle()
 
 void VKRenderContext::OnResize(uint32_t width, uint32_t height)
 {
-    std::static_pointer_cast<VKSwapChain>(mContext->mSwapChain)->OnResize(width, height);
+    static_cast<VKSwapChain *>(mContext->mSwapChain)->OnResize(width, height);
 }
 
 void VKRenderContext::ClearRenderTarget(const SharedPtr<Texture> &texture, AttachmentType type, const SharedPtr<CommandBuffer> &commandBuffer, glm::vec4 clearColor)
@@ -109,7 +109,7 @@ RHIFormat VKRenderContext::GetDepthFormat()
     return RHIFormat::Depth32Float;
 }
 
-SwapChain::Ptr VKRenderContext::GetSwapChain()
+SwapChain *VKRenderContext::GetSwapChain()
 {
     return mContext->mSwapChain;
 }

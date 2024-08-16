@@ -66,9 +66,9 @@ SharedPtr<Window> Window::Create(const SharedPtr<pluto::Graphics::GraphicsContex
 }
 
 Window::Window(const SharedPtr<pluto::Graphics::GraphicsContext> &graphicsContext, unsigned int width, unsigned int height, const char *title)
-    : mGraphicsContext(graphicsContext), mWidth(width), mHeight(height), mTitle(title), mImpl(nullptr)
+    : mWidth(width), mHeight(height), mTitle(title), mImpl(nullptr)
 {
-    auto api = mGraphicsContext->GetRenderAPI();
+    auto api = graphicsContext->GetRenderAPI();
     switch (api)
     {
     case Graphics::RenderAPI::OPENGL:
@@ -81,16 +81,19 @@ Window::Window(const SharedPtr<pluto::Graphics::GraphicsContext> &graphicsContex
     default:
         break;
     }
-    mSwapChain = Graphics::SwapChain::Builder()
-                     .SetBase(mWidth, mHeight)
-                     .SetWindow(this)
-                     .Create(mGraphicsContext);
 }
 
 Window::~Window()
 {
-    Terminate();
-    delete mImpl;
+}
+
+Graphics::SwapChain::Properties Window::GetSwapChainProperties()
+{
+    auto props = Graphics::SwapChain::Properties();
+    props.height = mHeight;
+    props.width = mWidth;
+    props.window = this;
+    return props;
 }
 
 int Window::ShouldClose()
@@ -105,6 +108,7 @@ void Window::Terminate()
     if (mImpl->mWindow == nullptr)
         return;
     glfwTerminate();
+    delete mImpl;
 }
 
 void Window::PollEvents()

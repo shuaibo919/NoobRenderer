@@ -16,7 +16,6 @@ namespace pluto
         public:
             static void Init();
             static RenderDevice *Create(const SharedPtr<GraphicsContext> &pContext);
-            static void Release(RenderDevice *pDevice);
 
         protected:
             inline static RenderDevice *(*CreateImpl)(const SharedPtr<GraphicsContext> &pContext){nullptr};

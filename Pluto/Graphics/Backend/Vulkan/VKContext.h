@@ -36,6 +36,8 @@ namespace pluto
             float GetGPUMemoryUsed() override { return 0.0f; }
             float GetTotalGPUMemory() override { return 0.0f; }
 
+            void SetMainSwapChain(SwapChain::Properties &&properties) override;
+
             void WaitIdle() const override {}
             void Present() override;
             void OnImGui() override;

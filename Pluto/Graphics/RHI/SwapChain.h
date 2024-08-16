@@ -10,6 +10,7 @@ namespace pluto
     {
         class SwapChain : public RHIBase
         {
+            friend class GraphicsContext;
         public:
             using Ptr = SharedPtr<SwapChain>;
             struct Properties

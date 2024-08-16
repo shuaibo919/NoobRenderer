@@ -22,8 +22,3 @@ RenderDevice *RenderDevice::Create(const SharedPtr<GraphicsContext> &pContext)
 {
     return CreateImpl(pContext);
 }
-
-void RenderDevice::Release(RenderDevice *pDevice)
-{
-    delete pDevice;
-};

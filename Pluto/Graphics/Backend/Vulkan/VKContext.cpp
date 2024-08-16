@@ -242,15 +242,19 @@ VKContext::VKContext()
     mRenderAPI = RenderAPI::VULKAN;
 }
 
+void VKContext::SetMainSwapChain(SwapChain::Properties &&properties)
+{
+    mSwapChain = new VKSwapChain(mRenderContext, new SwapChain::Properties(std::forward<SwapChain::Properties>(properties)));
+    mSwapChain->Init(false);
+};
+
 VKContext::~VKContext()
 {
-    static_cast<VKRenderContext *>(this->mRenderContext)->ExecuteDestoryTasks();
-    if (mDebugCallback != nullptr)
-        Vulkan::DestroyDebugReportCallbackEXT(mVkInstance, mDebugCallback, VK_NULL_HANDLE);
+    delete mSwapChain;
+    delete mRenderContext;
+    delete mRenderDevice;
 
-    if (mRenderDevice != nullptr)
-        RenderDevice::Release(mRenderDevice);
-
+    Vulkan::DestroyDebugReportCallbackEXT(mVkInstance, mDebugCallback, VK_NULL_HANDLE);
     vkDestroyInstance(mVkInstance, nullptr);
 }
 

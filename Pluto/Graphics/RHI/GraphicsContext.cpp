@@ -34,15 +34,3 @@ pluto::SharedPtr<GraphicsContext> GraphicsContext::Create(RenderAPI api)
     }
     return nullptr;
 }
-
-void GraphicsContext::SetMainSwapChain(const SharedPtr<SwapChain> &swapChain)
-{
-    mSwapChain = swapChain;
-    mSwapChain->Init(false);
-};
-
-GraphicsContext::~GraphicsContext()
-{
-    if (mRenderContext != nullptr)
-        delete mRenderContext;
-}
