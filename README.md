@@ -53,7 +53,7 @@ auto colorTarget = Texture::Builder()
 - 2024.7.8: GL-Backend WIP
 - 2024.7.17: GL-Backend WIP (RHI-OpenGL wrapper progress: 75%)
 - 2024.7.26: Vk-Backend WIP
-
+- 2024.8.18: (RHI-OpenGL wrapper progress: 75% / RHI-Vulkan wrapper progress: 75%)
 
 ## Reference
 - https://github.com/google/filament
