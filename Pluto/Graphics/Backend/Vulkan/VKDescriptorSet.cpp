@@ -53,23 +53,30 @@ VKDescriptorSet::VKDescriptorSet(RenderContext *ctx, VKDescriptorSet::Properties
         mDescriptorUpdated[frame] = false;
         mDescriptorSet[frame] = VK_NULL_HANDLE;
         auto layout = std::static_pointer_cast<VKShader>(mProperties->shader)->GetDescriptorSetLayout(mProperties->layoutIndex);
-        pRenderContext->AllocateDescriptorSet(&mDescriptorSet[frame], layout, 1);
+        mDescriptorPool[frame] = pRenderContext->AllocateDescriptorSet(&mDescriptorSet[frame], layout, 1);
     }
 }
 
 VKDescriptorSet::~VKDescriptorSet()
 {
-    for (uint32_t frame = 0; frame < mFlightFrameCount; frame++)
-    {
-        // Todo:
-    }
+    RHIBase::Destroy();
+}
+
+void VKDescriptorSet::DestroyImplementation()
+{
+    auto pRenderContext = static_cast<VKRenderContext *>(mRenderContext);
+    auto pBasedDevice = pRenderContext->GetBasedDevice();
 
     for (auto it = mUniformBuffersData.begin(); it != mUniformBuffersData.end(); it++)
     {
         this->ReleaseUboInfoData(it->second);
     }
-}
 
+    for (uint32_t frame = 0; frame < mFlightFrameCount; frame++)
+    {
+        vkFreeDescriptorSets(pBasedDevice->GetDevice(), mDescriptorPool[frame], 1, &mDescriptorSet[frame]);
+    }
+}
 void VKDescriptorSet::Update(SharedPtr<CommandBuffer> buffer)
 {
     auto pRenderContext = static_cast<VKRenderContext *>(mRenderContext);

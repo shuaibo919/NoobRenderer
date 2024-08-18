@@ -14,6 +14,7 @@ namespace pluto
             ~VKRenderPass();
 
         public:
+            void DestroyImplementation() override;
             void BeginRenderPass(const SharedPtr<CommandBuffer> &commandBuffer, float (&clearColor)[4], const SharedPtr<Framebuffer> &frame, SubPassContents contents) const override;
             void EndRenderPass(const SharedPtr<CommandBuffer> &commandBuffer) override;
 

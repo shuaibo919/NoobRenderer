@@ -28,6 +28,7 @@ namespace pluto
             VKTexture2D(RenderContext *ctx, VkImage img, VkImageView view, VkFormat format, Properties *&&pProperties);
 
         public:
+            void DestroyImplementation() override;
             void *GetHandle() const override;
             void *GetDescriptorInfo() override { return &mDescriptor; }
             void Bind(uint32_t slot = 0) const override {};
@@ -44,7 +45,6 @@ namespace pluto
             void TransitionImage(VkImageLayout newLayout, VkCommandBuffer vkCmdHandle);
 
         private:
-            void Destroy();
             void UpdateDescriptor();
             void PrepareTexture();
             void PrepareTexture(const std::string &path);
@@ -80,6 +80,7 @@ namespace pluto
             void *GetHandle() const override;
             void Bind(uint32_t slot = 0) const override;
             void Unbind(uint32_t slot = 0) const override;
+            void DestroyImplementation() override;
         };
 
         class VKTextureCube final : public TextureCube
@@ -103,6 +104,7 @@ namespace pluto
             void *GetHandle() const override;
             void Bind(uint32_t slot = 0) const override;
             void Unbind(uint32_t slot = 0) const override;
+            void DestroyImplementation() override;
         };
 
         class VKTexture3D final : public Texture3D
@@ -124,6 +126,7 @@ namespace pluto
             void *GetHandle() const override;
             void Bind(uint32_t slot = 0) const override;
             void Unbind(uint32_t slot = 0) const override;
+            void DestroyImplementation() override;
         };
     }
 }

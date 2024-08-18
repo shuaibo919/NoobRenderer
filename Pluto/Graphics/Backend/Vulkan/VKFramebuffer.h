@@ -16,6 +16,7 @@ namespace pluto
 
         public:
             VkFramebuffer GetHandle() const { return mFramebuffer; }
+            void DestroyImplementation() override;
             void Validate() override {};
             void SetClearColor(const glm::vec4 &color) override;
 

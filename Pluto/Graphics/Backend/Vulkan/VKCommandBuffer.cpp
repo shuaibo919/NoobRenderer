@@ -38,7 +38,7 @@ VKCommandBuffer::VKCommandBuffer(RenderContext *ctx, CommandBuffer::Properties *
 
 VKCommandBuffer::~VKCommandBuffer()
 {
-    this->Unload();
+    RHIBase::Destroy();
 }
 
 void VKCommandBuffer::Submit()
@@ -72,7 +72,7 @@ bool VKCommandBuffer::Flush()
     return true;
 }
 
-void VKCommandBuffer::Unload()
+void VKCommandBuffer::DestroyImplementation()
 {
     mRenderContext->WaitIdle();
 

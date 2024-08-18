@@ -244,18 +244,25 @@ VKContext::VKContext()
 
 void VKContext::SetMainSwapChain(SwapChain::Properties &&properties)
 {
-    mSwapChain = new VKSwapChain(mRenderContext, new SwapChain::Properties(std::forward<SwapChain::Properties>(properties)));
-    mSwapChain->Init(false);
+    VKSwapChain *pSwapChain = new VKSwapChain(mRenderContext, new SwapChain::Properties(std::forward<SwapChain::Properties>(properties)));
+    pSwapChain->Init(false);
+    static_cast<VKRenderContext *>(mRenderContext)->SetSwapchain(pSwapChain);
 };
 
 VKContext::~VKContext()
 {
-    delete mSwapChain;
+    PAssert(mTerminated, "VKContext was not terminated before destruction");
+}
+
+void VKContext::Terminate()
+{
+    static_cast<VKRenderContext *>(mRenderContext)->DeleteAllManagedObjects();
     delete mRenderContext;
     delete mRenderDevice;
 
     Vulkan::DestroyDebugReportCallbackEXT(mVkInstance, mDebugCallback, VK_NULL_HANDLE);
     vkDestroyInstance(mVkInstance, nullptr);
+    mTerminated = true;
 }
 
 void VKContext::Present()

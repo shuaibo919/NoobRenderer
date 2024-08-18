@@ -30,6 +30,7 @@ namespace pluto
         public:
             VKContext();
             ~VKContext();
+            void Terminate() override;
 
             size_t GetMinUniformBufferOffsetAlignment() const override { return 256; }
             bool FlipImGUITexture() const override { return true; }
@@ -69,6 +70,7 @@ namespace pluto
             SharedPtr<Texture> CreateTexture(uint16_t type, const std::string &path, void *&&pPropeties) override;
 
         private:
+            bool mTerminated{false};
             uint32_t mVKVersion;
             VkInstance mVkInstance;
             VKRenderDevice *mRenderDevice;

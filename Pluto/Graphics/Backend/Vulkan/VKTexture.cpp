@@ -258,10 +258,10 @@ VKTexture2D::VKTexture2D(RenderContext *ctx, VkImage img, VkImageView view, VkFo
 
 VKTexture2D::~VKTexture2D()
 {
-    this->Destroy();
+    RHIBase::Destroy();
 }
 
-void VKTexture2D::Destroy()
+void VKTexture2D::DestroyImplementation()
 {
     auto pBasedDevice = static_cast<VKRenderContext *>(mRenderContext)->GetBasedDevice();
     if (mTextureSampler != VK_NULL_HANDLE)
@@ -362,7 +362,6 @@ void VKTexture2D::PrepareTexture(const std::string &path)
         mMipLevels = 1;
 
     VKBuffer *stagingBuffer = new VKBuffer(pContext, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT, static_cast<uint32_t>(imageSize), pixels);
-    stagingBuffer->SetDeleteWithoutQueue(true);
 
     delete[] pixels;
 
@@ -376,7 +375,7 @@ void VKTexture2D::PrepareTexture(const std::string &path)
 
     VKUtilities::CopyBufferToImage(stagingBuffer->GetBuffer(), mTextureImage, mProperties->width, mProperties->height,
                                    pBasedDevice->GetDevice(), pBasedDevice->GetCommandPool()->GetHandle(), pBasedDevice->GetGraphicsQueue());
-    stagingBuffer->Destroy();
+
     delete stagingBuffer;
 
     if (mProperties->flags & TextureFlags::TextureCreateMips && mProperties->width > 1 && mProperties->height > 1)
@@ -440,6 +439,10 @@ VKTexture2DArray::~VKTexture2DArray()
 {
 }
 
+void VKTexture2DArray::DestroyImplementation()
+{
+}
+
 VKTexture2DArray::VKTexture2DArray(RenderContext *ctx, Properties *&&pProperties)
     : Texture2DArray(ctx, std::move(pProperties))
 {
@@ -472,6 +475,10 @@ VKTextureCube::~VKTextureCube()
 {
 }
 
+void VKTextureCube::DestroyImplementation()
+{
+}
+
 VKTextureCube::VKTextureCube(RenderContext *ctx, Properties *&&pProperties)
     : TextureCube(ctx, std::move(pProperties))
 {
@@ -501,6 +508,10 @@ void VKTexture3D::TransitionImage(VkImageLayout newLayout, VkCommandBuffer vkCmd
 }
 
 VKTexture3D::~VKTexture3D()
+{
+}
+
+void VKTexture3D::DestroyImplementation()
 {
 }
 

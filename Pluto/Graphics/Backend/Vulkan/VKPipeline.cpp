@@ -225,11 +225,13 @@ VKPipeline::VKPipeline(RenderContext *ctx, VKPipeline::Properties *&&pProperties
 
 VKPipeline::~VKPipeline()
 {
-    auto pContext = static_cast<VKRenderContext *>(mRenderContext);
-    auto device = pContext->GetBasedDevice()->GetDevice();
-    auto pipeline = mPipeline;
-    pContext->PushDestoryTask([pipeline, device]
-                              { vkDestroyPipeline(device, pipeline, VK_NULL_HANDLE); });
+    RHIBase::Destroy();
+}
+
+void VKPipeline::DestroyImplementation()
+{
+    auto pBasedDevice = static_cast<VKRenderContext *>(mRenderContext)->GetBasedDevice();
+    vkDestroyPipeline(pBasedDevice->GetDevice(), mPipeline, VK_NULL_HANDLE);
 }
 
 void VKPipeline::TransitionAttachments()

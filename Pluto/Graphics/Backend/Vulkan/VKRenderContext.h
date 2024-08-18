@@ -7,7 +7,9 @@ namespace pluto
 {
     namespace Graphics
     {
+        class RHIBase;
         class VKContext;
+        class VKSwapChain;
         class VKRenderDevice;
         class VKRenderContext : public RenderContext
         {
@@ -22,6 +24,9 @@ namespace pluto
             void WaitIdle() override;
             void OnResize(uint32_t width, uint32_t height) override;
             void ClearRenderTarget(const SharedPtr<Texture> &texture, AttachmentType type, const SharedPtr<CommandBuffer> &commandBuffer, glm::vec4 clearColor) override;
+
+            void AttachToRenderContext(RHIBase *object) override;
+            void DetachFromRenderContext(RHIBase *object) override;
 
             void Present() override;
             void Present(const SharedPtr<CommandBuffer> &commandBuffer) override;
@@ -40,13 +45,14 @@ namespace pluto
             SwapChain *GetSwapChain() override;
 
         public:
-            bool AllocateDescriptorSet(VkDescriptorSet *set, VkDescriptorSetLayout layout, uint32_t descriptorCount);
+            VkDescriptorPool AllocateDescriptorSet(VkDescriptorSet *set, VkDescriptorSetLayout layout, uint32_t descriptorCount);
+            void FreeDescriptorSet(VkDescriptorSet *set, uint32_t descriptorCount);
 
         public:
             VKRenderDevice *GetBasedDevice() const;
             VkInstance GetVKInstance() const;
-            void PushDestoryTask(std::function<void()> &&task);
-            void ExecuteDestoryTasks();
+            void DeleteAllManagedObjects();
+            void SetSwapchain(VKSwapChain *swapchain);
 
         private:
             VkDescriptorPool CreateDescriptorPool(uint32_t count, VkDescriptorPoolCreateFlags flags);
@@ -54,10 +60,11 @@ namespace pluto
             VkDescriptorPool mCurrentPool{VK_NULL_HANDLE};
             std::vector<VkDescriptorPool> mUsedDescriptorPools;
             std::vector<VkDescriptorPool> mFreeDescriptorPools;
+            std::unordered_map<RHIBase *, RHIBase *> mManagedVKObjectsMap;
 
         private:
             VKContext *mContext;
-            std::vector<std::function<void()>> mDelayedDestoryTasks;
+            VKSwapChain *mSwapchain{nullptr};
         };
     }
 }

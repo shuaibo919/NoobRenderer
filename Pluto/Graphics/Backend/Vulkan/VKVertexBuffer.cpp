@@ -20,10 +20,11 @@ VKVertexBuffer::VKVertexBuffer(RenderContext *ctx, VertexBuffer::Properties *&&p
 
 VKVertexBuffer::~VKVertexBuffer()
 {
+    RHIBase::Destroy();
+}
 
-    mBuffer->Flush();
-    mBuffer->UnMap();
-    mBuffer->Destroy();
+void VKVertexBuffer::DestroyImplementation()
+{
     delete mBuffer;
 }
 

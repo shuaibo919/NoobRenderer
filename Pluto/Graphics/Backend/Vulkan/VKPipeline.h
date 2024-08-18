@@ -14,6 +14,7 @@ namespace pluto
             ~VKPipeline();
 
         public:
+            void DestroyImplementation() override;
             void Bind(const SharedPtr<CommandBuffer> &commandBuffer, uint32_t layer = 0) override;
             void End(const SharedPtr<CommandBuffer> &commandBuffer) override;
             void ClearRenderTargets(const SharedPtr<CommandBuffer> &commandBuffer) override;

@@ -16,6 +16,7 @@ namespace pluto
             ~VKUniformBuffer();
 
         public:
+            void DestroyImplementation() override;
             void ReInit(uint32_t size, void *data) override;
             void SetData(uint32_t size, void *data) override;
             void SetDynamicData(uint32_t size, uint32_t typeSize, void *data) override;

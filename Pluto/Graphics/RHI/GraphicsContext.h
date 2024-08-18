@@ -46,6 +46,7 @@ namespace pluto
 
         public:
             virtual ~GraphicsContext() = default;
+            virtual void Terminate() = 0;
 
             RenderAPI GetRenderAPI() { return mRenderAPI; }
             RenderContext *GetRenderContext() const { return mRenderContext; }
@@ -67,7 +68,6 @@ namespace pluto
 
         protected:
             RenderAPI mRenderAPI{RenderAPI::None};
-            SwapChain *mSwapChain{nullptr};
             RenderContext *mRenderContext{nullptr};
 
         protected:

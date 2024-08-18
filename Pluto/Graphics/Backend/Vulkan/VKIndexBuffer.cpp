@@ -14,6 +14,7 @@ VKIndexBuffer::VKIndexBuffer(RenderContext *ctx, VKIndexBuffer::Properties *&&pP
 
 VKIndexBuffer::~VKIndexBuffer()
 {
+    RHIBase::Destroy();
 }
 
 void VKIndexBuffer::Bind(CommandBuffer *commandBuffer) const
@@ -21,5 +22,9 @@ void VKIndexBuffer::Bind(CommandBuffer *commandBuffer) const
 }
 
 void VKIndexBuffer::Unbind() const
+{
+}
+
+void VKIndexBuffer::DestroyImplementation()
 {
 }

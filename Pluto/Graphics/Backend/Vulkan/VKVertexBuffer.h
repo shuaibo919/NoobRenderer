@@ -16,6 +16,7 @@ namespace pluto
             ~VKVertexBuffer();
 
         public:
+            void DestroyImplementation() override;
             void Bind(const SharedPtr<CommandBuffer> &commandBuffer, const SharedPtr<Pipeline> &pipeline, uint8_t binding = 0) override;
             void Unbind() override;
 

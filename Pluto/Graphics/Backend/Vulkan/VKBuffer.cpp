@@ -23,29 +23,20 @@ VKBuffer::VKBuffer(VKRenderContext *pContext)
 
 VKBuffer::~VKBuffer()
 {
+    this->Destroy();
 }
 
-void VKBuffer::Destroy(bool deletionQueue)
+void VKBuffer::Destroy()
 {
     if (mBuffer == VK_NULL_HANDLE)
         return;
-    auto memory = mMemory;
-    auto buffer = mBuffer;
-    auto device = mContext->GetBasedDevice()->GetDevice();
-    if (deletionQueue)
+
+    if (mMappedBuffer)
     {
-        mContext->PushDestoryTask(
-            [memory, buffer, device]()
-            {
-                vkDestroyBuffer(device, buffer, nullptr);
-                vkFreeMemory(device, memory, nullptr);
-            });
+        this->Flush();
+        this->UnMap();
     }
-    else
-    {
-        vkDestroyBuffer(device, buffer, nullptr);
-        vkFreeMemory(device, memory, nullptr);
-    }
+    vmaDestroyBuffer(mContext->GetBasedDevice()->GetAllocator(), mBuffer, mAllocation);
 }
 
 void VKBuffer::Init(VkBufferUsageFlags usage, VkMemoryPropertyFlags memoryProperyFlags, uint32_t size, const void *data)
@@ -136,7 +127,7 @@ void VKBuffer::Resize(uint32_t size, const void *data)
 {
     auto usage = mUsageFlags;
 
-    this->Destroy(!mDeleteWithoutQueue);
+    this->Destroy();
     this->Init(usage, mMemoryProperyFlags, size, data);
 }
 
@@ -149,16 +140,19 @@ void VKBuffer::Map(VkDeviceSize size, VkDeviceSize offset)
     {
         PLog<PError>("%s Failed to map buffer", PLineInfo);
     }
+    mMappedBuffer = true;
 }
 
 void VKBuffer::UnMap()
 {
     auto pBasedDevice = mContext->GetBasedDevice();
-    if (mMapped)
+    if (mMappedBuffer)
     {
         vmaUnmapMemory(pBasedDevice->GetAllocator(), mAllocation);
+        vmaFlushAllocation(pBasedDevice->GetAllocator(), mAllocation, 0, mSize);
         mMapped = nullptr;
     }
+    mMappedBuffer = false;
 }
 
 void VKBuffer::Flush(VkDeviceSize size, VkDeviceSize offset)

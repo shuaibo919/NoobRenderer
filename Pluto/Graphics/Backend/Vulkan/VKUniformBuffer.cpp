@@ -16,9 +16,11 @@ VKUniformBuffer::VKUniformBuffer(RenderContext *ctx, UniformBuffer::Properties *
 
 VKUniformBuffer::~VKUniformBuffer()
 {
-    mBuffer->Flush();
-    mBuffer->UnMap();
-    mBuffer->Destroy();
+    RHIBase::Destroy();
+}
+
+void VKUniformBuffer::DestroyImplementation()
+{
     delete mBuffer;
 }
 
@@ -26,12 +28,7 @@ void VKUniformBuffer::ReInit(uint32_t size, void *data)
 {
     mProperties->size = size;
     mProperties->data = data;
-    mBuffer->Flush();
-    mBuffer->UnMap();
-    mBuffer->Destroy();
-    delete mBuffer;
-    mBuffer = new VKBuffer(static_cast<VKRenderContext *>(mRenderContext), VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT,
-                           mProperties->size, mProperties->data);
+    mBuffer->Resize(size, mProperties->data);
 }
 
 void VKUniformBuffer::SetData(uint32_t size, void *data)

@@ -13,6 +13,7 @@ namespace pluto
             VKIndexBuffer(RenderContext *ctx, IndexBuffer::Properties *&&pProperties);
             ~VKIndexBuffer();
 
+            void DestroyImplementation() override;
             void Bind(CommandBuffer *commandBuffer) const override;
             void Unbind() const override;
         };

@@ -26,8 +26,6 @@ namespace pluto
             void Invalidate(VkDeviceSize size = VK_WHOLE_SIZE, VkDeviceSize offset = 0);
             void SetUsage(VkBufferUsageFlags flags) { mUsageFlags = flags; }
             void SetMemoryProperyFlags(VkBufferUsageFlags flags) { mMemoryProperyFlags = flags; }
-            void Destroy(bool deletionQueue = false);
-            void SetDeleteWithoutQueue(bool value) { mDeleteWithoutQueue = value; }
 
         protected:
             VKRenderContext *mContext;
@@ -40,12 +38,14 @@ namespace pluto
             VkBufferUsageFlags mUsageFlags;
             VkMemoryPropertyFlags mMemoryProperyFlags;
             void *mMapped{nullptr};
-            bool mDeleteWithoutQueue{false};
             bool mGPUOnlyMemory{false};
+            bool mMappedBuffer{false};
 
             VmaAllocation mAllocation;
             VmaAllocation mMappedAllocation;
             VmaAllocationInfo mAllocationInfo;
+
+            void Destroy();
         };
 
     }

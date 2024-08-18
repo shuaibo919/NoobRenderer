@@ -16,6 +16,7 @@ namespace pluto
             ~VKShader();
 
         public:
+            void DestroyImplementation() override;
             void Bind() const override {};
             void Unbind() const override {};
             bool IsCompiled() override { return mCompiled; }

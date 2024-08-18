@@ -151,14 +151,15 @@ VKRenderPass::VKRenderPass(RenderContext *ctx, VKRenderPass::Properties *&&pProp
 
 VKRenderPass::~VKRenderPass()
 {
+    RHIBase::Destroy();
+}
+
+void VKRenderPass::DestroyImplementation()
+{
     if (mClearValue != nullptr)
         delete mClearValue;
-    auto pContext = static_cast<VKRenderContext *>(mRenderContext);
-    VkRenderPass renderPass = mRenderPass;
-    VkDevice device = pContext->GetBasedDevice()->GetDevice();
-
-    pContext->PushDestoryTask([device, renderPass]
-                              { vkDestroyRenderPass(device, renderPass, VK_NULL_HANDLE); });
+    auto pBasedDevice = static_cast<VKRenderContext *>(mRenderContext)->GetBasedDevice();
+    vkDestroyRenderPass(pBasedDevice->GetDevice(), mRenderPass, VK_NULL_HANDLE);
 }
 
 void VKRenderPass::BeginRenderPass(const SharedPtr<CommandBuffer> &commandBuffer, float (&clearColor)[4], const SharedPtr<Framebuffer> &frame, SubPassContents contents) const

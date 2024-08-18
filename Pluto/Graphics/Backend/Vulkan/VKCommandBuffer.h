@@ -22,7 +22,7 @@ namespace pluto
             bool Flush() override;
             bool Init(bool primary = true) override;
             bool Init(bool primary, VkCommandPool commandPool);
-            void Unload() override;
+            void DestroyImplementation() override;
             void BeginRecording() override;
             void BeginRecordingSecondary(const SharedPtr<RenderPass> &renderPass, const SharedPtr<Framebuffer> &framebuffer) override;
             void EndRecording() override;

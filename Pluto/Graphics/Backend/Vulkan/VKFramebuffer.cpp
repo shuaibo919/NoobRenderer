@@ -73,12 +73,12 @@ VKFramebuffer::VKFramebuffer(RenderContext *ctx, VKFramebuffer::Properties *&&pP
 
 VKFramebuffer::~VKFramebuffer()
 {
-    auto pContext = static_cast<VKRenderContext *>(mRenderContext);
-    auto device = pContext->GetBasedDevice()->GetDevice();
-    auto framebuffer = mFramebuffer;
+    RHIBase::Destroy();
+}
 
-    pContext->PushDestoryTask([device, framebuffer]()
-                              { vkDestroyFramebuffer(device, framebuffer, VK_NULL_HANDLE); });
+void VKFramebuffer::DestroyImplementation()
+{
+    vkDestroyFramebuffer(static_cast<VKRenderContext *>(mRenderContext)->GetBasedDevice()->GetDevice(), mFramebuffer, VK_NULL_HANDLE);
 }
 
 void VKFramebuffer::SetClearColor(const glm::vec4 &color)

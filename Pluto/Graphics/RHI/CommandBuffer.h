@@ -35,7 +35,6 @@ namespace pluto
 
         public:
             virtual bool Init(bool primary = true) = 0;
-            virtual void Unload() = 0;
             virtual void BeginRecording() = 0;
             virtual void BeginRecordingSecondary(const SharedPtr<RenderPass> &renderPass, const SharedPtr<Framebuffer> &framebuffer) = 0;
             virtual void EndRecording() = 0;

@@ -1,6 +1,7 @@
 /* Vulkan RenderPass */
 #include "Graphics/Backend/Vulkan/VKRenderContext.h"
 /* Usage */
+#include "Graphics/RHI/RHIBase.h"
 #include "Graphics/Backend/Vulkan/VKContext.h"
 #include "Graphics/Backend/Vulkan/VKSwapChain.h"
 #include "Graphics/Backend/Vulkan/VKRenderPass.h"
@@ -19,6 +20,18 @@ VKRenderContext::VKRenderContext(VKContext *ctx)
 
 VKRenderContext::~VKRenderContext()
 {
+    if (mSwapchain != nullptr)
+    {
+        delete mSwapchain;
+    }
+    for (auto &p : mFreeDescriptorPools)
+    {
+        vkDestroyDescriptorPool(this->GetBasedDevice()->GetDevice(), p, nullptr);
+    }
+    for (auto &p : mUsedDescriptorPools)
+    {
+        vkDestroyDescriptorPool(this->GetBasedDevice()->GetDevice(), p, nullptr);
+    }
 }
 
 void VKRenderContext::Init()
@@ -50,7 +63,7 @@ void VKRenderContext::WaitIdle()
 
 void VKRenderContext::OnResize(uint32_t width, uint32_t height)
 {
-    static_cast<VKSwapChain *>(mContext->mSwapChain)->OnResize(width, height);
+    static_cast<VKSwapChain *>(mSwapchain)->OnResize(width, height);
 }
 
 void VKRenderContext::ClearRenderTarget(const SharedPtr<Texture> &texture, AttachmentType type, const SharedPtr<CommandBuffer> &commandBuffer, glm::vec4 clearColor)
@@ -111,22 +124,7 @@ RHIFormat VKRenderContext::GetDepthFormat()
 
 SwapChain *VKRenderContext::GetSwapChain()
 {
-    return mContext->mSwapChain;
-}
-
-void VKRenderContext::PushDestoryTask(std::function<void()> &&task)
-{
-    mDelayedDestoryTasks.push_back(std::forward<std::function<void()>>(task));
-}
-
-void VKRenderContext::ExecuteDestoryTasks()
-{
-    for (auto &deleteFunc : mDelayedDestoryTasks)
-    {
-        deleteFunc();
-    }
-
-    mDelayedDestoryTasks.clear();
+    return mSwapchain;
 }
 
 VkDescriptorPool VKRenderContext::CreateDescriptorPool(uint32_t count, VkDescriptorPoolCreateFlags flags)
@@ -156,6 +154,11 @@ VkDescriptorPool VKRenderContext::CreateDescriptorPool(uint32_t count, VkDescrip
     return descriptorPool;
 }
 
+void VKRenderContext::FreeDescriptorSet(VkDescriptorSet *set, uint32_t descriptorCount)
+{
+    vkFreeDescriptorSets(this->GetBasedDevice()->GetDevice(), this->GetDescriptorPool(), descriptorCount, set);
+}
+
 VkDescriptorPool VKRenderContext::GetDescriptorPool()
 {
 
@@ -171,7 +174,7 @@ VkDescriptorPool VKRenderContext::GetDescriptorPool()
     }
 }
 
-bool VKRenderContext::AllocateDescriptorSet(VkDescriptorSet *set, VkDescriptorSetLayout layout, uint32_t descriptorCount)
+VkDescriptorPool VKRenderContext::AllocateDescriptorSet(VkDescriptorSet *set, VkDescriptorSetLayout layout, uint32_t descriptorCount)
 {
     if (mCurrentPool == VK_NULL_HANDLE)
     {
@@ -192,15 +195,15 @@ bool VKRenderContext::AllocateDescriptorSet(VkDescriptorSet *set, VkDescriptorSe
     switch (allocResult)
     {
     case VK_SUCCESS:
-        return true;
+        return mCurrentPool;
 
         break;
     case VK_ERROR_FRAGMENTED_POOL:
     case VK_ERROR_OUT_OF_POOL_MEMORY:
-        needReallocate = true;
+        needReallocate = mCurrentPool;
         break;
     default:
-        return false;
+        return VK_NULL_HANDLE;
     }
 
     if (needReallocate)
@@ -215,9 +218,37 @@ bool VKRenderContext::AllocateDescriptorSet(VkDescriptorSet *set, VkDescriptorSe
         // if it still fails then we have big issues
         if (allocResult == VK_SUCCESS)
         {
-            return true;
+            return mCurrentPool;
         }
     }
 
-    return false;
+    return VK_NULL_HANDLE;
+}
+
+void VKRenderContext::AttachToRenderContext(RHIBase *object)
+{
+    mManagedVKObjectsMap[object] = object;
+}
+
+void VKRenderContext::DetachFromRenderContext(RHIBase *object)
+{
+    auto it = mManagedVKObjectsMap.find(object);
+    if (it != mManagedVKObjectsMap.end())
+    {
+        mManagedVKObjectsMap.erase(it);
+    }
+}
+
+void VKRenderContext::DeleteAllManagedObjects()
+{
+    for (auto &[_, object] : mManagedVKObjectsMap)
+    {
+        object->DestroyByContext();
+    }
+}
+
+void VKRenderContext::SetSwapchain(VKSwapChain *swapchain)
+{
+    mSwapchain = swapchain;
+    this->DetachFromRenderContext(swapchain);
 }

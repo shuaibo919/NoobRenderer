@@ -54,6 +54,11 @@ VKShader::VKShader(RenderContext *ctx, VKShader::Properties *&&pProperties)
 
 VKShader::~VKShader()
 {
+    RHIBase::Destroy();
+}
+
+void VKShader::DestroyImplementation()
+{
     auto pBasedDevice = static_cast<VKRenderContext *>(mRenderContext)->GetBasedDevice();
     for (uint32_t i = 0; i < mStageCount; i++)
         vkDestroyShaderModule(pBasedDevice->GetDevice(), mShaderStages[i].module, nullptr);

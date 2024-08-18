@@ -18,6 +18,7 @@ namespace pluto
             ~VKDescriptorSet();
 
         public:
+            void DestroyImplementation() override;
             void Update(SharedPtr<CommandBuffer> buffer = nullptr) override;
             void SetTexture(const std::string &name, const SharedPtr<Texture> &texture, AttachmentType textureType = AttachmentType::Color, uint32_t mipIndex = 0) override;
             void SetBuffer(const std::string &name, const SharedPtr<UniformBuffer> &buffer) override;
@@ -50,6 +51,7 @@ namespace pluto
             void WrtieUboInfoData(UniformBufferInfo &info, void *data, uint32_t size, uint32_t offset = 0);
             void TransitionImageLayoutByHints(const SharedPtr<Texture> &texture, const SharedPtr<CommandBuffer> &cmdBuffer);
             uint32_t mFlightFrameCount;
+            VkDescriptorPool mDescriptorPool[SwapChain::MaxFlightFrames];
             VkDescriptorSet mDescriptorSet[SwapChain::MaxFlightFrames];
             bool mDescriptorDirty[SwapChain::MaxFlightFrames];
             bool mDescriptorUpdated[SwapChain::MaxFlightFrames];
