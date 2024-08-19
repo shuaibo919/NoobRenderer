@@ -1,13 +1,13 @@
 #pragma once
 #include "Graphics/RHI/UniformBuffer.h"
-
+#include "Graphics/Backend/Vulkan/Vk.h"
 namespace pluto
 {
     namespace Graphics
     {
         class VKShader;
         class VKBuffer;
-        class VKUniformBuffer : public UniformBuffer
+        class VKUniformBuffer : public UniformBuffer, public VKObjectManageByContext
         {
             friend class VKContext;
 

@@ -129,10 +129,23 @@ GLContext::GLContext()
     mRenderAPI = RenderAPI::OPENGL;
 }
 
+void GLContext::SetMainSwapChain(SwapChain::Properties &&properties)
+{
+    GLSwapChain *pSwapChain = new GLSwapChain(mRenderContext, new SwapChain::Properties(std::forward<SwapChain::Properties>(properties)));
+    pSwapChain->Init(false);
+    static_cast<GLRenderContext *>(mRenderContext)->SetSwapchain(pSwapChain);
+}
+
 GLContext::~GLContext()
 {
-    if (mDevice != nullptr)
-        GLRenderDevice::Release(mDevice);
+    PAssert(mTerminated, "Context is not terminated");
+}
+
+void GLContext::Terminate()
+{
+    delete mDevice;
+    delete mRenderContext;
+    mTerminated = true;
 }
 
 void GLContext::Present()

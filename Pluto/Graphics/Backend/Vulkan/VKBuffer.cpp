@@ -13,16 +13,19 @@ using namespace pluto::Graphics;
 VKBuffer::VKBuffer(VKRenderContext *pContext, VkBufferUsageFlags usage, VkMemoryPropertyFlags memoryProperyFlags, uint32_t size, const void *data)
     : mContext(pContext), mSize(size)
 {
+    mAllocation = nullptr;
     this->Init(usage, memoryProperyFlags, size, data);
 }
 
 VKBuffer::VKBuffer(VKRenderContext *pContext)
     : mContext(pContext), mSize(0), mMemoryProperyFlags(0), mUsageFlags(0)
 {
+    mAllocation = nullptr;
 }
 
 VKBuffer::~VKBuffer()
 {
+    // PLog<PInfo>("%p VKBuffer::VKBuffer Destroy RefCount:%d", this, RefCount);
     this->Destroy();
 }
 
@@ -105,6 +108,7 @@ void VKBuffer::SetData(uint32_t size, const void *data, bool useBarrier)
     this->Map(size, 0);
     memcpy(mMapped, data, size);
     this->UnMap();
+    this->Flush(size, 0);
 
     if (useBarrier)
     {
@@ -141,6 +145,8 @@ void VKBuffer::Map(VkDeviceSize size, VkDeviceSize offset)
         PLog<PError>("%s Failed to map buffer", PLineInfo);
     }
     mMappedBuffer = true;
+    // RefCount++;
+    // PLog<PInfo>("%p Mapcount:%d", this, RefCount);
 }
 
 void VKBuffer::UnMap()
@@ -153,6 +159,8 @@ void VKBuffer::UnMap()
         mMapped = nullptr;
     }
     mMappedBuffer = false;
+    // RefCount--;
+    // PLog<PInfo>("%p Mapcount:%d", this, RefCount);
 }
 
 void VKBuffer::Flush(VkDeviceSize size, VkDeviceSize offset)

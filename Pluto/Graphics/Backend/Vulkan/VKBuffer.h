@@ -42,7 +42,6 @@ namespace pluto
             bool mMappedBuffer{false};
 
             VmaAllocation mAllocation;
-            VmaAllocation mMappedAllocation;
             VmaAllocationInfo mAllocationInfo;
 
             void Destroy();

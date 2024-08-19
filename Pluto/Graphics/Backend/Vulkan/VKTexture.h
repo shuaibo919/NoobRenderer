@@ -8,7 +8,7 @@ namespace pluto
 {
     namespace Graphics
     {
-        class VKTexture2D : public Texture2D
+        class VKTexture2D : public Texture2D, public VKObjectManageByContext
         {
             friend class VKContext;
             friend class VKSwapChain;
@@ -61,7 +61,7 @@ namespace pluto
             std::unordered_map<uint32_t, VkImageView> mMipImageViews;
         };
 
-        class VKTexture2DArray final : public Texture2DArray
+        class VKTexture2DArray final : public Texture2DArray, public VKObjectManageByContext
         {
             friend class VKContext;
 
@@ -83,7 +83,7 @@ namespace pluto
             void DestroyImplementation() override;
         };
 
-        class VKTextureCube final : public TextureCube
+        class VKTextureCube final : public TextureCube, public VKObjectManageByContext
         {
             friend class VKContext;
 
@@ -107,7 +107,7 @@ namespace pluto
             void DestroyImplementation() override;
         };
 
-        class VKTexture3D final : public Texture3D
+        class VKTexture3D final : public Texture3D, public VKObjectManageByContext
         {
             friend class VKContext;
 

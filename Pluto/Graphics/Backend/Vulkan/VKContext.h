@@ -32,10 +32,10 @@ namespace pluto
             ~VKContext();
             void Terminate() override;
 
-            size_t GetMinUniformBufferOffsetAlignment() const override { return 256; }
-            bool FlipImGUITexture() const override { return true; }
-            float GetGPUMemoryUsed() override { return 0.0f; }
-            float GetTotalGPUMemory() override { return 0.0f; }
+            size_t GetMinUniformBufferOffsetAlignment() const override;
+            bool FlipImGUITexture() const override;
+            float GetGPUMemoryUsed() override;
+            float GetTotalGPUMemory() override;
 
             void SetMainSwapChain(SwapChain::Properties &&properties) override;
 

@@ -31,7 +31,7 @@ int main()
     auto window = Window::Create(ctx, 600, 600, "Test");
     ctx->Init();
     ctx->BindToDevice();
-    ctx->SetMainSwapChain(window->GetSwapChain());
+    ctx->SetMainSwapChain(window->GetSwapChainProperties());
     auto vertexBuffer = VertexBuffer::Builder()
                             .SetVertexData(vertices, 3, sizeof(vertices))
                             .SetUsage(BufferUsage::Static)
@@ -103,6 +103,6 @@ int main()
         window->SwapBuffers();
     }
     window->Terminate();
-
+    ctx->Terminate();
     return 0;
 }

@@ -8,7 +8,7 @@
 
 using namespace pluto::Graphics;
 VKUniformBuffer::VKUniformBuffer(RenderContext *ctx, UniformBuffer::Properties *&&pProperties)
-    : UniformBuffer(ctx, std::move(pProperties))
+    : UniformBuffer(ctx, std::move(pProperties)), VKObjectManageByContext(static_cast<VKRenderContext *>(ctx))
 {
     mBuffer = new VKBuffer(static_cast<VKRenderContext *>(ctx), VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT,
                            mProperties->size, mProperties->data);
@@ -16,7 +16,7 @@ VKUniformBuffer::VKUniformBuffer(RenderContext *ctx, UniformBuffer::Properties *
 
 VKUniformBuffer::~VKUniformBuffer()
 {
-    RHIBase::Destroy();
+    VKObjectManageByContext::Destroy();
 }
 
 void VKUniformBuffer::DestroyImplementation()
@@ -33,15 +33,10 @@ void VKUniformBuffer::ReInit(uint32_t size, void *data)
 
 void VKUniformBuffer::SetData(uint32_t size, void *data)
 {
-    mBuffer->Map();
     mBuffer->SetData(size, data);
-    mBuffer->UnMap();
 }
 
 void VKUniformBuffer::SetDynamicData(uint32_t size, uint32_t typeSize, void *data)
 {
-    mBuffer->Map();
     mBuffer->SetData(size, data);
-    mBuffer->Flush();
-    mBuffer->UnMap();
 }

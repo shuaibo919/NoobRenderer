@@ -14,10 +14,6 @@ namespace pluto
             using Ptr = SharedPtr<RenderContext>;
             RenderContext() = default;
             virtual ~RenderContext() = default;
-
-            virtual void AttachToRenderContext(RHIBase *object) = 0;
-            virtual void DetachFromRenderContext(RHIBase *object) = 0;
-
             virtual void Init() = 0;
             virtual void Begin() = 0;
             virtual void WaitIdle() = 0;

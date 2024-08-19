@@ -45,10 +45,6 @@ bool GLCommandBuffer::Init(bool primary)
     return true;
 }
 
-void GLCommandBuffer::Unload()
-{
-}
-
 void GLCommandBuffer::BeginRecording()
 {
     if (mProperties->state == CommandBufferState::Recording)

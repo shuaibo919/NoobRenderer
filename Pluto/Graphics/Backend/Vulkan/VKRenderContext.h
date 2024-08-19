@@ -25,9 +25,6 @@ namespace pluto
             void OnResize(uint32_t width, uint32_t height) override;
             void ClearRenderTarget(const SharedPtr<Texture> &texture, AttachmentType type, const SharedPtr<CommandBuffer> &commandBuffer, glm::vec4 clearColor) override;
 
-            void AttachToRenderContext(RHIBase *object) override;
-            void DetachFromRenderContext(RHIBase *object) override;
-
             void Present() override;
             void Present(const SharedPtr<CommandBuffer> &commandBuffer) override;
             void BindDescriptorSet(const SharedPtr<Pipeline> &pipeline, const SharedPtr<CommandBuffer> &commandBuffer, uint32_t dynamicOffset, const SharedPtr<DescriptorSet> &descriptorSet) override;
@@ -53,6 +50,8 @@ namespace pluto
             VkInstance GetVKInstance() const;
             void DeleteAllManagedObjects();
             void SetSwapchain(VKSwapChain *swapchain);
+            void AttachToRenderContext(VKObjectManageByContext *object);
+            void DetachFromRenderContext(VKObjectManageByContext *object);
 
         private:
             VkDescriptorPool CreateDescriptorPool(uint32_t count, VkDescriptorPoolCreateFlags flags);
@@ -60,7 +59,7 @@ namespace pluto
             VkDescriptorPool mCurrentPool{VK_NULL_HANDLE};
             std::vector<VkDescriptorPool> mUsedDescriptorPools;
             std::vector<VkDescriptorPool> mFreeDescriptorPools;
-            std::unordered_map<RHIBase *, RHIBase *> mManagedVKObjectsMap;
+            std::unordered_map<VKObjectManageByContext *, VKObjectManageByContext *> mManagedVKObjectsMap;
 
         private:
             VKContext *mContext;

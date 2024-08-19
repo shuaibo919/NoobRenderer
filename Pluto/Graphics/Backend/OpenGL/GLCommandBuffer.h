@@ -16,7 +16,6 @@ namespace pluto
             void Submit() override;
             void Reset() override;
             bool Init(bool primary) override;
-            void Unload() override;
             void BeginRecording() override;
             void BeginRecordingSecondary(const SharedPtr<RenderPass> &renderPass, const SharedPtr<Framebuffer> &framebuffer) override;
             void EndRecording() override;

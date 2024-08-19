@@ -28,6 +28,8 @@ namespace pluto
             GLContext();
             ~GLContext();
 
+            void Terminate() override;
+
             size_t GetMinUniformBufferOffsetAlignment() const override { return 256; }
             bool FlipImGUITexture() const override { return true; }
             float GetGPUMemoryUsed() override { return 0.0f; }
@@ -39,6 +41,7 @@ namespace pluto
             void Init() override;
 
             void BindToDevice() override;
+            void SetMainSwapChain(SwapChain::Properties &&properties) override;
 
             static int LoadGladProc(void *proc);
 
@@ -61,6 +64,7 @@ namespace pluto
             SharedPtr<Texture> CreateTexture(uint16_t type, const std::string &path, void *&&pPropeties) override;
 
         private:
+            bool mTerminated{false};
             RenderDevice *mDevice;
         };
     }

@@ -14,9 +14,9 @@ VkSubpassContents GetSubPassContents(SubPassContents contents);
 VkAttachmentDescription GetAttachmentDescription(AttachmentType type, const Texture::Ptr &texture, uint8_t samples = 1, bool clear = true);
 
 VKRenderPass::VKRenderPass(RenderContext *ctx, VKRenderPass::Properties *&&pProperties)
-    : RenderPass(ctx, std::move(pProperties))
+    : RenderPass(ctx, std::move(pProperties)), VKObjectManageByContext(static_cast<VKRenderContext *>(ctx))
 {
-    auto pBasedDevice = static_cast<VKRenderContext *>(mRenderContext)->GetBasedDevice();
+    auto pBasedDevice = VKObjectManageByContext::Context->GetBasedDevice();
     std::vector<VkAttachmentDescription> attachments;
 
     std::vector<VkAttachmentReference> colourAttachmentReferences;
@@ -151,14 +151,14 @@ VKRenderPass::VKRenderPass(RenderContext *ctx, VKRenderPass::Properties *&&pProp
 
 VKRenderPass::~VKRenderPass()
 {
-    RHIBase::Destroy();
+    VKObjectManageByContext::Destroy();
 }
 
 void VKRenderPass::DestroyImplementation()
 {
     if (mClearValue != nullptr)
         delete mClearValue;
-    auto pBasedDevice = static_cast<VKRenderContext *>(mRenderContext)->GetBasedDevice();
+    auto pBasedDevice = VKObjectManageByContext::Context->GetBasedDevice();
     vkDestroyRenderPass(pBasedDevice->GetDevice(), mRenderPass, VK_NULL_HANDLE);
 }
 

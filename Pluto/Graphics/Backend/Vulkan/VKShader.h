@@ -7,7 +7,7 @@ namespace pluto
 {
     namespace Graphics
     {
-        class VKShader : public Shader
+        class VKShader : public Shader, public VKObjectManageByContext
         {
             friend class VKContext;
 

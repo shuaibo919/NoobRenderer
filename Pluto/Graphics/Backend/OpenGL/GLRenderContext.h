@@ -7,6 +7,7 @@ namespace pluto
     namespace Graphics
     {
         class GLContext;
+        class GLSwapChain;
         class GLRenderContext : public RenderContext
         {
         public:
@@ -52,7 +53,7 @@ namespace pluto
             bool SupportsCompute() override;
             RHIFormat GetDepthFormat() override;
 
-            SharedPtr<SwapChain> GetSwapChain() override;
+            SwapChain *GetSwapChain() override;
 
         public:
             /// @brief Because GLRenderContext is not exposed externally,
@@ -65,8 +66,11 @@ namespace pluto
             inline static GLObject CurrentVertexHandle{0, false};
             inline static GLObject CurrentIndiceHandle{0, false};
 
+            void SetSwapchain(GLSwapChain *swapchain);
+
         private:
             GLContext *mContext;
+            GLSwapChain *mSwapChain{nullptr};
         };
     }
 }

@@ -5,7 +5,7 @@ namespace pluto
 {
     namespace Graphics
     {
-        class VKRenderPass : public RenderPass
+        class VKRenderPass : public RenderPass,  public VKObjectManageByContext
         {
             friend class VKContext;
 

@@ -66,25 +66,25 @@ int main()
                              .SetBindingLayout(shader, 0)
                              .Create(ctx);
 
-    // UniformDataMat4 model;
-    // model.name = "model";
-    // model.blockname = "UniformBufferObject";
-    // model.data = glm::mat4(1.0f);
+    UniformDataMat4 model;
+    model.name = "model";
+    model.blockname = "UniformBufferObject";
+    model.data = glm::mat4(1.0f);
 
-    // UniformDataMat4 view;
-    // view.name = "view";
-    // view.blockname = "UniformBufferObject";
-    // view.data = glm::mat4(1.0f);
+    UniformDataMat4 view;
+    view.name = "view";
+    view.blockname = "UniformBufferObject";
+    view.data = glm::mat4(1.0f);
 
-    // UniformDataMat4 projection;
-    // projection.name = "proj";
-    // projection.blockname = "UniformBufferObject";
-    // projection.data = glm::mat4(1.0f);
+    UniformDataMat4 projection;
+    projection.name = "proj";
+    projection.blockname = "UniformBufferObject";
+    projection.data = glm::mat4(1.0f);
 
-    // descriptorSet->SetUniform(projection.blockname, projection.name, &projection.data);
-    // descriptorSet->SetUniform(model.blockname, model.name, &model.data);
-    // descriptorSet->SetUniform(view.blockname, view.name, &view.data);
-    // descriptorSet->Update();
+    descriptorSet->SetUniform(projection.blockname, projection.name, &projection.data);
+    descriptorSet->SetUniform(model.blockname, model.name, &model.data);
+    descriptorSet->SetUniform(view.blockname, view.name, &view.data);
+    descriptorSet->Update();
 
     while (!window->ShouldClose())
     {

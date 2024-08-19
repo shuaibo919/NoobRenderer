@@ -21,4 +21,30 @@
 #include "vulkan/vulkan.h"
 #include "vk_mem_alloc.h"
 
+namespace pluto
+{
+    namespace Graphics
+    {
+        class VKRenderContext;
+        class VKObjectManageByContext
+        {
+            friend class VKRenderContext;
+
+        public:
+            VKObjectManageByContext(VKRenderContext *ctx);
+            void DetachFromRenderContext();
+            void DestroyByContext();
+            virtual void Destroy();
+            virtual void DestroyImplementation() = 0;
+            virtual ~VKObjectManageByContext() = default;
+
+        protected:
+            VKRenderContext *Context{nullptr};
+
+        private:
+            bool mDestroyedByContext{false};
+        };
+    }
+}
+
 #endif

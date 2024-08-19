@@ -7,7 +7,7 @@ namespace pluto
     namespace Graphics
     {
         class VKBuffer;
-        class VKVertexBuffer final : public VertexBuffer
+        class VKVertexBuffer final : public VertexBuffer, public VKObjectManageByContext
         {
             friend class VKContext;
 

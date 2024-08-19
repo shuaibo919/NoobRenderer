@@ -449,7 +449,6 @@ bool VKContext::CheckExtensionSupport(std::vector<const char *> &extensions)
 
 void VKContext::SetupDebugMessenger()
 {
-
     VkDebugReportCallbackCreateInfoEXT createInfo = {};
     createInfo.sType = VK_STRUCTURE_TYPE_DEBUG_REPORT_CALLBACK_CREATE_INFO_EXT;
     createInfo.flags = VK_DEBUG_REPORT_ERROR_BIT_EXT | VK_DEBUG_REPORT_WARNING_BIT_EXT | VK_DEBUG_REPORT_PERFORMANCE_WARNING_BIT_EXT;
@@ -460,6 +459,28 @@ void VKContext::SetupDebugMessenger()
     {
         log<Info>("Failed to set up debug callback!");
     }
+}
+
+size_t VKContext::GetMinUniformBufferOffsetAlignment() const
+{
+    PLog<PInfo>("VKContext::GetMinUniformBufferOffsetAlignment Not Implemented!");
+    return 256;
+}
+bool VKContext::FlipImGUITexture() const
+{
+    PLog<PInfo>("VKContext::FlipImGUITexture Not Implemented!");
+    return true;
+}
+float VKContext::GetGPUMemoryUsed()
+{
+    PLog<PInfo>("VKContext::GetGPUMemoryUsed Not Implemented!");
+    return 0.0f;
+}
+
+float VKContext::GetTotalGPUMemory()
+{
+    PLog<PInfo>("VKContext::GetTotalGPUMemory Not Implemented!");
+    return 0.0f;
 }
 
 SharedPtr<GraphicsContext> VKContext::Create()

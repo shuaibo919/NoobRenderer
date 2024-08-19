@@ -31,14 +31,14 @@ VkCommandBufferUsageFlags GetCommandBufferUsageFlags(CommandBufferUsageType usag
 }
 
 VKCommandBuffer::VKCommandBuffer(RenderContext *ctx, CommandBuffer::Properties *&&pProperties)
-    : CommandBuffer(ctx, std::move(pProperties))
+    : CommandBuffer(ctx, std::move(pProperties)), VKObjectManageByContext(static_cast<VKRenderContext *>(ctx))
 {
     this->Init();
 }
 
 VKCommandBuffer::~VKCommandBuffer()
 {
-    RHIBase::Destroy();
+    VKObjectManageByContext::Destroy();
 }
 
 void VKCommandBuffer::Submit()
@@ -64,7 +64,7 @@ bool VKCommandBuffer::Flush()
     if (mProperties->state == CommandBufferState::Idle)
         return true;
 
-    mRenderContext->WaitIdle();
+    VKObjectManageByContext::Context->WaitIdle();
 
     if (mProperties->state == CommandBufferState::Submitted)
         return this->Wait();
@@ -74,12 +74,12 @@ bool VKCommandBuffer::Flush()
 
 void VKCommandBuffer::DestroyImplementation()
 {
-    mRenderContext->WaitIdle();
+    VKObjectManageByContext::Context->WaitIdle();
 
     if (mProperties->state == CommandBufferState::Submitted)
         Wait();
 
-    auto pBasedDevice = static_cast<VKRenderContext *>(mRenderContext)->GetBasedDevice();
+    auto pBasedDevice = VKObjectManageByContext::Context->GetBasedDevice();
     mFence = nullptr;
     mSemaphore = nullptr;
     vkFreeCommandBuffers(pBasedDevice->GetDevice(), mCommandPool, 1, &mCommandBuffer);
@@ -87,18 +87,17 @@ void VKCommandBuffer::DestroyImplementation()
 
 bool VKCommandBuffer::Init(bool primary)
 {
-    auto pRenderCtx = static_cast<VKRenderContext *>(mRenderContext);
     mPrimary = primary;
-    mCommandPool = pRenderCtx->GetBasedDevice()->GetCommandPool()->GetHandle();
+    mCommandPool = VKObjectManageByContext::Context->GetBasedDevice()->GetCommandPool()->GetHandle();
     VkCommandBufferAllocateInfo commandBufferAllocateInfo = {};
     commandBufferAllocateInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
     commandBufferAllocateInfo.commandPool = mCommandPool;
     commandBufferAllocateInfo.level = primary ? VK_COMMAND_BUFFER_LEVEL_PRIMARY : VK_COMMAND_BUFFER_LEVEL_SECONDARY;
     commandBufferAllocateInfo.commandBufferCount = 1;
 
-    VK_CHECK_RESULT(vkAllocateCommandBuffers(pRenderCtx->GetBasedDevice()->GetDevice(), &commandBufferAllocateInfo, &mCommandBuffer));
-    mSemaphore = std::make_shared<VKSemaphore>(pRenderCtx->GetBasedDevice()->GetDevice(), false);
-    mFence = std::make_shared<VKFence>(pRenderCtx->GetBasedDevice()->GetDevice(), false);
+    VK_CHECK_RESULT(vkAllocateCommandBuffers(VKObjectManageByContext::Context->GetBasedDevice()->GetDevice(), &commandBufferAllocateInfo, &mCommandBuffer));
+    mSemaphore = std::make_shared<VKSemaphore>(VKObjectManageByContext::Context->GetBasedDevice()->GetDevice(), false);
+    mFence = std::make_shared<VKFence>(VKObjectManageByContext::Context->GetBasedDevice()->GetDevice(), false);
     mFence->Reset();
 
     return true;
@@ -106,7 +105,6 @@ bool VKCommandBuffer::Init(bool primary)
 
 bool VKCommandBuffer::Init(bool primary, VkCommandPool commandPool)
 {
-    auto pRenderCtx = static_cast<VKRenderContext *>(mRenderContext);
     mPrimary = primary;
     mCommandPool = commandPool;
     VkCommandBufferAllocateInfo commandBufferAllocateInfo = {};
@@ -114,10 +112,10 @@ bool VKCommandBuffer::Init(bool primary, VkCommandPool commandPool)
     commandBufferAllocateInfo.commandPool = mCommandPool;
     commandBufferAllocateInfo.level = primary ? VK_COMMAND_BUFFER_LEVEL_PRIMARY : VK_COMMAND_BUFFER_LEVEL_SECONDARY;
     commandBufferAllocateInfo.commandBufferCount = 1;
-    VK_CHECK_RESULT(vkAllocateCommandBuffers(pRenderCtx->GetBasedDevice()->GetDevice(), &commandBufferAllocateInfo, &mCommandBuffer));
+    VK_CHECK_RESULT(vkAllocateCommandBuffers(VKObjectManageByContext::Context->GetBasedDevice()->GetDevice(), &commandBufferAllocateInfo, &mCommandBuffer));
 
-    mSemaphore = std::make_shared<VKSemaphore>(pRenderCtx->GetBasedDevice()->GetDevice(), false);
-    mFence = std::make_shared<VKFence>(pRenderCtx->GetBasedDevice()->GetDevice(), true);
+    mSemaphore = std::make_shared<VKSemaphore>(VKObjectManageByContext::Context->GetBasedDevice()->GetDevice(), false);
+    mFence = std::make_shared<VKFence>(VKObjectManageByContext::Context->GetBasedDevice()->GetDevice(), true);
     return true;
 }
 
@@ -163,7 +161,7 @@ void VKCommandBuffer::Execute(VkPipelineStageFlags flags, VkSemaphore signalSema
 {
     PAssert(mPrimary, "Used Execute on secondary command buffer!");
     PAssert(mProperties->state != CommandBufferState::Recording, "CommandBuffer executed before ended recording");
-    auto pBasedDevice = static_cast<VKRenderContext *>(mRenderContext)->GetBasedDevice();
+    auto pBasedDevice = VKObjectManageByContext::Context->GetBasedDevice();
     uint32_t waitSemaphoreCount = signalSemaphore != nullptr ? 1 : 0;
 
     VkSemaphore semaphore = mSemaphore->GetHandle();
@@ -201,7 +199,6 @@ void VKCommandBuffer::BindVetexBuffer(const SharedPtr<Pipeline> &pipeline, const
 
 void VKCommandBuffer::BindDescriptorSet(const SharedPtr<Pipeline> &pipeline, uint32_t dynamicOffset, const SharedPtr<DescriptorSet> &descriptorSet)
 {
-    auto pRenderContext = static_cast<VKRenderContext *>(mRenderContext);
     auto pPipeline = std::static_pointer_cast<VKPipeline>(pipeline);
     uint32_t numDynamicDescriptorSets = 0;
     uint32_t numDescriptorSets = 0;
@@ -213,7 +210,7 @@ void VKCommandBuffer::BindDescriptorSet(const SharedPtr<Pipeline> &pipeline, uin
         if (vkDesSet->GetDynamic())
             numDynamicDescriptorSets++;
 
-        uint32_t currentFrame = pRenderContext->GetSwapChain()->GetCurrentBufferIndex();
+        uint32_t currentFrame = VKObjectManageByContext::Context->GetSwapChain()->GetCurrentBufferIndex();
         currentDescriptorSet = vkDesSet->GetHandle(currentFrame);
 
         PAssert(vkDesSet->GetHasUpdated(currentFrame), "Descriptor Set has not been updated before");
@@ -230,7 +227,6 @@ void VKCommandBuffer::BindDescriptorSet(const SharedPtr<Pipeline> &pipeline, uin
 
 void VKCommandBuffer::BindDescriptorSets(const SharedPtr<Pipeline> &pipeline, uint32_t dynamicOffset, std::vector<SharedPtr<DescriptorSet>> &descriptorSets)
 {
-    auto pRenderContext = static_cast<VKRenderContext *>(mRenderContext);
     auto pPipeline = std::static_pointer_cast<VKPipeline>(pipeline);
     uint32_t numDynamicDescriptorSets = 0;
     uint32_t numDescriptorSets = 0;
@@ -244,7 +240,7 @@ void VKCommandBuffer::BindDescriptorSets(const SharedPtr<Pipeline> &pipeline, ui
             if (vkDesSet->GetDynamic())
                 numDynamicDescriptorSets++;
 
-            uint32_t currentFrame = pRenderContext->GetSwapChain()->GetCurrentBufferIndex();
+            uint32_t currentFrame = VKObjectManageByContext::Context->GetSwapChain()->GetCurrentBufferIndex();
             lCurrentDescriptorSets[numDescriptorSets] = vkDesSet->GetHandle(currentFrame);
 
             PAssert(vkDesSet->GetHasUpdated(currentFrame), "Descriptor Set has not been updated before");

@@ -16,31 +16,29 @@
 using namespace pluto;
 using namespace pluto::Graphics;
 VKDescriptorSet::VKDescriptorSet(RenderContext *ctx, VKDescriptorSet::Properties *&&pProperties)
-    : DescriptorSet(ctx, std::move(pProperties))
+    : DescriptorSet(ctx, std::move(pProperties)), VKObjectManageByContext(static_cast<VKRenderContext *>(ctx))
 {
-    auto pRenderContext = static_cast<VKRenderContext *>(mRenderContext);
     auto vkshader = std::static_pointer_cast<VKShader>(mProperties->shader);
     auto info = vkshader->GetProperties().reflectInfo;
-    mFlightFrameCount = uint32_t(pRenderContext->GetSwapChain()->GetSwapChainBufferCount());
+    mFlightFrameCount = uint32_t(VKObjectManageByContext::Context->GetSwapChain()->GetSwapChainBufferCount());
     mProperties->descriptorInfo.descriptors = info[mProperties->layoutIndex].descriptors;
 
     for (auto &descriptor : mProperties->descriptorInfo.descriptors)
     {
         if (descriptor.descType == DescriptorType::UniformBuffer)
         {
+            UniformBufferInfo info;
             for (uint32_t frame = 0; frame < mFlightFrameCount; frame++)
             {
                 // Uniform Buffer per frame in flight
                 auto buffer_desc = new UniformBuffer::Properties();
                 buffer_desc->data = nullptr;
                 buffer_desc->size = descriptor.size;
-                descriptor.ubo = Vulkan::CreateUniformBuffer(mRenderContext, std::move(buffer_desc));
+                descriptor.ubo = Vulkan::CreateUniformBuffer(VKObjectManageByContext::Context, std::move(buffer_desc));
                 mUniformBuffers[frame][descriptor.name] = descriptor.ubo;
+                info.HasUpdated[frame] = false;
             }
-            UniformBufferInfo info;
-            info.HasUpdated[0] = false;
-            info.HasUpdated[1] = false;
-            info.HasUpdated[2] = false;
+
             info.mMembers = descriptor.mMembers;
             this->AllocateUboInfoData(info, descriptor.size);
             mUniformBuffersData[descriptor.name] = info;
@@ -53,19 +51,18 @@ VKDescriptorSet::VKDescriptorSet(RenderContext *ctx, VKDescriptorSet::Properties
         mDescriptorUpdated[frame] = false;
         mDescriptorSet[frame] = VK_NULL_HANDLE;
         auto layout = std::static_pointer_cast<VKShader>(mProperties->shader)->GetDescriptorSetLayout(mProperties->layoutIndex);
-        mDescriptorPool[frame] = pRenderContext->AllocateDescriptorSet(&mDescriptorSet[frame], layout, 1);
+        mDescriptorPool[frame] = VKObjectManageByContext::Context->AllocateDescriptorSet(&mDescriptorSet[frame], layout, 1);
     }
 }
 
 VKDescriptorSet::~VKDescriptorSet()
 {
-    RHIBase::Destroy();
+    VKObjectManageByContext::Destroy();
 }
 
 void VKDescriptorSet::DestroyImplementation()
 {
-    auto pRenderContext = static_cast<VKRenderContext *>(mRenderContext);
-    auto pBasedDevice = pRenderContext->GetBasedDevice();
+    auto pBasedDevice = VKObjectManageByContext::Context->GetBasedDevice();
 
     for (auto it = mUniformBuffersData.begin(); it != mUniformBuffersData.end(); it++)
     {
@@ -79,9 +76,8 @@ void VKDescriptorSet::DestroyImplementation()
 }
 void VKDescriptorSet::Update(SharedPtr<CommandBuffer> buffer)
 {
-    auto pRenderContext = static_cast<VKRenderContext *>(mRenderContext);
     int descriptorWritesCount = 0;
-    uint32_t currentFrame = pRenderContext->GetSwapChain()->GetCurrentBufferIndex();
+    uint32_t currentFrame = VKObjectManageByContext::Context->GetSwapChain()->GetCurrentBufferIndex();
 
     for (auto &bufferInfo : mUniformBuffersData)
     {
@@ -183,7 +179,7 @@ void VKDescriptorSet::Update(SharedPtr<CommandBuffer> buffer)
             }
         }
 
-        vkUpdateDescriptorSets(pRenderContext->GetBasedDevice()->GetDevice(), descriptorWritesCount,
+        vkUpdateDescriptorSets(VKObjectManageByContext::Context->GetBasedDevice()->GetDevice(), descriptorWritesCount,
                                writeDescriptorSets.data(), 0, nullptr);
 
         mDescriptorUpdated[currentFrame] = true;
@@ -216,7 +212,9 @@ void VKDescriptorSet::SetUniform(const std::string &bufferName, const std::strin
             {
                 this->WrtieUboInfoData(itr->second, data, member.size, member.offset);
                 for (uint32_t frame = 0; frame < mFlightFrameCount; frame++)
+                {
                     itr->second.HasUpdated[frame] = true;
+                }
                 return;
             }
         }
@@ -234,7 +232,9 @@ void VKDescriptorSet::SetUniform(const std::string &bufferName, const std::strin
             {
                 this->WrtieUboInfoData(itr->second, data, size, member.offset);
                 for (uint32_t frame = 0; frame < mFlightFrameCount; frame++)
+                {
                     itr->second.HasUpdated[frame] = true;
+                }
                 return;
             }
         }
@@ -248,7 +248,9 @@ void VKDescriptorSet::SetUniformBufferData(const std::string &bufferName, void *
     {
         this->WrtieUboInfoData(itr->second, data, itr->second.size, 0);
         for (uint32_t frame = 0; frame < mFlightFrameCount; frame++)
+        {
             itr->second.HasUpdated[frame] = true;
+        }
         return;
     }
 }
@@ -260,8 +262,7 @@ void VKDescriptorSet::SetBuffer(const std::string &name, const SharedPtr<Uniform
 
 SharedPtr<UniformBuffer> VKDescriptorSet::GetUniformBuffer(const std::string &name)
 {
-    auto pRenderContext = static_cast<VKRenderContext *>(mRenderContext);
-    uint32_t currentFrame = pRenderContext->GetSwapChain()->GetCurrentBufferIndex();
+    uint32_t currentFrame = VKObjectManageByContext::Context->GetSwapChain()->GetCurrentBufferIndex();
 
     PLog<PCritical>("GetUniformBuffer is a Empty Implementation!");
     return nullptr;
@@ -291,8 +292,7 @@ void VKDescriptorSet::TransitionImageLayoutByHints(const SharedPtr<Texture> &tex
     if (!texture)
         return;
 
-    auto pRenderContext = static_cast<VKRenderContext *>(mRenderContext);
-    auto commandBuffer = cmdBuffer ? cmdBuffer : pRenderContext->GetSwapChain()->GetCurrentCommandBuffer();
+    auto commandBuffer = cmdBuffer ? cmdBuffer : VKObjectManageByContext::Context->GetSwapChain()->GetCurrentCommandBuffer();
     auto commandBufferHandle = std::static_pointer_cast<VKCommandBuffer>(commandBuffer)->GetHandle();
     if (texture->GetProperties().hints == Texture::Hints::NoHints || texture->GetProperties().hints == Texture::Hints::ShaderUse)
     {

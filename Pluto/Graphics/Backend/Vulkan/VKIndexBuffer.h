@@ -1,11 +1,11 @@
 #pragma once
 #include "Graphics/RHI/IndexBuffer.h"
-
+#include "Graphics/Backend/Vulkan/Vk.h"
 namespace pluto
 {
     namespace Graphics
     {
-        class VKIndexBuffer : public IndexBuffer
+        class VKIndexBuffer : public IndexBuffer, public VKObjectManageByContext
         {
             friend class VKContext;
 

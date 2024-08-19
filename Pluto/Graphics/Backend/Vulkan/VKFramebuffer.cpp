@@ -11,7 +11,7 @@
 
 using namespace pluto::Graphics;
 VKFramebuffer::VKFramebuffer(RenderContext *ctx, VKFramebuffer::Properties *&&pProperties)
-    : Framebuffer(ctx, std::move(pProperties))
+    : Framebuffer(ctx, std::move(pProperties)), VKObjectManageByContext(static_cast<VKRenderContext *>(ctx))
 {
 
     std::vector<VkImageView> attachments;
@@ -66,19 +66,19 @@ VKFramebuffer::VKFramebuffer(RenderContext *ctx, VKFramebuffer::Properties *&&pP
     framebufferCreateInfo.pNext = nullptr;
     framebufferCreateInfo.flags = 0;
 
-    auto pBasedDevice = static_cast<VKRenderContext *>(mRenderContext)->GetBasedDevice();
+    auto pBasedDevice = VKObjectManageByContext::Context->GetBasedDevice();
 
     VK_CHECK_RESULT(vkCreateFramebuffer(pBasedDevice->GetDevice(), &framebufferCreateInfo, VK_NULL_HANDLE, &mFramebuffer));
 }
 
 VKFramebuffer::~VKFramebuffer()
 {
-    RHIBase::Destroy();
+    VKObjectManageByContext::Destroy();
 }
 
 void VKFramebuffer::DestroyImplementation()
 {
-    vkDestroyFramebuffer(static_cast<VKRenderContext *>(mRenderContext)->GetBasedDevice()->GetDevice(), mFramebuffer, VK_NULL_HANDLE);
+    vkDestroyFramebuffer(VKObjectManageByContext::Context->GetBasedDevice()->GetDevice(), mFramebuffer, VK_NULL_HANDLE);
 }
 
 void VKFramebuffer::SetClearColor(const glm::vec4 &color)

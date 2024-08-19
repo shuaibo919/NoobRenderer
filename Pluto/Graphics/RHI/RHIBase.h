@@ -12,19 +12,11 @@ namespace pluto
             friend class VKRenderContext;
 
         public:
-            RHIBase(RenderContext *ctx);
-            void DetachFromRenderContext();
-            void DestroyByContext();
+            RHIBase(RenderContext *ctx) : mRenderContext(ctx) {}
             virtual ~RHIBase() = default;
-            virtual void Destroy();
-            virtual void DestroyImplementation() = 0;
 
         protected:
             RenderContext *mRenderContext{nullptr};
-            uint32_t mIncreasingID{0};
-
-        private:
-            bool mDestroyedByContext{false};
         };
 
         template <typename T>

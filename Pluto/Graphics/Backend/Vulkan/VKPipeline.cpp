@@ -16,9 +16,9 @@
 using namespace pluto;
 using namespace pluto::Graphics;
 VKPipeline::VKPipeline(RenderContext *ctx, VKPipeline::Properties *&&pProperties)
-    : Pipeline(ctx, std::move(pProperties))
+    : Pipeline(ctx, std::move(pProperties)), VKObjectManageByContext(static_cast<VKRenderContext *>(ctx))
 {
-    auto pBasedDevice = static_cast<VKRenderContext *>(mRenderContext)->GetBasedDevice();
+    auto pBasedDevice = VKObjectManageByContext::Context->GetBasedDevice();
     mShader = std::static_pointer_cast<VKShader>(mProperties->shader);
 
     this->TransitionAttachments();
@@ -225,25 +225,24 @@ VKPipeline::VKPipeline(RenderContext *ctx, VKPipeline::Properties *&&pProperties
 
 VKPipeline::~VKPipeline()
 {
-    RHIBase::Destroy();
+    VKObjectManageByContext::Destroy();
 }
 
 void VKPipeline::DestroyImplementation()
 {
-    auto pBasedDevice = static_cast<VKRenderContext *>(mRenderContext)->GetBasedDevice();
+    auto pBasedDevice = VKObjectManageByContext::Context->GetBasedDevice();
     vkDestroyPipeline(pBasedDevice->GetDevice(), mPipeline, VK_NULL_HANDLE);
 }
 
 void VKPipeline::TransitionAttachments()
 {
-    auto pContext = static_cast<VKRenderContext *>(mRenderContext);
-    auto commandBuffer = std::static_pointer_cast<VKCommandBuffer>(pContext->GetSwapChain()->GetCurrentCommandBuffer());
+    auto commandBuffer = std::static_pointer_cast<VKCommandBuffer>(VKObjectManageByContext::Context->GetSwapChain()->GetCurrentCommandBuffer());
 
     if (mProperties->swapchainTarget)
     {
-        for (uint32_t i = 0; i < pContext->GetSwapChain()->GetSwapChainBufferCount(); i++)
+        for (uint32_t i = 0; i < VKObjectManageByContext::Context->GetSwapChain()->GetSwapChainBufferCount(); i++)
         {
-            std::static_pointer_cast<VKTexture2D>(pContext->GetSwapChain()->GetImage(i))->TransitionImage(VK_IMAGE_LAYOUT_PRESENT_SRC_KHR, commandBuffer->GetHandle());
+            std::static_pointer_cast<VKTexture2D>(VKObjectManageByContext::Context->GetSwapChain()->GetImage(i))->TransitionImage(VK_IMAGE_LAYOUT_PRESENT_SRC_KHR, commandBuffer->GetHandle());
         }
     }
 
@@ -265,14 +264,13 @@ void VKPipeline::TransitionAttachments()
 
 void VKPipeline::PrepareFramebuffer()
 {
-    auto pRenderContext = static_cast<VKRenderContext *>(mRenderContext);
     std::vector<AttachmentType> attachmentTypes;
     std::vector<Texture::Ptr> attachments;
 
     if (mProperties->swapchainTarget)
     {
         attachmentTypes.push_back(AttachmentType::Color);
-        attachments.push_back(pRenderContext->GetSwapChain()->GetImage(0));
+        attachments.push_back(VKObjectManageByContext::Context->GetSwapChain()->GetImage(0));
     }
     else
     {
@@ -301,7 +299,7 @@ void VKPipeline::PrepareFramebuffer()
     renderPassProperties->resolveTexture = mProperties->resolveTexture;
     renderPassProperties->samples = mProperties->samples;
 
-    mRenderPass = std::static_pointer_cast<VKRenderPass>(Vulkan::CreateRenderPass(pRenderContext, std::move(renderPassProperties)));
+    mRenderPass = std::static_pointer_cast<VKRenderPass>(Vulkan::CreateRenderPass(VKObjectManageByContext::Context, std::move(renderPassProperties)));
     renderPassProperties = nullptr;
 
     auto framebufferProperties = new Framebuffer::Properties();
@@ -313,13 +311,13 @@ void VKPipeline::PrepareFramebuffer()
 
     if (mProperties->swapchainTarget)
     {
-        for (uint32_t i = 0; i < pRenderContext->GetSwapChain()->GetSwapChainBufferCount(); i++)
+        for (uint32_t i = 0; i < VKObjectManageByContext::Context->GetSwapChain()->GetSwapChainBufferCount(); i++)
         {
-            attachments[0] = pRenderContext->GetSwapChain()->GetImage(i);
+            attachments[0] = VKObjectManageByContext::Context->GetSwapChain()->GetImage(i);
             framebufferProperties->screenUse = true;
             framebufferProperties->attachments = attachments;
             mFramebuffers.emplace_back(
-                Vulkan::CreateFrameBuffer(this->mRenderContext, new Framebuffer::Properties(*framebufferProperties)));
+                Vulkan::CreateFrameBuffer(VKObjectManageByContext::Context, new Framebuffer::Properties(*framebufferProperties)));
         }
     }
     else
@@ -327,7 +325,7 @@ void VKPipeline::PrepareFramebuffer()
         framebufferProperties->attachments = attachments;
         framebufferProperties->screenUse = false;
         framebufferProperties->mipIndex = mProperties->mipIndex;
-        mFramebuffers.emplace_back(Vulkan::CreateFrameBuffer(this->mRenderContext, std::move(framebufferProperties)));
+        mFramebuffers.emplace_back(Vulkan::CreateFrameBuffer(VKObjectManageByContext::Context, std::move(framebufferProperties)));
         framebufferProperties = nullptr;
     }
     delete framebufferProperties;
@@ -335,7 +333,6 @@ void VKPipeline::PrepareFramebuffer()
 
 void VKPipeline::Bind(const SharedPtr<CommandBuffer> &commandBuffer, uint32_t layer)
 {
-    auto pContext = static_cast<VKRenderContext *>(mRenderContext);
     Framebuffer::Ptr &framebuffer = mFramebuffers[0];
 
     if (!mShader->HasComputeStage())
@@ -344,7 +341,7 @@ void VKPipeline::Bind(const SharedPtr<CommandBuffer> &commandBuffer, uint32_t la
 
         if (mProperties->swapchainTarget)
         {
-            framebuffer = mFramebuffers[pContext->GetSwapChain()->GetCurrentImageIndex()];
+            framebuffer = mFramebuffers[VKObjectManageByContext::Context->GetSwapChain()->GetCurrentImageIndex()];
         }
 
         mRenderPass->BeginRenderPass(commandBuffer, mProperties->clearColor, framebuffer, Graphics::Inline);
@@ -366,10 +363,9 @@ void VKPipeline::End(const SharedPtr<CommandBuffer> &commandBuffer)
 
 void VKPipeline::ClearRenderTargets(const SharedPtr<CommandBuffer> &commandBuffer)
 {
-    auto pContext = static_cast<VKRenderContext *>(mRenderContext);
     if (mProperties->swapchainTarget)
     {
-        for (uint32_t i = 0; i < pContext->GetSwapChain()->GetSwapChainBufferCount(); i++)
+        for (uint32_t i = 0; i < VKObjectManageByContext::Context->GetSwapChain()->GetSwapChainBufferCount(); i++)
         {
             // TODO: ClearRenderTarget
         }

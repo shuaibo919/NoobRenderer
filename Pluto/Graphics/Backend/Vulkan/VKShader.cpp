@@ -11,7 +11,8 @@
 using namespace pluto::Graphics;
 
 VKShader::VKShader(RenderContext *ctx, VKShader::Properties *&&pProperties)
-    : Shader(ctx, std::move(pProperties)), mStageCount(0), mCompiled(false), mCompute(false)
+    : Shader(ctx, std::move(pProperties)), VKObjectManageByContext(static_cast<VKRenderContext *>(ctx)),
+      mStageCount(0), mCompiled(false), mCompute(false)
 {
     if (!mProperties->filePath.empty())
     {
@@ -54,12 +55,12 @@ VKShader::VKShader(RenderContext *ctx, VKShader::Properties *&&pProperties)
 
 VKShader::~VKShader()
 {
-    RHIBase::Destroy();
+    VKObjectManageByContext::Destroy();
 }
 
 void VKShader::DestroyImplementation()
 {
-    auto pBasedDevice = static_cast<VKRenderContext *>(mRenderContext)->GetBasedDevice();
+    auto pBasedDevice = VKObjectManageByContext::Context->GetBasedDevice();
     for (uint32_t i = 0; i < mStageCount; i++)
         vkDestroyShaderModule(pBasedDevice->GetDevice(), mShaderStages[i].module, nullptr);
 
@@ -77,8 +78,7 @@ void VKShader::DestroyImplementation()
 
 bool VKShader::LoadSpriv(const std::string &name, uint32_t *source, uint32_t fileSize, ShaderType shaderType, int currentShaderStage)
 {
-    auto pRenderContext = static_cast<VKRenderContext *>(mRenderContext);
-    auto pBasedDevice = pRenderContext->GetBasedDevice();
+    auto pBasedDevice = VKObjectManageByContext::Context->GetBasedDevice();
     VkShaderModuleCreateInfo shaderCreateInfo = {};
     shaderCreateInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
     shaderCreateInfo.codeSize = fileSize;
@@ -93,7 +93,7 @@ bool VKShader::LoadSpriv(const std::string &name, uint32_t *source, uint32_t fil
     VkResult result = vkCreateShaderModule(pBasedDevice->GetDevice(), &shaderCreateInfo, nullptr, &mShaderStages[currentShaderStage].module);
 
     std::string debugName = name + ":" + Utilities::GetShaderTypeString(shaderType);
-    VKUtilities::SetDebugUtilsObjectNameInfo(pRenderContext->GetVKInstance(), pBasedDevice->GetDevice(), VK_OBJECT_TYPE_SHADER_MODULE, debugName.c_str(), mShaderStages[currentShaderStage].module);
+    VKUtilities::SetDebugUtilsObjectNameInfo(VKObjectManageByContext::Context->GetVKInstance(), pBasedDevice->GetDevice(), VK_OBJECT_TYPE_SHADER_MODULE, debugName.c_str(), mShaderStages[currentShaderStage].module);
     VK_CHECK_RESULT(result);
 
     if (result == VK_SUCCESS)
@@ -175,8 +175,7 @@ void VKShader::ReadReflectInfo(ShaderJson &info, ShaderType type)
 
 void VKShader::PreparePipelineLayout()
 {
-    auto pRenderContext = static_cast<VKRenderContext *>(mRenderContext);
-    auto pBasedDevice = pRenderContext->GetBasedDevice();
+    auto pBasedDevice = VKObjectManageByContext::Context->GetBasedDevice();
 
     std::vector<std::vector<Graphics::DescriptorLayoutInfo>> layouts;
 

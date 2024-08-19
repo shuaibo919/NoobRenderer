@@ -6,7 +6,7 @@ namespace pluto
 {
     namespace Graphics
     {
-        class VKFramebuffer : public Framebuffer
+        class VKFramebuffer : public Framebuffer, public VKObjectManageByContext
         {
             friend class VKContext;
 

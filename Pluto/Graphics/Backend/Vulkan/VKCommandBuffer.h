@@ -10,7 +10,7 @@ namespace pluto
         class VKFence;
         class VKSemaphore;
 
-        class VKCommandBuffer : public CommandBuffer
+        class VKCommandBuffer : public CommandBuffer, public VKObjectManageByContext
         {
         public:
             VKCommandBuffer(RenderContext *ctx, CommandBuffer::Properties *&&pProperties);

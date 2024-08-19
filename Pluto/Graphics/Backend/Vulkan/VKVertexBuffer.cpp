@@ -11,7 +11,7 @@
 using namespace pluto::Graphics;
 
 VKVertexBuffer::VKVertexBuffer(RenderContext *ctx, VertexBuffer::Properties *&&pProperties)
-    : VertexBuffer(ctx, std::move(pProperties))
+    : VertexBuffer(ctx, std::move(pProperties)), VKObjectManageByContext(static_cast<VKRenderContext *>(ctx))
 {
     mBuffer = new VKBuffer(static_cast<VKRenderContext *>(ctx), VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,
                            pProperties->usage == BufferUsage::Dynamic ? VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT : 0,
@@ -20,7 +20,7 @@ VKVertexBuffer::VKVertexBuffer(RenderContext *ctx, VertexBuffer::Properties *&&p
 
 VKVertexBuffer::~VKVertexBuffer()
 {
-    RHIBase::Destroy();
+    VKObjectManageByContext::Destroy();
 }
 
 void VKVertexBuffer::DestroyImplementation()

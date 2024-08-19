@@ -47,9 +47,15 @@ void GLRenderContext::WaitIdle()
     GlCall(glFinish());
 }
 
+void GLRenderContext::SetSwapchain(GLSwapChain *swapchain)
+{
+    mSwapChain = swapchain;
+    mSwapChain->Init(false);
+}
+
 void GLRenderContext::OnResize(uint32_t width, uint32_t height)
 {
-    std::static_pointer_cast<GLSwapChain>(mContext->mSwapChain)->OnResize(width, height);
+    mSwapChain->OnResize(width, height);
 }
 
 void GLRenderContext::ClearRenderTarget(const SharedPtr<Texture> &texture, AttachmentType type, const SharedPtr<CommandBuffer> &commandBuffer, glm::vec4 clearColor)
@@ -136,7 +142,7 @@ RHIFormat GLRenderContext::GetDepthFormat()
     return RHIFormat::Depth32Float;
 }
 
-SwapChain::Ptr GLRenderContext::GetSwapChain()
+SwapChain *GLRenderContext::GetSwapChain()
 {
-    return mContext->mSwapChain;
+    return mSwapChain;
 }

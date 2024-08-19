@@ -225,12 +225,12 @@ VkDescriptorPool VKRenderContext::AllocateDescriptorSet(VkDescriptorSet *set, Vk
     return VK_NULL_HANDLE;
 }
 
-void VKRenderContext::AttachToRenderContext(RHIBase *object)
+void VKRenderContext::AttachToRenderContext(VKObjectManageByContext *object)
 {
     mManagedVKObjectsMap[object] = object;
 }
 
-void VKRenderContext::DetachFromRenderContext(RHIBase *object)
+void VKRenderContext::DetachFromRenderContext(VKObjectManageByContext *object)
 {
     auto it = mManagedVKObjectsMap.find(object);
     if (it != mManagedVKObjectsMap.end())
@@ -250,5 +250,4 @@ void VKRenderContext::DeleteAllManagedObjects()
 void VKRenderContext::SetSwapchain(VKSwapChain *swapchain)
 {
     mSwapchain = swapchain;
-    this->DetachFromRenderContext(swapchain);
 }

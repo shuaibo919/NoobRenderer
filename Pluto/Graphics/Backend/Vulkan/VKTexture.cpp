@@ -235,7 +235,8 @@ void *VKTexture2D::GetHandle() const
 }
 
 VKTexture2D::VKTexture2D(RenderContext *ctx, Properties *&&pProperties)
-    : Texture2D(ctx, std::move(pProperties)), mTextureImage(VK_NULL_HANDLE),
+    : Texture2D(ctx, std::move(pProperties)), VKObjectManageByContext(static_cast<VKRenderContext *>(ctx)),
+      mTextureImage(VK_NULL_HANDLE),
       mTextureImageView(VK_NULL_HANDLE), mTextureSampler(VK_NULL_HANDLE), mImageLayout(VK_IMAGE_LAYOUT_UNDEFINED)
 {
     this->PrepareTexture();
@@ -243,14 +244,15 @@ VKTexture2D::VKTexture2D(RenderContext *ctx, Properties *&&pProperties)
 }
 
 VKTexture2D::VKTexture2D(RenderContext *ctx, const std::string &path, Properties *&&pProperties)
-    : Texture2D(ctx, std::move(pProperties))
+    : Texture2D(ctx, std::move(pProperties)), VKObjectManageByContext(static_cast<VKRenderContext *>(ctx))
 {
     this->PrepareTexture(path);
     this->UpdateDescriptor();
 }
 
 VKTexture2D::VKTexture2D(RenderContext *ctx, VkImage img, VkImageView view, VkFormat format, Properties *&&pProperties)
-    : Texture2D(ctx, std::move(pProperties)), mTextureImage(img), mTextureImageView(view),
+    : Texture2D(ctx, std::move(pProperties)), VKObjectManageByContext(static_cast<VKRenderContext *>(ctx)),
+      mTextureImage(img), mTextureImageView(view),
       mTextureSampler(VK_NULL_HANDLE), mVKFormat(format), mImageLayout(VK_IMAGE_LAYOUT_UNDEFINED)
 {
     UpdateDescriptor();
@@ -258,12 +260,12 @@ VKTexture2D::VKTexture2D(RenderContext *ctx, VkImage img, VkImageView view, VkFo
 
 VKTexture2D::~VKTexture2D()
 {
-    RHIBase::Destroy();
+    VKObjectManageByContext::Destroy();
 }
 
 void VKTexture2D::DestroyImplementation()
 {
-    auto pBasedDevice = static_cast<VKRenderContext *>(mRenderContext)->GetBasedDevice();
+    auto pBasedDevice = VKObjectManageByContext::Context->GetBasedDevice();
     if (mTextureSampler != VK_NULL_HANDLE)
     {
         vkDestroySampler(pBasedDevice->GetDevice(), mTextureSampler, nullptr);
@@ -305,7 +307,7 @@ void VKTexture2D::UpdateDescriptor()
 void VKTexture2D::PrepareTexture()
 {
     mVKFormat = VKUtilities::GetVKFormat(mProperties->format, mProperties->srgb);
-    auto pBasedDevice = static_cast<VKRenderContext *>(mRenderContext)->GetBasedDevice();
+    auto pBasedDevice = VKObjectManageByContext::Context->GetBasedDevice();
     if (mProperties->flags & TextureFlags::TextureCreateMips)
     {
         mMipLevels = static_cast<uint32_t>(std::floor(std::log2((std::max)(mProperties->width, mProperties->height)))) + 1;
@@ -338,8 +340,7 @@ void VKTexture2D::PrepareTexture()
 
 void VKTexture2D::PrepareTexture(const std::string &path)
 {
-    auto pContext = static_cast<VKRenderContext *>(mRenderContext);
-    auto pBasedDevice = pContext->GetBasedDevice();
+    auto pBasedDevice = VKObjectManageByContext::Context->GetBasedDevice();
     uint8_t *pixels = nullptr;
     mProperties->width = 0;
     mProperties->height = 0;
@@ -361,7 +362,7 @@ void VKTexture2D::PrepareTexture(const std::string &path)
     if (!(mProperties->flags & TextureFlags::TextureCreateMips) && mProperties->generateMipMaps == false)
         mMipLevels = 1;
 
-    VKBuffer *stagingBuffer = new VKBuffer(pContext, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT, static_cast<uint32_t>(imageSize), pixels);
+    VKBuffer *stagingBuffer = new VKBuffer(VKObjectManageByContext::Context, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT, static_cast<uint32_t>(imageSize), pixels);
 
     delete[] pixels;
 
@@ -401,7 +402,7 @@ void VKTexture2D::PrepareTexture(const std::string &path)
 
 VkImageView VKTexture2D::GetMipImageView(uint32_t mip)
 {
-    auto pBasedDevice = static_cast<VKRenderContext *>(mRenderContext)->GetBasedDevice();
+    auto pBasedDevice = VKObjectManageByContext::Context->GetBasedDevice();
     if (mMipImageViews.find(mip) == mMipImageViews.end())
     {
         mMipImageViews[mip] = vkthelper::CreateImageView(pBasedDevice->GetDevice(), mTextureImage, mVKFormat, 1, VK_IMAGE_VIEW_TYPE_2D, VK_IMAGE_ASPECT_COLOR_BIT, 1, 0, mip);
@@ -411,7 +412,7 @@ VkImageView VKTexture2D::GetMipImageView(uint32_t mip)
 
 void VKTexture2D::TransitionImage(VkImageLayout newLayout, VkCommandBuffer vkCmdHandle)
 {
-    auto pBasedDevice = static_cast<VKRenderContext *>(mRenderContext)->GetBasedDevice();
+    auto pBasedDevice = VKObjectManageByContext::Context->GetBasedDevice();
     if (newLayout != mImageLayout)
         VKUtilities::TransitionImageLayout(mTextureImage, mVKFormat, mImageLayout, newLayout, mMipLevels, 1, vkCmdHandle,
                                            pBasedDevice->GetDevice(), pBasedDevice->GetCommandPool()->GetHandle(), pBasedDevice->GetGraphicsQueue());
@@ -444,12 +445,12 @@ void VKTexture2DArray::DestroyImplementation()
 }
 
 VKTexture2DArray::VKTexture2DArray(RenderContext *ctx, Properties *&&pProperties)
-    : Texture2DArray(ctx, std::move(pProperties))
+    : Texture2DArray(ctx, std::move(pProperties)), VKObjectManageByContext(static_cast<VKRenderContext *>(ctx))
 {
 }
 
 VKTexture2DArray::VKTexture2DArray(RenderContext *ctx, const std::string &path, Properties *&&pProperties)
-    : Texture2DArray(ctx, std::move(pProperties))
+    : Texture2DArray(ctx, std::move(pProperties)), VKObjectManageByContext(static_cast<VKRenderContext *>(ctx))
 {
     // mProperties.
 }
@@ -480,12 +481,12 @@ void VKTextureCube::DestroyImplementation()
 }
 
 VKTextureCube::VKTextureCube(RenderContext *ctx, Properties *&&pProperties)
-    : TextureCube(ctx, std::move(pProperties))
+    : TextureCube(ctx, std::move(pProperties)), VKObjectManageByContext(static_cast<VKRenderContext *>(ctx))
 {
 }
 
 VKTextureCube::VKTextureCube(RenderContext *ctx, const std::string &path, Properties *&&pProperties)
-    : VKTextureCube(ctx, std::move(pProperties))
+    : TextureCube(ctx, std::move(pProperties)), VKObjectManageByContext(static_cast<VKRenderContext *>(ctx))
 {
     // mProperties.
 }
@@ -516,11 +517,11 @@ void VKTexture3D::DestroyImplementation()
 }
 
 VKTexture3D::VKTexture3D(RenderContext *ctx, Properties *&&pProperties)
-    : Texture3D(ctx, std::move(pProperties))
+    : Texture3D(ctx, std::move(pProperties)), VKObjectManageByContext(static_cast<VKRenderContext *>(ctx))
 {
 }
 
 VKTexture3D::VKTexture3D(RenderContext *ctx, const std::string &path, Properties *&&pProperties)
-    : Texture3D(ctx, std::move(pProperties))
+    : Texture3D(ctx, std::move(pProperties)), VKObjectManageByContext(static_cast<VKRenderContext *>(ctx))
 {
 }

@@ -7,7 +7,7 @@ namespace pluto
     {
         class VKShader;
         class VKRenderPass;
-        class VKPipeline : public Pipeline
+        class VKPipeline : public Pipeline, public VKObjectManageByContext
         {
         public:
             VKPipeline(RenderContext *ctx, Properties *&&pProperties);

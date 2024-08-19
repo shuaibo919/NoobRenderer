@@ -9,7 +9,7 @@ namespace pluto
     {
         class VKShader;
         class UniformBuffer;
-        class VKDescriptorSet : public DescriptorSet
+        class VKDescriptorSet : public DescriptorSet, public VKObjectManageByContext
         {
             friend class VKContext;
 

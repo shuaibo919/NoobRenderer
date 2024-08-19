@@ -2,19 +2,20 @@
 #include "Graphics/Backend/Vulkan/VKIndexBuffer.h"
 /* Usage */
 #include "Graphics/Backend/Vulkan/VKCommandBuffer.h"
+#include "Graphics/Backend/Vulkan/VKRenderContext.h"
 /* Common */
 #include "Graphics/Backend/Vulkan/VKUtilities.h"
 
 using namespace pluto::Graphics;
 
 VKIndexBuffer::VKIndexBuffer(RenderContext *ctx, VKIndexBuffer::Properties *&&pProperties)
-    : IndexBuffer(ctx, std::move(pProperties))
+    : IndexBuffer(ctx, std::move(pProperties)), VKObjectManageByContext(static_cast<VKRenderContext *>(ctx))
 {
 }
 
 VKIndexBuffer::~VKIndexBuffer()
 {
-    RHIBase::Destroy();
+    VKObjectManageByContext::Destroy();
 }
 
 void VKIndexBuffer::Bind(CommandBuffer *commandBuffer) const
