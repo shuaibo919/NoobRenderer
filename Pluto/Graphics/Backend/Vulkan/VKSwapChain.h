@@ -38,6 +38,8 @@ namespace pluto
             SharedPtr<CommandBuffer> GetCurrentCommandBuffer() override;
             size_t GetSwapChainBufferCount() const override;
             void SetVSync(bool vsync) override;
+            void BeginFrame() override;
+            void EndFrame() override;
 
         public:
             void PrepareFrameData();

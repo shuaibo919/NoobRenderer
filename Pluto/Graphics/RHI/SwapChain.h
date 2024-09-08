@@ -11,6 +11,7 @@ namespace pluto
         class SwapChain : public RHIBase
         {
             friend class GraphicsContext;
+
         public:
             using Ptr = SharedPtr<SwapChain>;
             struct Properties
@@ -42,6 +43,8 @@ namespace pluto
             virtual size_t GetSwapChainBufferCount() const = 0;
             virtual SharedPtr<CommandBuffer> GetCurrentCommandBuffer() = 0;
             virtual void SetVSync(bool vsync) = 0;
+            virtual void BeginFrame() = 0;
+            virtual void EndFrame() = 0;
 
         protected:
             Properties *mProperties;

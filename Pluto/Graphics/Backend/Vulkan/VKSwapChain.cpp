@@ -45,6 +45,14 @@ VKSwapChain::~VKSwapChain()
     }
 }
 
+void VKSwapChain::BeginFrame()
+{
+}
+
+void VKSwapChain::EndFrame()
+{
+}
+
 void VKSwapChain::OnResize(uint32_t width, uint32_t height)
 {
     if (mProperties->width == width && mProperties->height == height)
