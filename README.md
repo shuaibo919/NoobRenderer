@@ -1,4 +1,4 @@
-## !! This branch is still under development, and no guarantee of successful compiling. If needed, use this [old branch](https://github.com/shuaibo919/NoobRenderer/tree/history_archive) to compile and preview the effects.
+**!! This branch is still under development, and no guarantee of successful compiling. If needed, use this [old branch](https://github.com/shuaibo919/NoobRenderer/tree/history_archive) to compile and preview the effects.**
 
 *Some screenshots from this old branch (NoobRenderer)*:
 ![image](Img/Sponza.png)
