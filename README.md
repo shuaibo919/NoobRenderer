@@ -1,47 +1,64 @@
-## NoobRenderer
+## NoobRenderer-pluto 🌑 
+In this pluto branch, the first step will be to add RHI (Render Hardware Interface) layer to implement abstraction for Opengl and Vulkan, then refactor the entire project.
 
-This branch will no longer be updated, new branch in [here](https://github.com/shuaibo919/NoobRenderer/tree/pluto)
-
-NoobRenderer is a personal rendering project that I've been working on! It's based on C++ and OpenGL. This project is essentially my playground for learning and experimenting with OpenGL and various classical graphics algorithms. As such, it's a work in progress and may have many flaws.
-
-### Build
-All dependent third-party libraries are already included in this repo.
-- CMake 3.10 (or more recent)
-- MSVC (Visual Studio 2019 or more recent) or Mingw (Not tested yet)
-```
-cmake build & cd build
-cmake --build . -j32
+```shell
+  ☼ <- now in here!
+  |
+Pluto   Neptune  Uranus  Saturn  Jupiter  Mars  Earth   Venus   Mercury   
+  🌑       🔵         ...           🪐      🔴     🌍        ...      
+       
 ```
 
-### Screenshots
+(:The next version will be named as [**Neptune**](#))
+## Pluto
 
-![](Img/Sponza.png)
-![](Img/Demo.png)
+### Todo Feature-List 「Dev」
+#### Cross Platform Support「WIP」
+- [x] Windows
+- [x] MacOS
+- [ ] Linux
+...
 
+#### Create a RHI Object by Fluent Interface 「WIP」
+all the RHI object can be created by fluent interface, for example:
 
-### Features
-- Deferred Shading pipeline
-- Cascade ShadowMap, Omnidirectional Shadow, PCF, 
-- Point Light, Directional Light
-- PBR, Physically based rendering
-- SSR, SSAO
-- IBL, Image based lighting
-- Volumetric Lighting
-> - Future Work:
->    - [ ] VXGI (Work in progress)
->    - [ ] Area Light (Waits to be merged into remote branch)
+```cpp
+auto colorTarget = Texture::Builder()
+                        .SetBase(600, 600, 1, RHIFormat::R16G16B16A16Float)
+                        .SetFilter(TextureFilter::Linear, TextureFilter::Linear)
+                        .SetWrap(TextureWrap::ClampToedge)
+                        .Create(Texture::Type::Texture2D, ctx);
+```
+> non-fluent interface construction is only accessible in the Backend layer.
+> - [] todo: is it necessary to open it?
 
+#### High-level abstraction of scene rendering 「Waiting」
+- [ ] Scene Graph
+- [ ] Entity Component System
+- [ ] More
+...
 
-### Reference
-- [Learnopengl](https://learnopengl.com/)
-- [Learnopengl CN](https://learnopengl-cn.github.io/)
-- [RendererGL](https://github.com/MorcilloSanz/RendererGL)
-- [CarbonRender](https://github.com/carbonsunsu/CarbonRender)
-- [ForkerRenderer](https://github.com/forkercat/ForkerRenderer)
-- [Piccolo](https://github.com/BoomingTech/Piccolo)
-- https://ogldev.org/www/tutorial49/tutorial49.html
-- https://www.alexandre-pestana.com/volumetric-lights/
-- https://lettier.github.io/3d-game-shaders-for-beginners/screen-space-reflection.html
-- [Linearly Transformed Cosines](https://eheitzresearch.wordpress.com/415-2/)
-- https://sugulee.wordpress.com/2021/01/19/screen-space-reflections-implementation-and-optimization-part-2-hi-z-tracing-method/
-- https://jose-villegas.github.io/post/deferred_voxel_shading/
+#### Redesign the Editor 「Waiting」
+- [ ] UI
+...
+
+#### And More 「Waiting」
+- [ ] More
+...
+
+### Timeline 「Dev」
+
+- 2024.7.5: create pluto branch
+- 2024.7.7: add RHI layer, refactor the entire project (RHI-OpenGL wrapper progress: 50%, RHI-Vulkan wrapper progress: 0%)
+- 2024.7.8: GL-Backend WIP
+- 2024.7.17: GL-Backend WIP (RHI-OpenGL wrapper progress: 75%)
+- 2024.7.26: Vk-Backend WIP
+- 2024.8.18: (RHI-OpenGL wrapper progress: 75% / RHI-Vulkan wrapper progress: 75%)
+
+## Reference
+- https://github.com/google/filament
+- https://github.com/LukasBanana/LLGL
+- https://github.com/NazaraEngine/NazaraEngine
+- https://github.com/jmorton06/Lumos
+- https://github.com/BoomingTech/Piccolo
+- https://github.com/carbonsunsu/CarbonRender

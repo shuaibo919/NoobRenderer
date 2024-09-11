@@ -1,0 +1,3 @@
+ShaderListBegin
+    shader("TestTriangle", "TestTriangle.vert", "TestTriangle.frag", "", "");
+ShaderListEnd
