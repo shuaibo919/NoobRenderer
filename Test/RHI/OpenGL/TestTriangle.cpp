@@ -92,13 +92,16 @@ int main()
     cmdBuffer->BindDescriptorSet(pipeline, 0, descriptorSet);
     cmdBuffer->BindVetexBuffer(pipeline, vertexBuffer);
     cmdBuffer->Draw(DrawType::Triangle, 3);
+    cmdBuffer->UnBindPipeline();
     cmdBuffer->EndRecording();
 
     while (!window->ShouldClose())
     {
+        context->GetSwapChain()->BeginFrame();
         {
             cmdBuffer->Submit();
         }
+        context->GetSwapChain()->EndFrame();
         window->PollEvents();
         window->SwapBuffers();
     }

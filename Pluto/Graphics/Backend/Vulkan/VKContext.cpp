@@ -129,6 +129,15 @@ namespace pluto::Graphics::Vulkan
     {
         std::vector<const char *> extensions;
 
+        // if (m_InstanceExtensions.Empty())
+        // {
+        //     uint32_t extensionCount;
+        //     vkEnumerateInstanceExtensionProperties(nullptr, &extensionCount, nullptr);
+
+        //     m_InstanceExtensions.Resize(extensionCount);
+        //     vkEnumerateInstanceExtensionProperties(nullptr, &extensionCount, m_InstanceExtensions.Data());
+        // }
+
         if (enableValidationLayers)
         {
             log<Info>("Vulkan Call GetRequiredExtensions: Enabling Validation Layers");
@@ -137,9 +146,8 @@ namespace pluto::Graphics::Vulkan
         }
 
         extensions.push_back(VK_KHR_GET_PHYSICAL_DEVICE_PROPERTIES_2_EXTENSION_NAME);
-
         extensions.push_back(VK_KHR_SURFACE_EXTENSION_NAME);
-        extensions.push_back(VK_KHR_PORTABILITY_ENUMERATION_EXTENSION_NAME);
+        // extensions.push_back(VK_KHR_PORTABILITY_ENUMERATION_EXTENSION_NAME);
 
 #if defined(_WIN32)
         extensions.push_back(VK_KHR_WIN32_SURFACE_EXTENSION_NAME);
@@ -287,12 +295,14 @@ void VKContext::Init()
 
     if (!CheckValidationLayerSupport(mInstanceLayerNames))
     {
-        log<Info>("VULKAN: Validation layers requested are not available!");
+        // log<Error>("VULKAN: Validation layers requested are not available!");
+        PAssert(false, "VULKAN: Extension layers requested are not available!");
     }
 
     if (!CheckExtensionSupport(mInstanceExtensionNames))
     {
-        log<Info>("VULKAN: Validation layers requested are not available!");
+        // log<Error>("VULKAN: Extension layers requested are not available!");
+        PAssert(false, "VULKAN: Extension layers requested are not available!");
     }
     VkApplicationInfo appInfo = {};
 
@@ -336,7 +346,7 @@ void VKContext::Init()
     createInfo.ppEnabledExtensionNames = mInstanceExtensionNames.data();
     createInfo.enabledLayerCount = static_cast<uint32_t>(mInstanceLayerNames.size());
     createInfo.ppEnabledLayerNames = mInstanceLayerNames.data();
-    createInfo.flags = VK_INSTANCE_CREATE_ENUMERATE_PORTABILITY_BIT_KHR;
+    // createInfo.flags = VK_INSTANCE_CREATE_ENUMERATE_PORTABILITY_BIT_KHR;
     const std::vector<const char *> validation_layers = {"VK_LAYER_KHRONOS_validation"};
 
     const bool enableFeatureValidation = false;
@@ -414,7 +424,6 @@ bool VKContext::CheckExtensionSupport(std::vector<const char *> &extensions)
 
     mInstanceExtensions.resize(extensionCount);
     vkEnumerateInstanceExtensionProperties(nullptr, &extensionCount, mInstanceExtensions.data());
-
     bool removedExtension = false;
 
     extensions.erase(
@@ -437,7 +446,7 @@ bool VKContext::CheckExtensionSupport(std::vector<const char *> &extensions)
                 if (!extensionFound)
                 {
                     removedExtension = true;
-                    log<Info>("Layer not supported - {0}", extensionName);
+                    log<Info>("Layer not supported - %s", extensionName);
                 }
 
                 return !extensionFound;
