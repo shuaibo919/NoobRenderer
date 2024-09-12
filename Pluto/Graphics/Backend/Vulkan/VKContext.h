@@ -84,6 +84,11 @@ namespace pluto
 
             bool CheckValidationLayerSupport(std::vector<const char *> &validationLayers);
             bool CheckExtensionSupport(std::vector<const char *> &extensions);
+            bool CheckExtensionSupport(const char *extension);
+
+            const std::vector<const char *> GetRequiredExtensions(bool enableValidationLayers);
+            const std::vector<const char *> GetRequiredLayers(bool enableValidationLayers);
+
             void SetupDebugMessenger();
         };
     }

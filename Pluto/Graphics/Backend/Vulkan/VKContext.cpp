@@ -125,63 +125,6 @@ namespace pluto::Graphics::Vulkan
         return nullptr;
     }
 
-    const std::vector<const char *> GetRequiredExtensions(bool enableValidationLayers)
-    {
-        std::vector<const char *> extensions;
-
-        // if (m_InstanceExtensions.Empty())
-        // {
-        //     uint32_t extensionCount;
-        //     vkEnumerateInstanceExtensionProperties(nullptr, &extensionCount, nullptr);
-
-        //     m_InstanceExtensions.Resize(extensionCount);
-        //     vkEnumerateInstanceExtensionProperties(nullptr, &extensionCount, m_InstanceExtensions.Data());
-        // }
-
-        if (enableValidationLayers)
-        {
-            log<Info>("Vulkan Call GetRequiredExtensions: Enabling Validation Layers");
-            extensions.push_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
-            extensions.push_back(VK_EXT_DEBUG_REPORT_EXTENSION_NAME);
-        }
-
-        extensions.push_back(VK_KHR_GET_PHYSICAL_DEVICE_PROPERTIES_2_EXTENSION_NAME);
-        extensions.push_back(VK_KHR_SURFACE_EXTENSION_NAME);
-        // extensions.push_back(VK_KHR_PORTABILITY_ENUMERATION_EXTENSION_NAME);
-
-#if defined(_WIN32)
-        extensions.push_back(VK_KHR_WIN32_SURFACE_EXTENSION_NAME);
-#elif defined(VK_USE_PLATFORM_ANDROID_KHR)
-        extensions.push_back(VK_KHR_ANDROID_SURFACE_EXTENSION_NAME);
-#elif defined(_DIRECT2DISPLAY)
-        extensions.push_back(VK_KHR_DISPLAY_EXTENSION_NAME);
-#elif defined(VK_USE_PLATFORM_WAYLAND_KHR)
-        extensions.push_back(VK_KHR_WAYLAND_SURFACE_EXTENSION_NAME);
-#elif defined(VK_USE_PLATFORM_XCB_KHR)
-        extensions.push_back(VK_KHR_XCB_SURFACE_EXTENSION_NAME);
-#elif defined(VK_USE_PLATFORM_IOS_MVK)
-        extensions.push_back("VK_EXT_metal_surface");
-#elif defined(VK_USE_PLATFORM_MACOS_MVK)
-        extensions.push_back(VK_MVK_MACOS_SURFACE_EXTENSION_NAME);
-#elif defined(VK_USE_PLATFORM_METAL_EXT)
-        extensions.push_back("VK_EXT_metal_surface");
-#endif
-
-        return extensions;
-    }
-
-    const std::vector<const char *> GetRequiredLayers(bool enableValidationLayers)
-    {
-        std::vector<const char *> layers;
-
-        if (enableValidationLayers)
-        {
-            layers.emplace_back(VK_LAYER_LUNARG_VALIDATION_NAME);
-        }
-
-        return layers;
-    }
-
     VkResult CreateDebugReportCallbackEXT(VkInstance instance, const VkDebugReportCallbackCreateInfoEXT *pCreateInfo, const VkAllocationCallbacks *pAllocator, VkDebugReportCallbackEXT *pCallback)
     {
         auto func = reinterpret_cast<PFN_vkCreateDebugReportCallbackEXT>(vkGetInstanceProcAddr(instance, "vkCreateDebugReportCallbackEXT"));
@@ -290,18 +233,18 @@ void VKContext::Init()
 {
     bool enableValidation = EnableValidationLayers;
 
-    mInstanceLayerNames = Vulkan::GetRequiredLayers(enableValidation);
-    mInstanceExtensionNames = Vulkan::GetRequiredExtensions(enableValidation);
+    mInstanceLayerNames = GetRequiredLayers(enableValidation);
+    mInstanceExtensionNames = GetRequiredExtensions(enableValidation);
 
     if (!CheckValidationLayerSupport(mInstanceLayerNames))
     {
-        // log<Error>("VULKAN: Validation layers requested are not available!");
+        log<Error>("VULKAN: Validation layers requested are not available!");
         PAssert(false, "VULKAN: Extension layers requested are not available!");
     }
 
     if (!CheckExtensionSupport(mInstanceExtensionNames))
     {
-        // log<Error>("VULKAN: Extension layers requested are not available!");
+        log<Error>("VULKAN: Extension layers requested are not available!");
         PAssert(false, "VULKAN: Extension layers requested are not available!");
     }
     VkApplicationInfo appInfo = {};
@@ -417,13 +360,42 @@ bool VKContext::CheckValidationLayerSupport(std::vector<const char *> &validatio
     return !removedLayer;
 }
 
+bool VKContext::CheckExtensionSupport(const char *extension)
+{
+    if (mInstanceExtensionNames.empty())
+    {
+        uint32_t extensionCount;
+        vkEnumerateInstanceExtensionProperties(nullptr, &extensionCount, nullptr);
+
+        mInstanceExtensions.resize(extensionCount);
+        vkEnumerateInstanceExtensionProperties(nullptr, &extensionCount, mInstanceExtensions.data());
+    }
+
+    bool extensionFound = false;
+
+    for (const auto &extensionProperties : mInstanceExtensions)
+    {
+        if (strcmp(extension, extensionProperties.extensionName) == 0)
+        {
+            extensionFound = true;
+            break;
+        }
+    }
+
+    return extensionFound;
+}
+
 bool VKContext::CheckExtensionSupport(std::vector<const char *> &extensions)
 {
-    uint32_t extensionCount;
-    vkEnumerateInstanceExtensionProperties(nullptr, &extensionCount, nullptr);
+    if (mInstanceExtensionNames.empty())
+    {
+        uint32_t extensionCount;
+        vkEnumerateInstanceExtensionProperties(nullptr, &extensionCount, nullptr);
 
-    mInstanceExtensions.resize(extensionCount);
-    vkEnumerateInstanceExtensionProperties(nullptr, &extensionCount, mInstanceExtensions.data());
+        mInstanceExtensions.resize(extensionCount);
+        vkEnumerateInstanceExtensionProperties(nullptr, &extensionCount, mInstanceExtensions.data());
+    }
+
     bool removedExtension = false;
 
     extensions.erase(
@@ -454,6 +426,57 @@ bool VKContext::CheckExtensionSupport(std::vector<const char *> &extensions)
         extensions.end());
 
     return !removedExtension;
+}
+
+const std::vector<const char *> VKContext::GetRequiredExtensions(bool enableValidationLayers)
+{
+    std::vector<const char *> extensions;
+
+    if (enableValidationLayers)
+    {
+        log<Info>("Vulkan Call GetRequiredExtensions: Enabling Validation Layers");
+        extensions.push_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
+        extensions.push_back(VK_EXT_DEBUG_REPORT_EXTENSION_NAME);
+    }
+
+    if (CheckExtensionSupport(VK_KHR_GET_PHYSICAL_DEVICE_PROPERTIES_2_EXTENSION_NAME))
+        extensions.push_back(VK_KHR_GET_PHYSICAL_DEVICE_PROPERTIES_2_EXTENSION_NAME);
+    if (CheckExtensionSupport(VK_KHR_SURFACE_EXTENSION_NAME))
+        extensions.push_back(VK_KHR_SURFACE_EXTENSION_NAME);
+    if (CheckExtensionSupport(VK_KHR_PORTABILITY_ENUMERATION_EXTENSION_NAME))
+        extensions.push_back(VK_KHR_PORTABILITY_ENUMERATION_EXTENSION_NAME);
+
+#if defined(_WIN32)
+    extensions.push_back(VK_KHR_WIN32_SURFACE_EXTENSION_NAME);
+#elif defined(VK_USE_PLATFORM_ANDROID_KHR)
+    extensions.push_back(VK_KHR_ANDROID_SURFACE_EXTENSION_NAME);
+#elif defined(_DIRECT2DISPLAY)
+    extensions.push_back(VK_KHR_DISPLAY_EXTENSION_NAME);
+#elif defined(VK_USE_PLATFORM_WAYLAND_KHR)
+    extensions.push_back(VK_KHR_WAYLAND_SURFACE_EXTENSION_NAME);
+#elif defined(VK_USE_PLATFORM_XCB_KHR)
+    extensions.push_back(VK_KHR_XCB_SURFACE_EXTENSION_NAME);
+#elif defined(VK_USE_PLATFORM_IOS_MVK)
+    extensions.push_back("VK_EXT_metal_surface");
+#elif defined(VK_USE_PLATFORM_MACOS_MVK)
+    extensions.push_back(VK_MVK_MACOS_SURFACE_EXTENSION_NAME);
+#elif defined(VK_USE_PLATFORM_METAL_EXT)
+    extensions.push_back("VK_EXT_metal_surface");
+#endif
+
+    return extensions;
+}
+
+const std::vector<const char *> VKContext::GetRequiredLayers(bool enableValidationLayers)
+{
+    std::vector<const char *> layers;
+
+    if (enableValidationLayers)
+    {
+        layers.emplace_back(VK_LAYER_LUNARG_VALIDATION_NAME);
+    }
+
+    return layers;
 }
 
 void VKContext::SetupDebugMessenger()
