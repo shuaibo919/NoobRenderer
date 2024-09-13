@@ -52,6 +52,7 @@ namespace pluto
             FrameData mFrames[MaxFlightFrames];
 
             void FindImageFormatAndColourSpace();
+            void AcquireNextImage();
 
             std::vector<SharedPtr<VKTexture2D>> mSwapChainBuffers;
 

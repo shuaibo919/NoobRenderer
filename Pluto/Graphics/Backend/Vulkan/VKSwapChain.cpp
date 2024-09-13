@@ -11,6 +11,7 @@
 #include "Graphics/Backend/Vulkan/VKUtilities.h"
 /* Window */
 #include "Graphics/Window.h"
+#include "VKSwapChain.h"
 
 using namespace pluto::Graphics;
 
@@ -47,10 +48,23 @@ VKSwapChain::~VKSwapChain()
 
 void VKSwapChain::BeginFrame()
 {
+    mCurrentBuffer = (mCurrentBuffer + 1) % mSwapChainBufferCount;
+
+    auto &commandBuffer = mFrames[mCurrentBuffer].MainCommandBuffer;
+    if (commandBuffer->GetState() == CommandBufferState::Submitted)
+    {
+        if (!commandBuffer->Wait())
+        {
+            return;
+        }
+    }
+    commandBuffer->Reset();
+    AcquireNextImage();
 }
 
 void VKSwapChain::EndFrame()
 {
+
 }
 
 void VKSwapChain::OnResize(uint32_t width, uint32_t height)
@@ -102,8 +116,10 @@ bool VKSwapChain::Init(bool vsync)
 
     VkPresentModeKHR swapChainPresentMode = VKUtilities::ChoosePresentMode(pPresentModes, vsync);
 
-    mSwapChainBufferCount = surfaceCapabilities.maxImageCount;
-    mSwapChainBufferCount = std::clamp(mSwapChainBufferCount, static_cast<uint32_t>(0), static_cast<uint32_t>(3));
+    mSwapChainBufferCount = surfaceCapabilities.maxImageCount + 1;
+    mSwapChainBufferCount = std::clamp(mSwapChainBufferCount, static_cast<uint32_t>(0), static_cast<uint32_t>(2));
+    // mSwapChainBufferCount = std::clamp(mSwapChainBufferCount, surfaceCapabilities.minImageCount, surfaceCapabilities.maxImageCount);
+    log<Info>("Swap Chain Buffer Count: %d", mSwapChainBufferCount);
 
     VkSurfaceTransformFlagBitsKHR preTransform;
     if (surfaceCapabilities.supportedTransforms & VK_SURFACE_TRANSFORM_IDENTITY_BIT_KHR)
@@ -236,6 +252,42 @@ void VKSwapChain::PrepareFrameData()
             mFrames[i].MainCommandBuffer->Init(true, mFrames[i].CommandPool->GetHandle());
         }
     }
+}
+
+void VKSwapChain::AcquireNextImage()
+{
+    static int FailedCount = 0;
+    if (mSwapChainBufferCount == 1 && mAcquireImageIndex != (std::numeric_limits<uint32_t>::max)())
+    {
+        return;
+    }
+
+    auto result = vkAcquireNextImageKHR(mBasedDevice->GetDevice(), mSwapChain, UINT64_MAX,
+                                        mFrames[mCurrentBuffer].ImageAcquireSemaphore->GetHandle(), VK_NULL_HANDLE, &mAcquireImageIndex);
+
+    if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR)
+    {
+        log<Info>("Acquire Image result : %s", result == VK_ERROR_OUT_OF_DATE_KHR ? "Out of Date" : "SubOptimal");
+
+        if (result == VK_ERROR_OUT_OF_DATE_KHR)
+        {
+            this->OnResize(mProperties->width, mProperties->height);
+        }
+    }
+    else if (result != VK_SUCCESS)
+    {
+        FailedCount++;
+        log<Critical>("Failed to acquire swap chain image! - %s", VKUtilities::GetErrorString(result).c_str());
+
+        if (FailedCount > 10)
+        {
+            log<Critical>(" Failed to acquire swap chain image %d times!", FailedCount);
+            PAssert(false, "Failed to acquire swap chain image to many times!");
+        }
+        return;
+    }
+
+    FailedCount = 0;
 }
 
 void VKSwapChain::FindImageFormatAndColourSpace()

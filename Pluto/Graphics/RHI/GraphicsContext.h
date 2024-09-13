@@ -48,7 +48,7 @@ namespace pluto
             virtual ~GraphicsContext() = default;
             virtual void Terminate() = 0;
 
-            RenderAPI GetRenderAPI() { return mRenderAPI; }
+            RenderAPI GetRenderAPI()const { return mRenderAPI; }
             RenderContext *GetRenderContext() const { return mRenderContext; }
 
             virtual void Init() = 0;
