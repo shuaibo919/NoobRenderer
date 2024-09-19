@@ -64,7 +64,12 @@ void VKSwapChain::BeginFrame()
 
 void VKSwapChain::EndFrame()
 {
-
+    std::vector<VkSemaphore> semaphores{
+        mFrames[mCurrentBuffer].MainCommandBuffer->GetSemaphore(),
+        mFrames[mCurrentBuffer].ImageAcquireSemaphore->GetHandle(),
+    };
+    this->Present(semaphores);
+    mRenderContext->WaitIdle();
 }
 
 void VKSwapChain::OnResize(uint32_t width, uint32_t height)
@@ -404,4 +409,6 @@ void VKSwapChain::Present(const std::vector<VkSemaphore> &semaphore)
     {
         VK_CHECK_RESULT(error);
     }
+
+    vkQueueWaitIdle(mBasedDevice->GetPresentQueue());
 }

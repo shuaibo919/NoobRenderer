@@ -85,21 +85,21 @@ int main()
     descriptorSet->SetUniform(projection.blockname, projection.name, &projection.data);
     descriptorSet->SetUniform(model.blockname, model.name, &model.data);
     descriptorSet->SetUniform(view.blockname, view.name, &view.data);
-    descriptorSet->Update();
-
-    // cmdBuffer->BeginRecording();
-    // cmdBuffer->BindPipeline(pipeline);
-    // cmdBuffer->BindDescriptorSet(pipeline, 0, descriptorSet);
-    // cmdBuffer->BindVetexBuffer(pipeline, vertexBuffer);
-    // cmdBuffer->Draw(DrawType::Triangle, 3);
-    // cmdBuffer->UnBindPipeline();
-    // cmdBuffer->EndRecording();
 
     while (!window->ShouldClose())
     {
         context->GetSwapChain()->BeginFrame();
         {
-           auto pFrameCommandBuffer = context->GetSwapChain()->GetCurrentCommandBuffer();
+            auto pFrameCommandBuffer = context->GetSwapChain()->GetCurrentCommandBuffer();
+            pFrameCommandBuffer->BeginRecording();
+            pFrameCommandBuffer->BindPipeline(pipeline);
+            pFrameCommandBuffer->BindDescriptorSet(pipeline, 0, descriptorSet);
+            descriptorSet->Update(pFrameCommandBuffer);
+            pFrameCommandBuffer->BindVetexBuffer(pipeline, vertexBuffer);
+            pFrameCommandBuffer->Draw(DrawType::Triangle, 3);
+            pFrameCommandBuffer->UnBindPipeline();
+            pFrameCommandBuffer->EndRecording();
+            pFrameCommandBuffer->Submit();
         }
         context->GetSwapChain()->EndFrame();
         window->PollEvents();

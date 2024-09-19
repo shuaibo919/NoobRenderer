@@ -47,6 +47,7 @@ namespace pluto
             VKCommandBuffer::Ptr GetSharedThis();
             VkCommandBuffer GetHandle() const { return mCommandBuffer; }
             void Execute(VkPipelineStageFlags flags, VkSemaphore signalSemaphore, bool waitFence);
+            VkSemaphore GetSemaphore() const;
 
         private:
             bool mPrimary{false};
