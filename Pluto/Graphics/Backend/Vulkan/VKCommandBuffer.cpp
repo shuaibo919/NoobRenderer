@@ -12,7 +12,6 @@
 #include "Graphics/Backend/Vulkan/VKRenderContext.h"
 /* Common */
 #include "Graphics/Backend/Vulkan/VKUtilities.h"
-#include "VKCommandBuffer.h"
 
 using namespace pluto;
 using namespace pluto::Graphics;
