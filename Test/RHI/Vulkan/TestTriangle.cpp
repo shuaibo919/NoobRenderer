@@ -28,43 +28,44 @@ int main()
     using namespace pluto::Graphics;
     RenderDevice::Init();
     auto ctx = GraphicsContext::Create(RenderAPI::VULKAN);
-    auto window = Window::Create(ctx, 300, 100, "Test");
+    auto window = Window::Create(ctx, 600, 600, "Test");
     ctx->Init();
     ctx->BindToDevice();
     ctx->SetMainSwapChain(window->GetSwapChainProperties());
+    auto vertexBuffer = VertexBuffer::Builder()
+                            .SetVertexData(vertices, 3, sizeof(vertices))
+                            .SetUsage(BufferUsage::Static)
+                            .SetAttribute(VertexAttributeType::Position, 0, ElementType::Float3, 0, 3 * sizeof(float))
+                            .Create(ctx);
 
-    VertexBuffer::Ptr vertexBuffer = VertexBuffer::Builder()
-                                         .SetVertexData(vertices, 3, sizeof(vertices))
-                                         .SetUsage(BufferUsage::Static)
-                                         .SetAttribute(VertexAttributeType::Position, 0, ElementType::Float3, 0, 3 * sizeof(float))
-                                         .Create(ctx);
+    auto shader = Shader::Builder()
+                      .SetFile("Asset/Shader/TestTriangle.shader.json")
+                      .Create(ctx);
 
-    Shader::Ptr shader = Shader::Builder()
-                             .SetFile("Asset/Shader/TestTriangle.shader.json")
-                             .Create(ctx);
+    auto colorTarget = Texture::Builder()
+                           .SetBase(600, 600, 1, RHIFormat::R16G16B16A16Float)
+                           .SetFilter(TextureFilter::Linear, TextureFilter::Linear)
+                           .SetWrap(TextureWrap::ClampToedge)
+                           .Create(Texture::Type::Texture2D, ctx);
 
-    Texture2D::Ptr colorTarget = Texture::Builder()
-                                     .SetBase(300, 100, 1, RHIFormat::R16G16B16A16Float)
-                                     .SetFilter(TextureFilter::Linear, TextureFilter::Linear)
-                                     .SetWrap(TextureWrap::ClampToedge)
-                                     .Create(Texture::Type::Texture2D, ctx);
+    auto cmdBuffer = CommandBuffer::Builder()
+                         .Create(ctx);
 
-    CommandBuffer::Ptr cmdBuffer = CommandBuffer::Builder()
-                                       .SetUsageType(CommandBufferUsageType::RecycleSubmit)
-                                       .Create(ctx);
+    auto pipeline = Pipeline::Builder()
+                        .SetClearColor(0.2f, 0.2f, 0.2f, 1.0f)
+                        .SetDepthOptions(false, false)
+                        .SetShader(shader)
+                        .SetDrawType(DrawType::Triangle)
+                        .SetSwapchainTarget(true)
+                        .SetColorTarget(std::move(colorTarget), AttachmentType::Color)
+                        .SetClearTargets(true)
+                        .Create(ctx);
 
-    Pipeline::Ptr pipeline = Pipeline::Builder()
-                                 .SetClearColor(0.2f, 0.2f, 0.2f, 1.0f)
-                                 .SetDepthOptions(false, false)
-                                 .SetShader(shader)
-                                 .SetDrawType(DrawType::Triangle)
-                                 .SetSwapchainTarget(true)
-                                 .SetColorTarget(std::move(colorTarget), AttachmentType::Color)
-                                 .SetClearTargets(true)
-                                 .Create(ctx);
     auto descriptorSet = DescriptorSet::Builder()
                              .SetBindingLayout(shader, 0)
                              .Create(ctx);
+
+    auto context = ctx->GetRenderContext();
 
     UniformDataMat4 model;
     model.name = "model";
@@ -84,17 +85,27 @@ int main()
     descriptorSet->SetUniform(projection.blockname, projection.name, &projection.data);
     descriptorSet->SetUniform(model.blockname, model.name, &model.data);
     descriptorSet->SetUniform(view.blockname, view.name, &view.data);
-    descriptorSet->Update();
 
     while (!window->ShouldClose())
     {
+        context->GetSwapChain()->BeginFrame();
         {
+            auto pFrameCommandBuffer = context->GetSwapChain()->GetCurrentCommandBuffer();
+            pFrameCommandBuffer->BeginRecording();
+            pFrameCommandBuffer->BindPipeline(pipeline);
+            pFrameCommandBuffer->BindDescriptorSet(pipeline, 0, descriptorSet);
+            descriptorSet->Update(pFrameCommandBuffer);
+            pFrameCommandBuffer->BindVetexBuffer(pipeline, vertexBuffer);
+            pFrameCommandBuffer->Draw(DrawType::Triangle, 3);
+            pFrameCommandBuffer->UnBindPipeline();
+            pFrameCommandBuffer->EndRecording();
+            pFrameCommandBuffer->Submit();
         }
+        context->GetSwapChain()->EndFrame();
         window->PollEvents();
         window->SwapBuffers();
     }
     window->Terminate();
     ctx->Terminate();
-
     return 0;
 }

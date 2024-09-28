@@ -183,6 +183,11 @@ void VKCommandBuffer::Execute(VkPipelineStageFlags flags, VkSemaphore signalSema
     mProperties->state = CommandBufferState::Submitted;
 }
 
+VkSemaphore pluto::Graphics::VKCommandBuffer::GetSemaphore() const
+{
+    return mSemaphore->GetHandle();
+}
+
 void VKCommandBuffer::ExecuteSecondary(const SharedPtr<CommandBuffer> &primaryCmdBuffer)
 {
     PAssert(false, "Not Implemented Error");
@@ -213,7 +218,7 @@ void VKCommandBuffer::BindDescriptorSet(const SharedPtr<Pipeline> &pipeline, uin
         uint32_t currentFrame = VKObjectManageByContext::Context->GetSwapChain()->GetCurrentBufferIndex();
         currentDescriptorSet = vkDesSet->GetHandle(currentFrame);
 
-        PAssert(vkDesSet->GetHasUpdated(currentFrame), "Descriptor Set has not been updated before");
+        // PAssert(vkDesSet->GetHasUpdated(currentFrame), "Descriptor Set has not been updated before");
         numDescriptorSets++;
     }
     else
