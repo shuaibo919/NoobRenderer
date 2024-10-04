@@ -1,3 +1,4 @@
+#include "Platform.h"
 #include "Graphics/RHI/Pipeline.h"
 #include "Graphics/RHI/Texture.h"
 #include "Graphics/RHI/RenderDevice.h"
@@ -27,7 +28,7 @@ int main()
     using namespace pluto;
     using namespace pluto::Graphics;
     RenderDevice::Init();
-    auto ctx = GraphicsContext::Create(RenderAPI::VULKAN);
+    auto ctx = GraphicsContext::Create(PLATFORM_API);
     auto window = Window::Create(ctx, 600, 600, "Test");
     ctx->Init();
     ctx->BindToDevice();

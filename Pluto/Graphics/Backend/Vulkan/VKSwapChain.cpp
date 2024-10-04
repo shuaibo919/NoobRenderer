@@ -121,9 +121,14 @@ bool VKSwapChain::Init(bool vsync)
 
     VkPresentModeKHR swapChainPresentMode = VKUtilities::ChoosePresentMode(pPresentModes, vsync);
 
-    mSwapChainBufferCount = surfaceCapabilities.maxImageCount + 1;
-    mSwapChainBufferCount = std::clamp(mSwapChainBufferCount, static_cast<uint32_t>(0), static_cast<uint32_t>(2));
+    mSwapChainBufferCount = surfaceCapabilities.maxImageCount;
+    // mSwapChainBufferCount = std::clamp(mSwapChainBufferCount, static_cast<uint32_t>(0), static_cast<uint32_t>(2));
     // mSwapChainBufferCount = std::clamp(mSwapChainBufferCount, surfaceCapabilities.minImageCount, surfaceCapabilities.maxImageCount);
+    if (mSwapChainBufferCount > SwapChain::MaxFlightFrames)
+        mSwapChainBufferCount = SwapChain::MaxFlightFrames;
+    else if (mSwapChainBufferCount == 0)
+        mSwapChainBufferCount = SwapChain::MaxFlightFrames;
+
     log<Info>("Swap Chain Buffer Count: %d", mSwapChainBufferCount);
 
     VkSurfaceTransformFlagBitsKHR preTransform;
