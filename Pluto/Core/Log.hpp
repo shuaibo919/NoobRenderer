@@ -151,6 +151,8 @@ namespace pluto
 #define PDebug pluto::Debug
 #define PError pluto::Error
 #define PCritical pluto::Critical
-#define PAssert(exp, msg) assert(((void)msg, exp))
+
+// NoobRender Engine Assertion Macro
+#define NRE_ASSERT(exp, msg) assert(((void)msg, exp))
 
 #endif

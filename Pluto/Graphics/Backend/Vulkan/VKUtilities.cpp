@@ -159,6 +159,13 @@ VkSurfaceKHR VKUtils::CreatePlatformSurface(VkInstance inst, pluto::Window *wind
 
 VkPresentModeKHR VKUtils::ChoosePresentMode(std::vector<VkPresentModeKHR> availablePresentModes, bool vsync)
 {
+    for (const auto &availablePresentMode : availablePresentModes)
+    {
+        if (availablePresentMode == VK_PRESENT_MODE_MAILBOX_KHR)
+        {
+            return availablePresentMode;
+        }
+    }
     // TODO: Implement this
     return VK_PRESENT_MODE_FIFO_KHR;
 }

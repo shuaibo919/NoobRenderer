@@ -30,9 +30,9 @@ VKSwapChain::~VKSwapChain()
 
     for (uint32_t i = 0; i < mSwapChainBufferCount; i++)
     {
-        mFrames[i].MainCommandBuffer->Flush();
+        mFrames[i].CommandBuffer->Flush();
 
-        mFrames[i].MainCommandBuffer.reset();
+        mFrames[i].CommandBuffer.reset();
         mFrames[i].CommandPool.reset();
         mFrames[i].ImageAcquireSemaphore.reset();
 
@@ -48,13 +48,12 @@ VKSwapChain::~VKSwapChain()
 
 void VKSwapChain::BeginFrame()
 {
-    mCurrentBuffer = (mCurrentBuffer + 1) % mSwapChainBufferCount;
-
-    auto &commandBuffer = mFrames[mCurrentBuffer].MainCommandBuffer;
+    auto &commandBuffer = mFrames[mCurrentBuffer].CommandBuffer;
     if (commandBuffer->GetState() == CommandBufferState::Submitted)
     {
         if (!commandBuffer->Wait())
         {
+            log<Error>("Failed to wait for command buffer!");
             return;
         }
     }
@@ -65,11 +64,11 @@ void VKSwapChain::BeginFrame()
 void VKSwapChain::EndFrame()
 {
     std::vector<VkSemaphore> semaphores{
-        mFrames[mCurrentBuffer].MainCommandBuffer->GetSemaphore(),
-        mFrames[mCurrentBuffer].ImageAcquireSemaphore->GetHandle(),
+        mFrames[mCurrentBuffer].CommandBuffer->GetSemaphore(),
     };
     this->Present(semaphores);
     mRenderContext->WaitIdle();
+    mCurrentBuffer = (mCurrentBuffer + 1) % mSwapChainBufferCount;
 }
 
 void VKSwapChain::OnResize(uint32_t width, uint32_t height)
@@ -121,9 +120,12 @@ bool VKSwapChain::Init(bool vsync)
 
     VkPresentModeKHR swapChainPresentMode = VKUtilities::ChoosePresentMode(pPresentModes, vsync);
 
-    mSwapChainBufferCount = surfaceCapabilities.maxImageCount + 1;
-    mSwapChainBufferCount = std::clamp(mSwapChainBufferCount, static_cast<uint32_t>(0), static_cast<uint32_t>(2));
-    // mSwapChainBufferCount = std::clamp(mSwapChainBufferCount, surfaceCapabilities.minImageCount, surfaceCapabilities.maxImageCount);
+    mSwapChainBufferCount = surfaceCapabilities.maxImageCount;
+    if (mSwapChainBufferCount > SwapChain::MaxFlightFrames)
+        mSwapChainBufferCount = 3;
+    else if (mSwapChainBufferCount == 0)
+        mSwapChainBufferCount = 3;
+
     log<Info>("Swap Chain Buffer Count: %d", mSwapChainBufferCount);
 
     VkSurfaceTransformFlagBitsKHR preTransform;
@@ -186,10 +188,10 @@ bool VKSwapChain::Init(bool vsync)
         {
             // todo: if cmdbuffer is not finished, wait for it to finish
 
-            mFrames[i].MainCommandBuffer->Reset();
+            mFrames[i].CommandBuffer->Reset();
 
             mSwapChainBuffers[i].reset();
-            mFrames[i].ImageAcquireSemaphore = VK_NULL_HANDLE;
+            mFrames[i].ImageAcquireSemaphore = nullptr;
         }
 
         mSwapChainBuffers.clear();
@@ -206,9 +208,6 @@ bool VKSwapChain::Init(bool vsync)
 
     for (uint32_t i = 0; i < mSwapChainBufferCount; i++)
     {
-        if (i >= swapChainImageCount)
-            break;
-
         VkImageViewCreateInfo viewInfo{};
         viewInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
         viewInfo.format = mColourFormat;
@@ -238,6 +237,12 @@ bool VKSwapChain::Init(bool vsync)
     return true;
 }
 
+void VKSwapChain::Submit(SharedPtr<CommandBuffer> cmdBuffer)
+{
+    GetCurrentFrameData().CommandBuffer->Execute(VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
+                                                 mFrames[mCurrentBuffer].ImageAcquireSemaphore->GetHandle(), false);
+}
+
 void VKSwapChain::PrepareFrameData()
 {
     for (uint32_t i = 0; i < mSwapChainBufferCount; i++)
@@ -248,13 +253,13 @@ void VKSwapChain::PrepareFrameData()
         semaphoreInfo.flags = 0;
 
         mFrames[i].ImageAcquireSemaphore = std::make_shared<VKSemaphore>(mBasedDevice->GetDevice(), false);
-        if (!mFrames[i].MainCommandBuffer)
+        if (!mFrames[i].CommandBuffer)
         {
             mFrames[i].CommandPool = std::make_shared<VKCommandPool>(mBasedDevice->GetDevice(), mBasedDevice->GetGraphicsQueueFamilyIndex(), VK_COMMAND_POOL_CREATE_TRANSIENT_BIT | VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT);
             auto pProperty = new CommandBuffer::Properties();
-            pProperty->type = CommandBufferUsageType::OneTimeSubmit;
-            mFrames[i].MainCommandBuffer = std::static_pointer_cast<VKCommandBuffer>(Vulkan::CreateCommandBuffer(mRenderContext, std::move(pProperty)));
-            mFrames[i].MainCommandBuffer->Init(true, mFrames[i].CommandPool->GetHandle());
+            pProperty->type = CommandBufferUsageType::RecycleSubmit;
+            mFrames[i].CommandBuffer = std::static_pointer_cast<VKCommandBuffer>(Vulkan::CreateCommandBuffer(mRenderContext, std::move(pProperty)));
+            mFrames[i].CommandBuffer->Init(true, mFrames[i].CommandPool->GetHandle());
         }
     }
 }
@@ -287,7 +292,7 @@ void VKSwapChain::AcquireNextImage()
         if (FailedCount > 10)
         {
             log<Critical>(" Failed to acquire swap chain image %d times!", FailedCount);
-            PAssert(false, "Failed to acquire swap chain image to many times!");
+            NRE_ASSERT(false, "Failed to acquire swap chain image to many times!");
         }
         return;
     }
@@ -348,8 +353,8 @@ pluto::SharedPtr<Texture> VKSwapChain::GetImage(uint32_t index)
 
 uint32_t VKSwapChain::GetCurrentImageIndex() const
 {
-    if (mAcquireImageIndex == (std::numeric_limits<uint32_t>::max)()) [[unlikely]]
-        return 0;
+    // if (mAcquireImageIndex == (std::numeric_limits<uint32_t>::max)()) [[unlikely]]
+    //     return 0;
     return mAcquireImageIndex;
 }
 
@@ -367,32 +372,29 @@ size_t VKSwapChain::GetSwapChainBufferCount() const
 {
     return mSwapChainBufferCount;
 }
+
 CommandBuffer::Ptr VKSwapChain::GetCurrentCommandBuffer()
 {
-    return GetCurrentFrameData().MainCommandBuffer;
+    return GetCurrentFrameData().CommandBuffer;
+}
+
+CommandBuffer::Ptr VKSwapChain::GetCommandBuffer(uint32_t index)
+{
+    if (index >= mSwapChainBufferCount) [[unlikely]]
+        return nullptr;
+    return mFrames[index].CommandBuffer;
 }
 
 void VKSwapChain::Present(const std::vector<VkSemaphore> &semaphore)
 {
-    VkSemaphore vkWaitSemaphores[3] = {nullptr, nullptr, nullptr};
-    uint32_t semaphoreCount = 0;
-
-    for (auto semaphore : semaphore)
-    {
-        if (semaphoreCount > 3)
-            break;
-
-        vkWaitSemaphores[semaphoreCount++] = semaphore;
-    }
-
     VkPresentInfoKHR present;
     present.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
     present.pNext = VK_NULL_HANDLE;
     present.swapchainCount = 1;
     present.pSwapchains = &mSwapChain;
     present.pImageIndices = &mAcquireImageIndex;
-    present.waitSemaphoreCount = semaphoreCount;
-    present.pWaitSemaphores = vkWaitSemaphores;
+    present.waitSemaphoreCount = static_cast<uint32_t>(semaphore.size());
+    present.pWaitSemaphores = semaphore.data();
     present.pResults = VK_NULL_HANDLE;
 
     auto error = vkQueuePresentKHR(mBasedDevice->GetPresentQueue(), &present);

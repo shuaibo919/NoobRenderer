@@ -138,7 +138,9 @@ void GLCommandBuffer::UpdateViewport(uint32_t width, uint32_t height, bool flipV
 void GLCommandBuffer::BindPipeline(const SharedPtr<Pipeline> &pipeline)
 {
     if (pipeline == mBoundPipeline && mBoundPipelineLayer == 0)
-        return;
+    {
+        // Todo:
+    }
     mBoundPipeline = pipeline;
     mBoundPipelineLayer = 0;
     auto params = new CmdBindPipelineData();
