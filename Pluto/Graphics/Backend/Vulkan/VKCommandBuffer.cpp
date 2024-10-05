@@ -125,7 +125,7 @@ void VKCommandBuffer::BeginRecording()
         mProperties->state = CommandBufferState::Recording;
     else
     {
-        PAssert(false, "CommandBuffer is already recording");
+        NRE_ASSERT(false, "CommandBuffer is already recording");
     }
     VkCommandBufferBeginInfo cmdBufferBeginInfo = {};
     cmdBufferBeginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
@@ -157,28 +157,72 @@ void VKCommandBuffer::EndRecording()
     vkEndCommandBuffer(mCommandBuffer);
 }
 
-void VKCommandBuffer::Execute(VkPipelineStageFlags flags, VkSemaphore signalSemaphore, bool waitFence)
+void VKCommandBuffer::Execute(VkPipelineStageFlags flags, VkSemaphore waitSemaphore, bool waitFence)
 {
-    PAssert(mPrimary, "Used Execute on secondary command buffer!");
-    PAssert(mProperties->state != CommandBufferState::Recording, "CommandBuffer executed before ended recording");
+    NRE_ASSERT(mPrimary, "Used Execute on secondary command buffer!");
+    NRE_ASSERT(mProperties->state != CommandBufferState::Recording, "CommandBuffer executed before ended recording");
     auto pBasedDevice = VKObjectManageByContext::Context->GetBasedDevice();
-    uint32_t waitSemaphoreCount = signalSemaphore != nullptr ? 1 : 0;
+    uint32_t waitSemaphoreCount = waitSemaphore != nullptr ? 1 : 0;
 
-    VkSemaphore semaphore = mSemaphore->GetHandle();
     VkSubmitInfo submitInfo{};
     submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
     submitInfo.pNext = VK_NULL_HANDLE;
-    submitInfo.waitSemaphoreCount = waitSemaphoreCount;
-    submitInfo.pWaitSemaphores = waitSemaphoreCount == 0 ? nullptr : &signalSemaphore;
     submitInfo.pWaitDstStageMask = &flags;
     submitInfo.commandBufferCount = 1;
     submitInfo.pCommandBuffers = &mCommandBuffer;
+    submitInfo.waitSemaphoreCount = waitSemaphoreCount;
+    submitInfo.pWaitSemaphores = waitSemaphoreCount == 0 ? nullptr : &waitSemaphore;
     submitInfo.signalSemaphoreCount = 1;
-    submitInfo.pSignalSemaphores = &semaphore;
+    submitInfo.pSignalSemaphores = &(mSemaphore->GetHandle());
+
+    if (waitFence)
+    {
+        // todo
+    }
 
     mFence->Reset();
 
     VK_CHECK_RESULT(vkQueueSubmit(pBasedDevice->GetGraphicsQueue(), 1, &submitInfo, mFence->GetHandle()));
+
+    // mFence->Wait();
+    // mFence->Wait(200 * 1000 * 1000);
+    // vkWaitForFences(device, 1, &(m_Fences[backBufferIndex]), true, 200 * 1000 * 1000);
+
+    mProperties->state = CommandBufferState::Submitted;
+}
+
+void VKCommandBuffer::Execute(VkPipelineStageFlags flags, VkSemaphore waitSemaphore, bool waitFence, VkSemaphore signalSemaphore)
+{
+    NRE_ASSERT(mPrimary, "Used Execute on secondary command buffer!");
+    NRE_ASSERT(mProperties->state != CommandBufferState::Recording, "CommandBuffer executed before ended recording");
+
+    auto pBasedDevice = VKObjectManageByContext::Context->GetBasedDevice();
+    uint32_t waitSemaphoreCount = waitSemaphore != nullptr ? 1 : 0;
+    std::vector<VkSemaphore> semaphores = {signalSemaphore};
+
+    VkSubmitInfo submitInfo{};
+    submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
+    submitInfo.pNext = VK_NULL_HANDLE;
+    submitInfo.waitSemaphoreCount = waitSemaphoreCount;
+    submitInfo.pWaitSemaphores = waitSemaphoreCount == 0 ? nullptr : &waitSemaphore;
+    submitInfo.pWaitDstStageMask = &flags;
+    submitInfo.commandBufferCount = 1;
+    submitInfo.pCommandBuffers = &mCommandBuffer;
+    submitInfo.signalSemaphoreCount = 1;
+    submitInfo.pSignalSemaphores = semaphores.data();
+
+    if (waitFence)
+    {
+        // todo
+    }
+
+    mFence->Reset();
+
+    VK_CHECK_RESULT(vkQueueSubmit(pBasedDevice->GetGraphicsQueue(), 1, &submitInfo, mFence->GetHandle()));
+
+    // mFence->Wait();
+    mFence->Wait(200 * 1000 * 1000);
+    // vkWaitForFences(device, 1, &(m_Fences[backBufferIndex]), true, 200 * 1000 * 1000);
 
     mProperties->state = CommandBufferState::Submitted;
 }
@@ -190,7 +234,7 @@ VkSemaphore pluto::Graphics::VKCommandBuffer::GetSemaphore() const
 
 void VKCommandBuffer::ExecuteSecondary(const SharedPtr<CommandBuffer> &primaryCmdBuffer)
 {
-    PAssert(false, "Not Implemented Error");
+    NRE_ASSERT(false, "Not Implemented Error");
 }
 
 void VKCommandBuffer::Present(const SharedPtr<CommandBuffer> &commandBuffer)
@@ -218,7 +262,7 @@ void VKCommandBuffer::BindDescriptorSet(const SharedPtr<Pipeline> &pipeline, uin
         uint32_t currentFrame = VKObjectManageByContext::Context->GetSwapChain()->GetCurrentBufferIndex();
         currentDescriptorSet = vkDesSet->GetHandle(currentFrame);
 
-        // PAssert(vkDesSet->GetHasUpdated(currentFrame), "Descriptor Set has not been updated before");
+        // NRE_ASSERT(vkDesSet->GetHasUpdated(currentFrame), "Descriptor Set has not been updated before");
         numDescriptorSets++;
     }
     else
@@ -248,7 +292,7 @@ void VKCommandBuffer::BindDescriptorSets(const SharedPtr<Pipeline> &pipeline, ui
             uint32_t currentFrame = VKObjectManageByContext::Context->GetSwapChain()->GetCurrentBufferIndex();
             lCurrentDescriptorSets[numDescriptorSets] = vkDesSet->GetHandle(currentFrame);
 
-            PAssert(vkDesSet->GetHasUpdated(currentFrame), "Descriptor Set has not been updated before");
+            NRE_ASSERT(vkDesSet->GetHasUpdated(currentFrame), "Descriptor Set has not been updated before");
             numDescriptorSets++;
         }
         else
@@ -289,30 +333,34 @@ void VKCommandBuffer::UpdateViewport(uint32_t width, uint32_t height, bool flipV
 
 void VKCommandBuffer::BindPipeline(const SharedPtr<Pipeline> &pipeline)
 {
-    if (pipeline != mBoundPipeline) [[likely]]
+    // if (pipeline != mBoundPipeline) [[likely]]
+    // {
+    mBoundPipelineLayer = 0;
+
+    if (mBoundPipeline)
     {
-        mBoundPipelineLayer = 0;
-
-        if (mBoundPipeline)
-            mBoundPipeline->End(this->GetSharedThis());
-
-        pipeline->Bind(this->GetSharedThis());
-        mBoundPipeline = pipeline;
+        // mBoundPipeline->End(this->GetSharedThis());
     }
+
+    pipeline->Bind(this->GetSharedThis());
+    mBoundPipeline = pipeline;
+    // }
 }
 
 void VKCommandBuffer::BindPipeline(const SharedPtr<Pipeline> &pipeline, uint32_t layer)
 {
-    if (pipeline != mBoundPipeline || mBoundPipelineLayer != layer) [[likely]]
+    // if (pipeline != mBoundPipeline || mBoundPipelineLayer != layer) [[likely]]
+    // {
+    mBoundPipelineLayer = layer;
+
+    if (mBoundPipeline)
     {
-        mBoundPipelineLayer = layer;
-
-        if (mBoundPipeline)
-            mBoundPipeline->End(this->GetSharedThis());
-
-        pipeline->Bind(this->GetSharedThis(), layer);
-        mBoundPipeline = pipeline;
+        // mBoundPipeline->End(this->GetSharedThis());
     }
+
+    pipeline->Bind(this->GetSharedThis(), layer);
+    mBoundPipeline = pipeline;
+    // }
 }
 
 void VKCommandBuffer::UnBindPipeline()
@@ -336,12 +384,12 @@ void VKCommandBuffer::Draw(DrawType type, uint32_t count)
 
 void VKCommandBuffer::Dispatch(uint32_t workGroupSizeX, uint32_t workGroupSizeY, uint32_t workGroupSizeZ)
 {
-    PAssert(false, "Not Implemented Error");
+    NRE_ASSERT(false, "Not Implemented Error");
 }
 
 void VKCommandBuffer::DrawSplashScreen(const SharedPtr<Texture> &texture)
 {
-    PAssert(false, "Not Implemented Error");
+    NRE_ASSERT(false, "Not Implemented Error");
 }
 
 VKCommandBuffer::Ptr VKCommandBuffer::GetSharedThis()

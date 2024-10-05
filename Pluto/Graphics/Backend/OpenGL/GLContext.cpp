@@ -138,7 +138,7 @@ void GLContext::SetMainSwapChain(SwapChain::Properties &&properties)
 
 GLContext::~GLContext()
 {
-    PAssert(mTerminated, "Context is not terminated");
+    NRE_ASSERT(mTerminated, "Context is not terminated");
 }
 
 void GLContext::Terminate()

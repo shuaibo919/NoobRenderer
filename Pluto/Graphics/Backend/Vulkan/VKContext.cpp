@@ -259,7 +259,7 @@ void VKContext::SetMainSwapChain(SwapChain::Properties &&properties)
 
 VKContext::~VKContext()
 {
-    PAssert(mTerminated, "VKContext was not terminated before destruction");
+    NRE_ASSERT(mTerminated, "VKContext was not terminated before destruction");
 }
 
 void VKContext::Terminate()
@@ -296,13 +296,13 @@ void VKContext::Init()
     if (!CheckValidationLayerSupport(mInstanceLayerNames))
     {
         // log<Error>("VULKAN: Validation layers requested are not available!");
-        PAssert(false, "VULKAN: Extension layers requested are not available!");
+        NRE_ASSERT(false, "VULKAN: Extension layers requested are not available!");
     }
 
     if (!CheckExtensionSupport(mInstanceExtensionNames))
     {
         // log<Error>("VULKAN: Extension layers requested are not available!");
-        PAssert(false, "VULKAN: Extension layers requested are not available!");
+        NRE_ASSERT(false, "VULKAN: Extension layers requested are not available!");
     }
     VkApplicationInfo appInfo = {};
 

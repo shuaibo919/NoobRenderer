@@ -43,22 +43,12 @@ int main()
                       .SetFile("Asset/Shader/TestTriangle.shader.json")
                       .Create(ctx);
 
-    auto colorTarget = Texture::Builder()
-                           .SetBase(600, 600, 1, RHIFormat::R16G16B16A16Float)
-                           .SetFilter(TextureFilter::Linear, TextureFilter::Linear)
-                           .SetWrap(TextureWrap::ClampToedge)
-                           .Create(Texture::Type::Texture2D, ctx);
-
-    auto cmdBuffer = CommandBuffer::Builder()
-                         .Create(ctx);
-
     auto pipeline = Pipeline::Builder()
                         .SetClearColor(0.2f, 0.2f, 0.2f, 1.0f)
                         .SetDepthOptions(false, false)
                         .SetShader(shader)
                         .SetDrawType(DrawType::Triangle)
                         .SetSwapchainTarget(true)
-                        .SetColorTarget(std::move(colorTarget), AttachmentType::Color)
                         .SetClearTargets(true)
                         .Create(ctx);
 
@@ -100,7 +90,8 @@ int main()
             pFrameCommandBuffer->Draw(DrawType::Triangle, 3);
             pFrameCommandBuffer->UnBindPipeline();
             pFrameCommandBuffer->EndRecording();
-            pFrameCommandBuffer->Submit();
+
+            context->GetSwapChain()->Submit(pFrameCommandBuffer);
         }
         context->GetSwapChain()->EndFrame();
         window->PollEvents();

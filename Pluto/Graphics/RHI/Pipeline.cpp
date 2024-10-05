@@ -1,6 +1,7 @@
 #include "Graphics/RHI/Pipeline.h"
-#include "Graphics/RHI/GraphicsContext.h"
 #include "Graphics/RHI/Texture.h"
+#include "Graphics/RHI/RenderContext.h"
+#include "Graphics/RHI/GraphicsContext.h"
 #include "Core/Utilities.h"
 
 using namespace pluto::Graphics;
@@ -108,9 +109,10 @@ uint32_t Pipeline::GetWidth()
 {
     if (mProperties->swapchainTarget)
     {
+        return mRenderContext->GetSwapChain()->GetProperties().width;
     }
 
-    if (mProperties->colorTargets[0] != nullptr)
+    if (!mProperties->colorTargets.empty() && mProperties->colorTargets[0] != nullptr)
     {
         return mProperties->mipIndex > 0 ? mProperties->colorTargets[0]->GetWidth(mProperties->mipIndex) : mProperties->colorTargets[0]->GetWidth();
     }
@@ -121,9 +123,10 @@ uint32_t Pipeline::GetHeight()
 {
     if (mProperties->swapchainTarget)
     {
+        return mRenderContext->GetSwapChain()->GetProperties().height;
     }
 
-    if (mProperties->colorTargets[0] != nullptr)
+    if (!mProperties->colorTargets.empty() && mProperties->colorTargets[0] != nullptr)
     {
         return mProperties->mipIndex > 0 ? mProperties->colorTargets[0]->GetHeight(mProperties->mipIndex) : mProperties->colorTargets[0]->GetHeight();
     }

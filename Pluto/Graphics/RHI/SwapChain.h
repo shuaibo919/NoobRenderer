@@ -8,6 +8,7 @@ namespace pluto
     class Window;
     namespace Graphics
     {
+        class CommandBuffer;
         class SwapChain : public RHIBase
         {
             friend class GraphicsContext;
@@ -36,12 +37,14 @@ namespace pluto
 
         public:
             virtual bool Init(bool vsync) = 0;
+            virtual void Submit(SharedPtr<CommandBuffer> cmdBuffer) = 0;
             virtual SharedPtr<Texture> GetCurrentImage() = 0;
             virtual SharedPtr<Texture> GetImage(uint32_t index) = 0;
             virtual uint32_t GetCurrentBufferIndex() const = 0;
             virtual uint32_t GetCurrentImageIndex() const = 0;
             virtual size_t GetSwapChainBufferCount() const = 0;
             virtual SharedPtr<CommandBuffer> GetCurrentCommandBuffer() = 0;
+            virtual SharedPtr<CommandBuffer> GetCommandBuffer(uint32_t index) = 0;
             virtual void SetVSync(bool vsync) = 0;
             virtual void BeginFrame() = 0;
             virtual void EndFrame() = 0;

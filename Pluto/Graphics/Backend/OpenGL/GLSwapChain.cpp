@@ -33,6 +33,11 @@ bool GLSwapChain::Init(bool vsync)
     return true;
 }
 
+void GLSwapChain::Submit(SharedPtr<CommandBuffer> cmdBuffer)
+{
+    cmdBuffer->Submit();
+}
+
 Texture::Ptr GLSwapChain::GetCurrentImage()
 {
     return nullptr;
@@ -61,7 +66,13 @@ size_t GLSwapChain::GetSwapChainBufferCount() const
 {
     return 1;
 }
+
 CommandBuffer::Ptr GLSwapChain::GetCurrentCommandBuffer()
+{
+    return mCommand;
+}
+
+CommandBuffer::Ptr GLSwapChain::GetCommandBuffer(uint32_t index)
 {
     return mCommand;
 }

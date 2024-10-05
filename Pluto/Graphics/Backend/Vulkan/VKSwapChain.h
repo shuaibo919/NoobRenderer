@@ -17,7 +17,7 @@ namespace pluto
         {
             SharedPtr<VKSemaphore> ImageAcquireSemaphore;
             SharedPtr<VKCommandPool> CommandPool;
-            SharedPtr<VKCommandBuffer> MainCommandBuffer;
+            SharedPtr<VKCommandBuffer> CommandBuffer;
         };
         class VKSwapChain : public SwapChain
         {
@@ -30,12 +30,13 @@ namespace pluto
 
         public:
             bool Init(bool vsync) override;
-
+            void Submit(SharedPtr<CommandBuffer> cmdBuffer) override;
             SharedPtr<Texture> GetCurrentImage() override;
             SharedPtr<Texture> GetImage(uint32_t index) override;
             uint32_t GetCurrentBufferIndex() const override;
             uint32_t GetCurrentImageIndex() const override;
             SharedPtr<CommandBuffer> GetCurrentCommandBuffer() override;
+            SharedPtr<CommandBuffer> GetCommandBuffer(uint32_t index) override;
             size_t GetSwapChainBufferCount() const override;
             void SetVSync(bool vsync) override;
             void BeginFrame() override;
