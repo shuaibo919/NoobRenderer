@@ -9,6 +9,7 @@ namespace pluto
     namespace Graphics
     {
         class CommandBuffer;
+        class RenderCommand;
         class SwapChain : public RHIBase
         {
             friend class GraphicsContext;
@@ -38,6 +39,7 @@ namespace pluto
         public:
             virtual bool Init(bool vsync) = 0;
             virtual void Submit(SharedPtr<CommandBuffer> cmdBuffer) = 0;
+            virtual void Submit(SharedPtr<RenderCommand> command) = 0;
             virtual SharedPtr<Texture> GetCurrentImage() = 0;
             virtual SharedPtr<Texture> GetImage(uint32_t index) = 0;
             virtual uint32_t GetCurrentBufferIndex() const = 0;

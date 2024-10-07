@@ -31,6 +31,7 @@ namespace pluto
         public:
             bool Init(bool vsync) override;
             void Submit(SharedPtr<CommandBuffer> cmdBuffer) override;
+            void Submit(SharedPtr<RenderCommand> command) override;
             SharedPtr<Texture> GetCurrentImage() override;
             SharedPtr<Texture> GetImage(uint32_t index) override;
             uint32_t GetCurrentBufferIndex() const override;
@@ -47,6 +48,7 @@ namespace pluto
             FrameData &GetCurrentFrameData();
             VkFormat GetFormat() const { return mColourFormat; }
             void Present(const std::vector<VkSemaphore> &semaphore);
+            VkCommandPool GetFrameCommandPool(uint32_t index) const;
 
         private:
             VKRenderDevice *mBasedDevice;

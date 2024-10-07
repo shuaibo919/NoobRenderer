@@ -68,7 +68,7 @@ namespace pluto
             virtual void ClearRenderTargets(const SharedPtr<CommandBuffer> &commandBuffer) {}
 
         public:
-            virtual void Bind(const SharedPtr<CommandBuffer> &commandBuffer, uint32_t layer = 0) = 0;
+            virtual void Bind(const SharedPtr<CommandBuffer> &commandBuffer, uint32_t layer = 0, uint32_t frame = 0) = 0;
             virtual void End(const SharedPtr<CommandBuffer> &commandBuffer) {}
 
         protected:

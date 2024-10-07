@@ -20,7 +20,7 @@ namespace pluto
             void Preparation();
 
         public:
-            void Bind(const SharedPtr<CommandBuffer> &commandBuffer, uint32_t layer = 0) override;
+            void Bind(const SharedPtr<CommandBuffer> &commandBuffer, uint32_t layer = 0, uint32_t frame = 0) override;
             void End(const SharedPtr<CommandBuffer> &commandBuffer) override;
             void ClearRenderTargets(const SharedPtr<CommandBuffer> &commandBuffer) override;
 

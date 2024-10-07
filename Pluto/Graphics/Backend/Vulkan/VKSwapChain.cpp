@@ -243,6 +243,11 @@ void VKSwapChain::Submit(SharedPtr<CommandBuffer> cmdBuffer)
                                                  mFrames[mCurrentBuffer].ImageAcquireSemaphore->GetHandle(), false);
 }
 
+void VKSwapChain::Submit(SharedPtr<RenderCommand> command)
+{
+    NRE_ASSERT(false, "TODO");
+}
+
 void VKSwapChain::PrepareFrameData()
 {
     for (uint32_t i = 0; i < mSwapChainBufferCount; i++)
@@ -339,6 +344,11 @@ void VKSwapChain::FindImageFormatAndColourSpace()
 FrameData &VKSwapChain::GetCurrentFrameData()
 {
     return mFrames[mCurrentBuffer];
+}
+
+VkCommandPool VKSwapChain::GetFrameCommandPool(uint32_t index) const
+{
+    return mFrames[index].CommandPool->GetHandle();
 }
 
 Texture::Ptr VKSwapChain::GetCurrentImage()

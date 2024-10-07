@@ -38,6 +38,11 @@ void GLSwapChain::Submit(SharedPtr<CommandBuffer> cmdBuffer)
     cmdBuffer->Submit();
 }
 
+void GLSwapChain::Submit(SharedPtr<RenderCommand> command)
+{
+    NRE_ASSERT(false, "TODO");
+}
+
 Texture::Ptr GLSwapChain::GetCurrentImage()
 {
     return nullptr;

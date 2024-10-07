@@ -331,7 +331,7 @@ void VKPipeline::PrepareFramebuffer()
     delete framebufferProperties;
 }
 
-void VKPipeline::Bind(const SharedPtr<CommandBuffer> &commandBuffer, uint32_t layer)
+void VKPipeline::Bind(const SharedPtr<CommandBuffer> &commandBuffer, uint32_t layer, uint32_t frame)
 {
     Framebuffer::Ptr framebuffer = mFramebuffers[0];
     if (!mShader->HasComputeStage())
@@ -340,7 +340,7 @@ void VKPipeline::Bind(const SharedPtr<CommandBuffer> &commandBuffer, uint32_t la
 
         if (mProperties->swapchainTarget)
         {
-            framebuffer = mFramebuffers[VKObjectManageByContext::Context->GetSwapChain()->GetCurrentBufferIndex()];
+            framebuffer = mFramebuffers[frame];
         }
 
         mRenderPass->BeginRenderPass(commandBuffer, mProperties->clearColor, framebuffer, Graphics::Inline);
