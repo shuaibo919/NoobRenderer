@@ -63,10 +63,18 @@ void VKSwapChain::EndFrame()
 {
 
     std::vector<VkSemaphore> semaphores;
-    if (mCurrentRenderCommand != nullptr)
+    if (mFrames[mCurrentBuffer].CachedCommandBuffer != nullptr)
     {
-        semaphores.push_back(mCurrentRenderCommand->GetCommandBuffer(mCurrentBuffer)->GetSemaphore());
+        semaphores.push_back(mFrames[mCurrentBuffer].CachedCommandBuffer->GetSemaphore());
+        mFrames[mCurrentBuffer].CachedCommandBuffer = nullptr;
     }
+
+    uint32_t cnt = std::count_if(mFrames, mFrames + mSwapChainBufferCount, [](const FrameData &frame)
+                                 { return frame.CachedCommandBuffer == nullptr; });
+
+    if (cnt == mSwapChainBufferCount)
+        mCurrentRenderCommand = nullptr;
+
     this->Present(semaphores);
     mRenderContext->WaitIdle();
     mCurrentBuffer = (mCurrentBuffer + 1) % mSwapChainBufferCount;
@@ -234,17 +242,15 @@ bool VKSwapChain::Init(bool vsync)
     return true;
 }
 
-void VKSwapChain::Submit(SharedPtr<CommandBuffer> cmdBuffer)
-{
-    // GetCurrentFrameData().CommandBuffer->Execute(VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
-    //                                              mFrames[mCurrentBuffer].ImageAcquireSemaphore->GetHandle(), false);
-}
-
 void VKSwapChain::Submit(SharedPtr<RenderCommand> command)
 {
-    mCurrentRenderCommand = std::static_pointer_cast<VKRenderCommand>(command);
-    mCurrentRenderCommand->Execute(mCurrentBuffer, VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
-                                   mFrames[mCurrentBuffer].ImageAcquireSemaphore->GetHandle(), false);
+    auto pRenderCommandSubmit = std::static_pointer_cast<VKRenderCommand>(command);
+    auto vkSyncSemaphore = (mFrames[mCurrentBuffer].CachedCommandBuffer == nullptr)
+                               ? mFrames[mCurrentBuffer].ImageAcquireSemaphore->GetHandle()
+                               : mCurrentRenderCommand->GetCommandBuffer(mCurrentBuffer)->GetSemaphore();
+    pRenderCommandSubmit->Execute(mCurrentBuffer, VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT, mFrames[mCurrentBuffer].ImageAcquireSemaphore->GetHandle(), false);
+    mCurrentRenderCommand = pRenderCommandSubmit;
+    mFrames[mCurrentBuffer].CachedCommandBuffer = mCurrentRenderCommand->GetCommandBuffer(mCurrentBuffer);
 }
 
 void VKSwapChain::PrepareFrameData()
@@ -378,18 +384,9 @@ size_t VKSwapChain::GetSwapChainBufferCount() const
     return mSwapChainBufferCount;
 }
 
-CommandBuffer::Ptr VKSwapChain::GetCurrentCommandBuffer()
+RenderCommand::Ptr VKSwapChain::GetCurrentRenderCommand()
 {
-    // return GetCurrentFrameData().CommandBuffer;
-    return nullptr;
-}
-
-CommandBuffer::Ptr VKSwapChain::GetCommandBuffer(uint32_t index)
-{
-    // if (index >= mSwapChainBufferCount) [[unlikely]]
-    //     return nullptr;
-    // return mFrames[index].CommandBuffer;
-    return nullptr;
+    return mCurrentRenderCommand;
 }
 
 void VKSwapChain::Present(const std::vector<VkSemaphore> &semaphore)

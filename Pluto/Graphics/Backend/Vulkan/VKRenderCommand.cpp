@@ -38,7 +38,7 @@ VKRenderCommand::VKRenderCommand(RenderContext *ctx, VKRenderCommand::Properties
     {
         auto pSwapChain = static_cast<VKSwapChain *>(mRenderContext->GetSwapChain());
         mCommandBuffers.resize(pSwapChain->GetSwapChainBufferCount());
-        for (size_t i = 0; i < mCommandBuffers.size(); ++i)
+        for (uint32_t i = 0; i < mCommandBuffers.size(); ++i)
         {
             auto pProperty = new CommandBuffer::Properties();
             pProperty->type = CommandBufferUsageType::RecycleSubmit;
@@ -201,7 +201,7 @@ void VKRenderCommand::BindPipeline(const SharedPtr<Pipeline> &pipeline)
         pipeline->Bind(commandBuffer, 0, frameIndex);
         ++frameIndex;
     }
-    //   mBoundPipeline = pipeline;
+    mBoundPipeline = pipeline;
 }
 
 void VKRenderCommand::BindPipeline(const SharedPtr<Pipeline> &pipeline, uint32_t layer)
