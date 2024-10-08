@@ -3,7 +3,7 @@
 #include "Graphics/RHI/Texture.h"
 #include "Graphics/RHI/RenderDevice.h"
 #include "Graphics/RHI/VertexBuffer.h"
-#include "Graphics/RHI/CommandBuffer.h"
+#include "Graphics/RHI/RenderCommand.h"
 #include "Graphics/RHI/DescriptorSet.h"
 #include "Graphics/RHI/RenderContext.h"
 #include "Graphics/RHI/GraphicsContext.h"
@@ -33,30 +33,34 @@ int main()
     ctx->Init();
     ctx->BindToDevice();
     ctx->SetMainSwapChain(window->GetSwapChainProperties());
-    auto vertexBuffer = VertexBuffer::Builder()
-                            .SetVertexData(vertices, 3, sizeof(vertices))
-                            .SetUsage(BufferUsage::Static)
-                            .SetAttribute(VertexAttributeType::Position, 0, ElementType::Float3, 0, 3 * sizeof(float))
-                            .Create(ctx);
-
-    auto shader = Shader::Builder()
-                      .SetFile("Asset/Shader/TestTriangle.shader.json")
-                      .Create(ctx);
-
-    auto pipeline = Pipeline::Builder()
-                        .SetClearColor(0.2f, 0.2f, 0.2f, 1.0f)
-                        .SetDepthOptions(false, false)
-                        .SetShader(shader)
-                        .SetDrawType(DrawType::Triangle)
-                        .SetSwapchainTarget(true)
-                        .SetClearTargets(true)
-                        .Create(ctx);
-
-    auto descriptorSet = DescriptorSet::Builder()
-                             .SetBindingLayout(shader, 0)
+    auto pVertexBuffer = VertexBuffer::Builder()
+                             .SetVertexData(vertices, 3, sizeof(vertices))
+                             .SetUsage(BufferUsage::Static)
+                             .SetAttribute(VertexAttributeType::Position, 0, ElementType::Float3, 0, 3 * sizeof(float))
                              .Create(ctx);
 
-    auto context = ctx->GetRenderContext();
+    auto pShader = Shader::Builder()
+                       .SetFile("Asset/Shader/TestTriangle.shader.json")
+                       .Create(ctx);
+
+    auto pPipeline = Pipeline::Builder()
+                         .SetClearColor(0.2f, 0.2f, 0.2f, 1.0f)
+                         .SetDepthOptions(false, false)
+                         .SetShader(pShader)
+                         .SetDrawType(DrawType::Triangle)
+                         .SetSwapchainTarget(true)
+                         .SetClearTargets(true)
+                         .Create(ctx);
+
+    auto pDescriptorSet = DescriptorSet::Builder()
+                              .SetBindingLayout(pShader, 0)
+                              .Create(ctx);
+
+    auto pContext = ctx->GetRenderContext();
+
+    auto pRenderCommand = RenderCommand::Builder()
+                              .SetUsageType(CommandBufferUsageType::RecycleSubmit)
+                              .Create(ctx);
 
     UniformDataMat4 model;
     model.name = "model";
@@ -73,27 +77,28 @@ int main()
     projection.blockname = "UniformBufferObject";
     projection.data = glm::mat4(1.0f);
 
-    descriptorSet->SetUniform(projection.blockname, projection.name, &projection.data);
-    descriptorSet->SetUniform(model.blockname, model.name, &model.data);
-    descriptorSet->SetUniform(view.blockname, view.name, &view.data);
+    pDescriptorSet->SetUniform(projection.blockname, projection.name, &projection.data);
+    pDescriptorSet->SetUniform(model.blockname, model.name, &model.data);
+    pDescriptorSet->SetUniform(view.blockname, view.name, &view.data);
+    pDescriptorSet->Update();
+
+    {
+        pRenderCommand->BeginRecording();
+        pRenderCommand->BindPipeline(pPipeline);
+        pRenderCommand->BindDescriptorSet(pPipeline, 0, pDescriptorSet);
+        pRenderCommand->BindVetexBuffer(pPipeline, pVertexBuffer);
+        pRenderCommand->Draw(DrawType::Triangle, 3);
+        pRenderCommand->UnBindPipeline();
+        pRenderCommand->EndRecording();
+    }
 
     while (!window->ShouldClose())
     {
-        context->GetSwapChain()->BeginFrame();
+        pContext->GetSwapChain()->BeginFrame();
         {
-            auto pFrameCommandBuffer = context->GetSwapChain()->GetCurrentCommandBuffer();
-            pFrameCommandBuffer->BeginRecording();
-            pFrameCommandBuffer->BindPipeline(pipeline);
-            pFrameCommandBuffer->BindDescriptorSet(pipeline, 0, descriptorSet);
-            descriptorSet->Update(pFrameCommandBuffer);
-            pFrameCommandBuffer->BindVetexBuffer(pipeline, vertexBuffer);
-            pFrameCommandBuffer->Draw(DrawType::Triangle, 3);
-            pFrameCommandBuffer->UnBindPipeline();
-            pFrameCommandBuffer->EndRecording();
-
-            context->GetSwapChain()->Submit(pFrameCommandBuffer);
+            pContext->GetSwapChain()->Submit(pRenderCommand);
         }
-        context->GetSwapChain()->EndFrame();
+        pContext->GetSwapChain()->EndFrame();
         window->PollEvents();
         window->SwapBuffers();
     }

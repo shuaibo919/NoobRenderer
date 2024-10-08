@@ -13,11 +13,11 @@ namespace pluto
         class VKCommandPool;
         class VKRenderDevice;
         class VKCommandBuffer;
+        class VKRenderCommand;
         struct FrameData
         {
             SharedPtr<VKSemaphore> ImageAcquireSemaphore;
             SharedPtr<VKCommandPool> CommandPool;
-            SharedPtr<VKCommandBuffer> CommandBuffer;
         };
         class VKSwapChain : public SwapChain
         {
@@ -57,6 +57,7 @@ namespace pluto
             void FindImageFormatAndColourSpace();
             void AcquireNextImage();
 
+            SharedPtr<VKRenderCommand> mCurrentRenderCommand{nullptr};
             std::vector<SharedPtr<VKTexture2D>> mSwapChainBuffers;
 
             uint32_t mCurrentBuffer = 0;

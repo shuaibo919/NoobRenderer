@@ -14,6 +14,7 @@
 #include "Graphics/Backend/Vulkan/VKCommandBuffer.h"
 /* Common */
 #include "Graphics/Backend/Vulkan/VKUtilities.h"
+#include "VKRenderCommand.h"
 
 using namespace pluto;
 using namespace pluto::Graphics;
@@ -217,7 +218,7 @@ void VKRenderCommand::BindPipeline(const SharedPtr<Pipeline> &pipeline, uint32_t
 
 void VKRenderCommand::UnBindPipeline()
 {
-    if (!mBoundPipeline)
+    if (mBoundPipeline == nullptr)
         return;
 
     for (auto &commandBuffer : mCommandBuffers)
@@ -250,4 +251,19 @@ void VKRenderCommand::Dispatch(uint32_t workGroupSizeX, uint32_t workGroupSizeY,
 void VKRenderCommand::DrawSplashScreen(const SharedPtr<Texture> &texture)
 {
     NRE_ASSERT(false, "Not Implemented Error");
+}
+
+SharedPtr<VKCommandBuffer> &pluto::Graphics::VKRenderCommand::GetCommandBuffer(uint32_t index)
+{
+    return mCommandBuffers[index];
+}
+
+void VKRenderCommand::Execute(uint32_t execIndex, VkPipelineStageFlags flags, VkSemaphore waitSemaphore, bool waitFence)
+{
+    mCommandBuffers[execIndex]->Execute(flags, waitSemaphore, waitFence);
+}
+
+void VKRenderCommand::Execute(uint32_t execIndex, VkPipelineStageFlags flags, VkSemaphore waitSemaphore, bool waitFence, VkSemaphore signalSemaphore)
+{
+    mCommandBuffers[execIndex]->Execute(flags, waitSemaphore, waitFence, signalSemaphore);
 }

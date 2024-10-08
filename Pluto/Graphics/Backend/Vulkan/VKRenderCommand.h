@@ -34,6 +34,11 @@ namespace pluto
             void DrawSplashScreen(const SharedPtr<Texture> &texture) override;
             void UnBindPipeline() override;
 
+        public:
+            SharedPtr<VKCommandBuffer>& GetCommandBuffer(uint32_t index);
+            void Execute(uint32_t execIndex, VkPipelineStageFlags flags, VkSemaphore waitSemaphore, bool waitFence);
+            void Execute(uint32_t execIndex, VkPipelineStageFlags flags, VkSemaphore waitSemaphore, bool waitFence, VkSemaphore signalSemaphore);
+
         private:
             SharedPtr<Pipeline> mBoundPipeline{nullptr};
             std::vector<SharedPtr<VKCommandBuffer>> mCommandBuffers;

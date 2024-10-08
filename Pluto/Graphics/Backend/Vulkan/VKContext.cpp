@@ -11,6 +11,7 @@
 #include "Graphics/Backend/Vulkan/VKFramebuffer.h"
 #include "Graphics/Backend/Vulkan/VKVertexBuffer.h"
 #include "Graphics/Backend/Vulkan/VKCommandBuffer.h"
+#include "Graphics/Backend/Vulkan/VKRenderCommand.h"
 #include "Graphics/Backend/Vulkan/VKUniformBuffer.h"
 #include "Graphics/Backend/Vulkan/VKDescriptorSet.h"
 #include "Graphics/Backend/Vulkan/VKRenderDevice.h"
@@ -55,6 +56,11 @@ namespace pluto::Graphics::Vulkan
     CommandBuffer::Ptr CreateCommandBuffer(RenderContext *ctx, void *&&pPropeties)
     {
         return std::make_shared<VKCommandBuffer>(ctx, std::move((CommandBuffer::Properties *)pPropeties));
+    }
+
+    RenderCommand::Ptr CreateRenderCommand(RenderContext *ctx, void *&&pPropeties)
+    {
+        return std::make_shared<VKRenderCommand>(ctx, std::move((RenderCommand::Properties *)pPropeties));
     }
 
     UniformBuffer::Ptr CreateUniformBuffer(RenderContext *ctx, void *&&pPropeties)
@@ -525,6 +531,11 @@ Framebuffer::Ptr VKContext::CreateFrameBuffer(void *&&pPropeties)
 SharedPtr<CommandBuffer> VKContext::CreateCommandBuffer(void *&&pPropeties)
 {
     return Vulkan::CreateCommandBuffer(mRenderContext, std::forward<void *>(pPropeties));
+}
+
+SharedPtr<RenderCommand> VKContext::CreateRenderCommand(void *&&pPropeties)
+{
+    return Vulkan::CreateRenderCommand(mRenderContext, std::forward<void *>(pPropeties));
 }
 
 SharedPtr<SwapChain> VKContext::CreateSwapChain(void *&&pPropeties)

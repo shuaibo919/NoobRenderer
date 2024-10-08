@@ -26,14 +26,11 @@ namespace pluto
         public:
             const Properties &GetProperties() const { return *mProperties; }
 
+        public:
             virtual bool Flush() { return true; }
             virtual void Reset() = 0;
-
-        public:
-            virtual bool Init(bool primary = true) = 0;
             virtual void BeginRecording() = 0;
             virtual void EndRecording() = 0;
-
             virtual void BindVetexBuffer(const SharedPtr<Pipeline> &pipeline, const SharedPtr<VertexBuffer> &vbo, uint8_t binding = 0) = 0;
             virtual void BindDescriptorSet(const SharedPtr<Pipeline> &pipeline, uint32_t dynamicOffset, const SharedPtr<DescriptorSet> &descriptorSet) = 0;
             virtual void BindDescriptorSets(const SharedPtr<Pipeline> &pipeline, uint32_t dynamicOffset, std::vector<SharedPtr<DescriptorSet>> &descriptorSets) = 0;
