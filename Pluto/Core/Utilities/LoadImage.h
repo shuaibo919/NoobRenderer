@@ -13,10 +13,12 @@ namespace pluto
             RGB = 3,
             RGBAlpha = 4
         };
-        
+
         struct ImageLoadingOptions
         {
             bool isHDR;
+            bool flipY = false;
+            bool srgb = true;
             std::string filename;
             ImageLoadingMode mode;
         };
