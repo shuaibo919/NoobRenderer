@@ -177,17 +177,14 @@ void VKCommandBuffer::Execute(VkPipelineStageFlags flags, VkSemaphore waitSemaph
 
     if (waitFence)
     {
-        // todo
+        mFence->Reset();
+        VK_CHECK_RESULT(vkQueueSubmit(pBasedDevice->GetGraphicsQueue(), 1, &submitInfo, mFence->GetHandle()));
+        mFence->Wait(200 * 1000 * 1000);
     }
-
-    mFence->Reset();
-
-    VK_CHECK_RESULT(vkQueueSubmit(pBasedDevice->GetGraphicsQueue(), 1, &submitInfo, mFence->GetHandle()));
-
-    // mFence->Wait();
-    // mFence->Wait(200 * 1000 * 1000);
-    // vkWaitForFences(device, 1, &(m_Fences[backBufferIndex]), true, 200 * 1000 * 1000);
-
+    else
+    {
+        VK_CHECK_RESULT(vkQueueSubmit(pBasedDevice->GetGraphicsQueue(), 1, &submitInfo, VK_NULL_HANDLE));
+    }
     mProperties->state = CommandBufferState::Submitted;
 }
 

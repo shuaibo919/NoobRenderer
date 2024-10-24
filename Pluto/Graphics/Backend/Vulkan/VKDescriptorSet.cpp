@@ -292,8 +292,7 @@ void VKDescriptorSet::TransitionImageLayoutByHints(const SharedPtr<Texture> &tex
     if (!texture)
         return;
 
-    auto commandBuffer = cmdBuffer ? cmdBuffer : VKObjectManageByContext::Context->GetSwapChain()->GetCurrentCommandBuffer();
-    auto commandBufferHandle = std::static_pointer_cast<VKCommandBuffer>(commandBuffer)->GetHandle();
+    auto commandBufferHandle = cmdBuffer != nullptr ? std::static_pointer_cast<VKCommandBuffer>(cmdBuffer)->GetHandle() : VK_NULL_HANDLE;
     if (texture->GetProperties().hints == Texture::Hints::NoHints || texture->GetProperties().hints == Texture::Hints::ShaderUse)
     {
         auto vktexure = std::static_pointer_cast<VKTexture2D>(texture);

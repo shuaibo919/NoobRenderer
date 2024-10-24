@@ -236,13 +236,13 @@ void VKPipeline::DestroyImplementation()
 
 void VKPipeline::TransitionAttachments()
 {
-    auto commandBuffer = std::static_pointer_cast<VKCommandBuffer>(VKObjectManageByContext::Context->GetSwapChain()->GetCurrentCommandBuffer());
+    // auto commandBuffer = std::static_pointer_cast<VKCommandBuffer>(VKObjectManageByContext::Context->GetSwapChain()->GetCurrentCommandBuffer());
 
     if (mProperties->swapchainTarget)
     {
         for (uint32_t i = 0; i < VKObjectManageByContext::Context->GetSwapChain()->GetSwapChainBufferCount(); i++)
         {
-            std::static_pointer_cast<VKTexture2D>(VKObjectManageByContext::Context->GetSwapChain()->GetImage(i))->TransitionImage(VK_IMAGE_LAYOUT_PRESENT_SRC_KHR, commandBuffer->GetHandle());
+            std::static_pointer_cast<VKTexture2D>(VKObjectManageByContext::Context->GetSwapChain()->GetImage(i))->TransitionImage(VK_IMAGE_LAYOUT_PRESENT_SRC_KHR, nullptr);
         }
     }
 
@@ -250,13 +250,13 @@ void VKPipeline::TransitionAttachments()
     {
         if (texture != nullptr)
         {
-            std::static_pointer_cast<VKTexture2D>(texture)->TransitionImage(VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL, commandBuffer->GetHandle());
+            std::static_pointer_cast<VKTexture2D>(texture)->TransitionImage(VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL, nullptr);
         }
     }
 
     if (mProperties->resolveTexture)
     {
-        std::static_pointer_cast<VKTexture2D>(mProperties->resolveTexture)->TransitionImage(VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL, commandBuffer->GetHandle());
+        std::static_pointer_cast<VKTexture2D>(mProperties->resolveTexture)->TransitionImage(VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL, nullptr);
     }
 
     // TODO:
@@ -331,7 +331,7 @@ void VKPipeline::PrepareFramebuffer()
     delete framebufferProperties;
 }
 
-void VKPipeline::Bind(const SharedPtr<CommandBuffer> &commandBuffer, uint32_t layer)
+void VKPipeline::Bind(const SharedPtr<CommandBuffer> &commandBuffer, uint32_t layer, uint32_t frame)
 {
     Framebuffer::Ptr framebuffer = mFramebuffers[0];
     if (!mShader->HasComputeStage())
@@ -340,7 +340,7 @@ void VKPipeline::Bind(const SharedPtr<CommandBuffer> &commandBuffer, uint32_t la
 
         if (mProperties->swapchainTarget)
         {
-            framebuffer = mFramebuffers[VKObjectManageByContext::Context->GetSwapChain()->GetCurrentBufferIndex()];
+            framebuffer = mFramebuffers[frame];
         }
 
         mRenderPass->BeginRenderPass(commandBuffer, mProperties->clearColor, framebuffer, Graphics::Inline);

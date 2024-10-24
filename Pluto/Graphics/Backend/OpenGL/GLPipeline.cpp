@@ -110,7 +110,7 @@ void GLPipeline::Preparation()
     }
     delete frameBufferProperties;
 }
-void GLPipeline::Bind(const SharedPtr<CommandBuffer> &commandBuffer, uint32_t layer)
+void GLPipeline::Bind(const SharedPtr<CommandBuffer> &commandBuffer, uint32_t layer, uint32_t frame)
 {
     auto pRenderContext = static_cast<GLRenderContext *>(mRenderContext);
     Framebuffer::Ptr framebuffer{nullptr};

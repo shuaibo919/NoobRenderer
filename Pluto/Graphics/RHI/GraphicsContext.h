@@ -17,6 +17,7 @@ namespace pluto
         class RenderDevice;
         class UniformBuffer;
         class CommandBuffer;
+        class RenderCommand;
         class DescriptorSet;
 
         enum class RenderAPI
@@ -40,6 +41,7 @@ namespace pluto
             friend class RenderDevice;
             friend class UniformBuffer;
             friend class CommandBuffer;
+            friend class RenderCommand;
             friend class DescriptorSet;
             friend class GLRenderContext;
             friend class VKRenderContext;
@@ -48,7 +50,7 @@ namespace pluto
             virtual ~GraphicsContext() = default;
             virtual void Terminate() = 0;
 
-            RenderAPI GetRenderAPI()const { return mRenderAPI; }
+            RenderAPI GetRenderAPI() const { return mRenderAPI; }
             RenderContext *GetRenderContext() const { return mRenderContext; }
 
             virtual void Init() = 0;
@@ -80,6 +82,7 @@ namespace pluto
             virtual SharedPtr<VertexBuffer> CreateVertexBuffer(void *&&pPropeties) = 0;
             virtual SharedPtr<UniformBuffer> CreateUniformBuffer(void *&&pPropeties) = 0;
             virtual SharedPtr<CommandBuffer> CreateCommandBuffer(void *&&pPropeties) = 0;
+            virtual SharedPtr<RenderCommand> CreateRenderCommand(void *&&pPropeties) = 0;
             virtual SharedPtr<DescriptorSet> CreateDescriptorSet(void *&&pPropeties) = 0;
             virtual SharedPtr<Texture> CreateTexture(uint16_t type, void *&&pPropeties) = 0;
             virtual SharedPtr<Texture> CreateTexture(uint16_t type, const std::string &path, void *&&pPropeties) = 0;

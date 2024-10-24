@@ -5,6 +5,7 @@
 #include "Graphics/Backend/OpenGL/GLContext.h"
 #include "Graphics/Backend/OpenGL/GLRenderDevice.h"
 #include "Graphics/Backend/OpenGL/GLCommandBuffer.h"
+#include "Graphics/Backend/OpenGL/GLRenderCommand.h"
 /* Common */
 #include "Graphics/Backend/OpenGL/GL.h"
 #include "Graphics/Backend/OpenGL/GLDebug.h"
@@ -28,14 +29,12 @@ void GLSwapChain::OnResize(uint32_t width, uint32_t height)
 
 bool GLSwapChain::Init(bool vsync)
 {
-    mCommand = std::dynamic_pointer_cast<GLCommandBuffer>(
-        OpenGL::CreateCommandBuffer(this->mRenderContext, new GLCommandBuffer::Properties()));
     return true;
 }
 
-void GLSwapChain::Submit(SharedPtr<CommandBuffer> cmdBuffer)
+void GLSwapChain::Submit(SharedPtr<RenderCommand> command)
 {
-    cmdBuffer->Submit();
+    NRE_ASSERT(true, "TODO");
 }
 
 Texture::Ptr GLSwapChain::GetCurrentImage()
@@ -67,12 +66,7 @@ size_t GLSwapChain::GetSwapChainBufferCount() const
     return 1;
 }
 
-CommandBuffer::Ptr GLSwapChain::GetCurrentCommandBuffer()
-{
-    return mCommand;
-}
-
-CommandBuffer::Ptr GLSwapChain::GetCommandBuffer(uint32_t index)
+RenderCommand::Ptr GLSwapChain::GetCurrentRenderCommand()
 {
     return mCommand;
 }
