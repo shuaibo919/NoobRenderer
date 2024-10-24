@@ -134,7 +134,7 @@ void VKShader::ReadReflectInfo(ShaderJson &info, ShaderType type)
                                           type,
                                           descriptor.binding,
                                           set,
-                                          resource["per_dimension_size"].get<std::vector<uint32_t>>()});
+                                          {1}});
     }
 
     for (auto &uniform_buffer : info["UniformBuffers"])
