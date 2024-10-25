@@ -161,7 +161,6 @@ void VKRenderContext::FreeDescriptorSet(VkDescriptorSet *set, uint32_t descripto
 
 VkDescriptorPool VKRenderContext::GetDescriptorPool()
 {
-
     if (mFreeDescriptorPools.size() > 0)
     {
         VkDescriptorPool pool = mFreeDescriptorPools.back();
