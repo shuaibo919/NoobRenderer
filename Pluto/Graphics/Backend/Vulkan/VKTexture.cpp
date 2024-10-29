@@ -136,7 +136,7 @@ namespace vkthelper
         barrier.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
         barrier.subresourceRange.baseArrayLayer = layer;
         barrier.subresourceRange.layerCount = layerCount;
-        barrier.subresourceRange.levelCount = VK_REMAINING_MIP_LEVELS;
+        barrier.subresourceRange.levelCount = 1;
 
         int32_t mipWidth = texWidth;
         int32_t mipHeight = texHeight;

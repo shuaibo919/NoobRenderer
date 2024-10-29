@@ -91,6 +91,8 @@ void PrepareRenderData(const SharedPtr<pluto::Graphics::GraphicsContext> &contex
                   .Create(context);
 
     pTexture = Texture::Builder()
+                   .SetWrap(TextureWrap::ClampToedge)
+                   .SetHints(Texture::Hints::ShaderUse)
                    .Create(Texture::Type::Texture2D,
                            "Asset/Texture/wood_seamless_texture.png", context);
 

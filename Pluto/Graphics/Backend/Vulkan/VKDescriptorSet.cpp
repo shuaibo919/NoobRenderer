@@ -121,7 +121,7 @@ void VKDescriptorSet::Update(SharedPtr<CommandBuffer> buffer)
                 writeDescriptorSet.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
                 writeDescriptorSet.dstBinding = descInfo.binding;
                 writeDescriptorSet.pImageInfo = &imageInfos[imageIndex];
-                writeDescriptorSet.descriptorCount = static_cast<uint32_t>(mProperties->descriptorInfo.descriptors.size());
+                writeDescriptorSet.descriptorCount = 1;
 
                 writeDescriptorSets[descriptorWritesCount] = writeDescriptorSet;
                 imageIndex++;
@@ -146,13 +146,12 @@ void VKDescriptorSet::Update(SharedPtr<CommandBuffer> buffer)
                 writeDescriptorSet.descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_IMAGE;
                 writeDescriptorSet.dstBinding = descInfo.binding;
                 writeDescriptorSet.pImageInfo = &imageInfos[imageIndex];
-                writeDescriptorSet.descriptorCount = static_cast<uint32_t>(mProperties->descriptorInfo.descriptors.size());
+                writeDescriptorSet.descriptorCount = 1;
 
                 writeDescriptorSets[descriptorWritesCount] = writeDescriptorSet;
                 imageIndex++;
                 descriptorWritesCount++;
             }
-
             else if (descInfo.descType == DescriptorType::UniformBuffer)
             {
                 auto vkUniformBuffer = std::static_pointer_cast<VKUniformBuffer>(mUniformBuffers[currentFrame][descInfo.name]);
