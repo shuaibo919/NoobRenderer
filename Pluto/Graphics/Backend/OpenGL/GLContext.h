@@ -16,6 +16,7 @@ namespace pluto
             SharedPtr<VertexBuffer> CreateVertexBuffer(RenderContext *ctx, void *&&pPropeties);
             SharedPtr<UniformBuffer> CreateUniformBuffer(RenderContext *ctx, void *&&pPropeties);
             SharedPtr<CommandBuffer> CreateCommandBuffer(RenderContext *ctx, void *&&pPropeties);
+            SharedPtr<RenderCommand> CreateRenderCommand(RenderContext *ctx, void *&&pPropeties);
             SharedPtr<DescriptorSet> CreateDescriptorSet(RenderContext *ctx, void *&&pPropeties);
             SharedPtr<Texture> CreateTexture(uint16_t type, RenderContext *ctx, void *&&pPropeties);
             SharedPtr<Texture> CreateTexture(uint16_t type, const std::string &path, RenderContext *ctx, void *&&pPropeties);
@@ -59,6 +60,7 @@ namespace pluto
             SharedPtr<VertexBuffer> CreateVertexBuffer(void *&&pPropeties) override;
             SharedPtr<UniformBuffer> CreateUniformBuffer(void *&&pPropeties) override;
             SharedPtr<CommandBuffer> CreateCommandBuffer(void *&&pPropeties) override;
+            SharedPtr<RenderCommand> CreateRenderCommand(void *&&pPropeties) override;
             SharedPtr<DescriptorSet> CreateDescriptorSet(void *&&pPropeties) override;
             SharedPtr<Texture> CreateTexture(uint16_t type, void *&&pPropeties) override;
             SharedPtr<Texture> CreateTexture(uint16_t type, const std::string &path, void *&&pPropeties) override;

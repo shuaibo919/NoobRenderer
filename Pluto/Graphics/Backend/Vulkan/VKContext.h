@@ -65,6 +65,7 @@ namespace pluto
             SharedPtr<VertexBuffer> CreateVertexBuffer(void *&&pPropeties) override;
             SharedPtr<UniformBuffer> CreateUniformBuffer(void *&&pPropeties) override;
             SharedPtr<CommandBuffer> CreateCommandBuffer(void *&&pPropeties) override;
+            SharedPtr<RenderCommand> CreateRenderCommand(void *&&pPropeties) override;
             SharedPtr<DescriptorSet> CreateDescriptorSet(void *&&pPropeties) override;
             SharedPtr<Texture> CreateTexture(uint16_t type, void *&&pPropeties) override;
             SharedPtr<Texture> CreateTexture(uint16_t type, const std::string &path, void *&&pPropeties) override;

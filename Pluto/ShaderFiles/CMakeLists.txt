@@ -43,7 +43,7 @@ add_custom_target(GenerateShader ALL DEPENDS ${TARGET_NAME} ${PLUTO_ENGINE_NAME}
 # generate shader files
 add_custom_command(
     TARGET GenerateShader
-    COMMAND ${EXECUTABLE} Pluto/ShaderFiles/ bin/${CMAKE_BUILD_TYPE}/Asset/Shader/ ${glslc_executable}
+    COMMAND ${EXECUTABLE} Pluto/ShaderFiles/ bin/${EXECUTABLE_OUTPUT_PREFIX}/${CMAKE_BUILD_TYPE}/Asset/Shader/ ${glslc_executable}
     WORKING_DIRECTORY ${CMAKE_BEGIN_PATH}
 )
 

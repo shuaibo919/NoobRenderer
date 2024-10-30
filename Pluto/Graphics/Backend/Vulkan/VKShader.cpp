@@ -130,11 +130,11 @@ void VKShader::ReadReflectInfo(ShaderJson &info, ShaderType type)
         descriptor.name = resource["name"].get<std::string>();
         descriptor.shaderType = static_cast<ShaderType>(resource["shaderType"].get<uint8_t>());
         descriptor.descType = DescriptorType::ImageSampler;
-        mDescriptorLayoutInfos.push_back({DescriptorType::ImageSampler,
-                                          type,
-                                          descriptor.binding,
-                                          set,
-                                          resource["per_dimension_size"].get<std::vector<uint32_t>>()});
+        mDescriptorLayoutInfos.emplace_back(DescriptorType::ImageSampler,
+                                            type,
+                                            descriptor.binding,
+                                            set,
+                                            std::vector<uint32_t>(1, 1));
     }
 
     for (auto &uniform_buffer : info["UniformBuffers"])
@@ -150,11 +150,11 @@ void VKShader::ReadReflectInfo(ShaderJson &info, ShaderType type)
         descriptor.name = uniform_buffer["name"].get<std::string>();
         descriptor.binding = uniform_buffer["binding"].get<uint32_t>();
         descriptor.shaderType = static_cast<ShaderType>(uniform_buffer["shaderType"].get<uint8_t>());
-        mDescriptorLayoutInfos.push_back({DescriptorType::UniformBuffer,
-                                          type,
-                                          descriptor.binding,
-                                          set,
-                                          uniform_buffer["per_dimension_size"].get<std::vector<uint32_t>>()});
+        mDescriptorLayoutInfos.emplace_back(DescriptorType::UniformBuffer,
+                                            type,
+                                            descriptor.binding,
+                                            set,
+                                            uniform_buffer["per_dimension_size"].get<std::vector<uint32_t>>());
         for (auto &json_member : uniform_buffer["members"])
         {
             auto &member = descriptor.mMembers.emplace_back();
@@ -181,6 +181,7 @@ void VKShader::PreparePipelineLayout()
 
     for (auto &descriptorLayout : this->mDescriptorLayoutInfos)
     {
+        log<PInfo>("mDescriptorLayoutInfo setID: %d", descriptorLayout.setID);
         while ((uint32_t)layouts.size() < descriptorLayout.setID + 1)
         {
             layouts.emplace_back();
@@ -189,12 +190,18 @@ void VKShader::PreparePipelineLayout()
         layouts[descriptorLayout.setID].push_back(descriptorLayout);
     }
 
+    log<PInfo>("layout size: %d", layouts.size());
+
     for (auto &l : layouts)
     {
+        log<PInfo>("layout per layer size: %d", l.size());
+    }
+
+    for (auto &l : layouts)
+    {
+
         std::vector<VkDescriptorSetLayoutBinding> setLayoutBindings;
         std::vector<VkDescriptorBindingFlags> layoutBindingFlags;
-        setLayoutBindings.resize(l.size());
-        layoutBindingFlags.resize(l.size());
 
         for (uint32_t i = 0; i < (uint32_t)l.size(); i++)
         {
@@ -207,24 +214,22 @@ void VKShader::PreparePipelineLayout()
                     foundIndex = i;
             }
 
+            auto descriptorCount = static_cast<uint32_t>(info.counts.size());
+
             VkDescriptorSetLayoutBinding &setLayoutBinding = foundIndex >= 0 ? setLayoutBindings[foundIndex] : setLayoutBindings.emplace_back();
 
             setLayoutBinding.descriptorType = VKUtilities::GetDescriptorType(info.type);
+            setLayoutBinding.binding = info.binding;
+            setLayoutBinding.descriptorCount = descriptorCount == 0 ? 1 : descriptorCount;
             if (foundIndex >= 0)
             {
                 setLayoutBinding.stageFlags |= VKUtilities::GetShaderType(info.stage);
             }
             else
+            {
                 setLayoutBinding.stageFlags = VKUtilities::GetShaderType(info.stage);
-
-            setLayoutBinding.binding = info.binding;
-            auto descriptorCount = static_cast<uint32_t>(info.counts.size());
-            setLayoutBinding.descriptorCount = descriptorCount == 0 ? 1 : descriptorCount;
-
-            bool isArray = info.counts.size() > 1;
-
-            if (foundIndex < 0)
-                layoutBindingFlags.push_back(isArray ? VK_DESCRIPTOR_BINDING_PARTIALLY_BOUND_BIT : 0);
+                layoutBindingFlags.push_back(descriptorCount > 1 ? VK_DESCRIPTOR_BINDING_PARTIALLY_BOUND_BIT : 0);
+            }
         }
 
         VkDescriptorSetLayoutBindingFlagsCreateInfo flagsInfo = {};
@@ -232,6 +237,11 @@ void VKShader::PreparePipelineLayout()
         flagsInfo.pNext = nullptr;
         flagsInfo.bindingCount = static_cast<uint32_t>(layoutBindingFlags.size());
         flagsInfo.pBindingFlags = layoutBindingFlags.data();
+
+        for (auto &binding : setLayoutBindings)
+        {
+            log<PInfo>("Binding %d", binding.binding);
+        }
 
         // Pipeline layout
         VkDescriptorSetLayoutCreateInfo setLayoutCreateInfo = {};

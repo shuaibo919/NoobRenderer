@@ -13,11 +13,12 @@ namespace pluto
         class VKCommandPool;
         class VKRenderDevice;
         class VKCommandBuffer;
+        class VKRenderCommand;
         struct FrameData
         {
             SharedPtr<VKSemaphore> ImageAcquireSemaphore;
             SharedPtr<VKCommandPool> CommandPool;
-            SharedPtr<VKCommandBuffer> CommandBuffer;
+            SharedPtr<VKCommandBuffer> CachedCommandBuffer;
         };
         class VKSwapChain : public SwapChain
         {
@@ -30,13 +31,12 @@ namespace pluto
 
         public:
             bool Init(bool vsync) override;
-            void Submit(SharedPtr<CommandBuffer> cmdBuffer) override;
+            void Submit(SharedPtr<RenderCommand> command) override;
             SharedPtr<Texture> GetCurrentImage() override;
             SharedPtr<Texture> GetImage(uint32_t index) override;
             uint32_t GetCurrentBufferIndex() const override;
             uint32_t GetCurrentImageIndex() const override;
-            SharedPtr<CommandBuffer> GetCurrentCommandBuffer() override;
-            SharedPtr<CommandBuffer> GetCommandBuffer(uint32_t index) override;
+            SharedPtr<RenderCommand> GetCurrentRenderCommand() override;
             size_t GetSwapChainBufferCount() const override;
             void SetVSync(bool vsync) override;
             void BeginFrame() override;
@@ -47,6 +47,7 @@ namespace pluto
             FrameData &GetCurrentFrameData();
             VkFormat GetFormat() const { return mColourFormat; }
             void Present(const std::vector<VkSemaphore> &semaphore);
+            VkCommandPool GetFrameCommandPool(uint32_t index) const;
 
         private:
             VKRenderDevice *mBasedDevice;
@@ -55,6 +56,7 @@ namespace pluto
             void FindImageFormatAndColourSpace();
             void AcquireNextImage();
 
+            SharedPtr<VKRenderCommand> mCurrentRenderCommand{nullptr};
             std::vector<SharedPtr<VKTexture2D>> mSwapChainBuffers;
 
             uint32_t mCurrentBuffer = 0;

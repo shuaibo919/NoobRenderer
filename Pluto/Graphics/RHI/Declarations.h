@@ -356,6 +356,9 @@ namespace pluto
             uint32_t binding = 0;
             uint32_t setID = 0;
             std::vector<uint32_t> counts;
+            DescriptorLayoutInfo(DescriptorType _type, ShaderType _stage, uint32_t _binding, 
+                            uint32_t _setID, std::vector<uint32_t> _counts)
+                            : type(_type), stage(_stage), binding(_binding), setID(_setID), counts(_counts) {}
         };
 
         struct DescriptorLayout

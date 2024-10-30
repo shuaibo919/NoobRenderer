@@ -112,18 +112,18 @@ void VKBuffer::SetData(uint32_t size, const void *data, bool useBarrier)
 
     if (useBarrier)
     {
-        auto pCmdBuffer = std::static_pointer_cast<VKCommandBuffer>(mContext->GetSwapChain()->GetCurrentCommandBuffer());
-        VkBufferMemoryBarrier bufferBarrier = {};
-        bufferBarrier.sType = VK_STRUCTURE_TYPE_BUFFER_MEMORY_BARRIER;
-        bufferBarrier.srcAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
-        bufferBarrier.dstAccessMask = VK_ACCESS_VERTEX_ATTRIBUTE_READ_BIT;
-        bufferBarrier.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
-        bufferBarrier.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
-        bufferBarrier.buffer = mBuffer;
-        bufferBarrier.offset = 0;
-        bufferBarrier.size = VK_WHOLE_SIZE;
+        // auto pCmdBuffer = std::static_pointer_cast<VKCommandBuffer>(mContext->GetSwapChain()->GetCurrentCommandBuffer());
+        // VkBufferMemoryBarrier bufferBarrier = {};
+        // bufferBarrier.sType = VK_STRUCTURE_TYPE_BUFFER_MEMORY_BARRIER;
+        // bufferBarrier.srcAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
+        // bufferBarrier.dstAccessMask = VK_ACCESS_VERTEX_ATTRIBUTE_READ_BIT;
+        // bufferBarrier.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+        // bufferBarrier.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+        // bufferBarrier.buffer = mBuffer;
+        // bufferBarrier.offset = 0;
+        // bufferBarrier.size = VK_WHOLE_SIZE;
 
-        vkCmdPipelineBarrier(pCmdBuffer->GetHandle(), VK_PIPELINE_STAGE_TRANSFER_BIT, VK_PIPELINE_STAGE_VERTEX_INPUT_BIT, 0, 0, nullptr, 1, &bufferBarrier, 0, nullptr);
+        // vkCmdPipelineBarrier(pCmdBuffer->GetHandle(), VK_PIPELINE_STAGE_TRANSFER_BIT, VK_PIPELINE_STAGE_VERTEX_INPUT_BIT, 0, 0, nullptr, 1, &bufferBarrier, 0, nullptr);
     }
 }
 

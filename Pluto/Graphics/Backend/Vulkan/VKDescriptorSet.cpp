@@ -121,7 +121,7 @@ void VKDescriptorSet::Update(SharedPtr<CommandBuffer> buffer)
                 writeDescriptorSet.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
                 writeDescriptorSet.dstBinding = descInfo.binding;
                 writeDescriptorSet.pImageInfo = &imageInfos[imageIndex];
-                writeDescriptorSet.descriptorCount = static_cast<uint32_t>(mProperties->descriptorInfo.descriptors.size());
+                writeDescriptorSet.descriptorCount = 1;
 
                 writeDescriptorSets[descriptorWritesCount] = writeDescriptorSet;
                 imageIndex++;
@@ -146,13 +146,12 @@ void VKDescriptorSet::Update(SharedPtr<CommandBuffer> buffer)
                 writeDescriptorSet.descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_IMAGE;
                 writeDescriptorSet.dstBinding = descInfo.binding;
                 writeDescriptorSet.pImageInfo = &imageInfos[imageIndex];
-                writeDescriptorSet.descriptorCount = static_cast<uint32_t>(mProperties->descriptorInfo.descriptors.size());
+                writeDescriptorSet.descriptorCount = 1;
 
                 writeDescriptorSets[descriptorWritesCount] = writeDescriptorSet;
                 imageIndex++;
                 descriptorWritesCount++;
             }
-
             else if (descInfo.descType == DescriptorType::UniformBuffer)
             {
                 auto vkUniformBuffer = std::static_pointer_cast<VKUniformBuffer>(mUniformBuffers[currentFrame][descInfo.name]);
@@ -292,8 +291,7 @@ void VKDescriptorSet::TransitionImageLayoutByHints(const SharedPtr<Texture> &tex
     if (!texture)
         return;
 
-    auto commandBuffer = cmdBuffer ? cmdBuffer : VKObjectManageByContext::Context->GetSwapChain()->GetCurrentCommandBuffer();
-    auto commandBufferHandle = std::static_pointer_cast<VKCommandBuffer>(commandBuffer)->GetHandle();
+    auto commandBufferHandle = cmdBuffer != nullptr ? std::static_pointer_cast<VKCommandBuffer>(cmdBuffer)->GetHandle() : VK_NULL_HANDLE;
     if (texture->GetProperties().hints == Texture::Hints::NoHints || texture->GetProperties().hints == Texture::Hints::ShaderUse)
     {
         auto vktexure = std::static_pointer_cast<VKTexture2D>(texture);
