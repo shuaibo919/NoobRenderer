@@ -181,7 +181,7 @@ void VKShader::PreparePipelineLayout()
 
     for (auto &descriptorLayout : this->mDescriptorLayoutInfos)
     {
-        log<PInfo>("mDescriptorLayoutInfo setID: %d", descriptorLayout.setID);
+        // log<PInfo>("mDescriptorLayoutInfo setID: %d", descriptorLayout.setID);
         while ((uint32_t)layouts.size() < descriptorLayout.setID + 1)
         {
             layouts.emplace_back();
@@ -190,12 +190,7 @@ void VKShader::PreparePipelineLayout()
         layouts[descriptorLayout.setID].push_back(descriptorLayout);
     }
 
-    log<PInfo>("layout size: %d", layouts.size());
-
-    for (auto &l : layouts)
-    {
-        log<PInfo>("layout per layer size: %d", l.size());
-    }
+    // log<PInfo>("layout size: %d", layouts.size());
 
     for (auto &l : layouts)
     {
@@ -237,11 +232,6 @@ void VKShader::PreparePipelineLayout()
         flagsInfo.pNext = nullptr;
         flagsInfo.bindingCount = static_cast<uint32_t>(layoutBindingFlags.size());
         flagsInfo.pBindingFlags = layoutBindingFlags.data();
-
-        for (auto &binding : setLayoutBindings)
-        {
-            log<PInfo>("Binding %d", binding.binding);
-        }
 
         // Pipeline layout
         VkDescriptorSetLayoutCreateInfo setLayoutCreateInfo = {};

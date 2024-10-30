@@ -101,65 +101,17 @@ void VKRenderCommand::BindVetexBuffer(const SharedPtr<Pipeline> &pipeline, const
 
 void VKRenderCommand::BindDescriptorSet(const SharedPtr<Pipeline> &pipeline, uint32_t dynamicOffset, const SharedPtr<DescriptorSet> &descriptorSet)
 {
-    auto frameIndex = 0;
-    auto pPipeline = std::static_pointer_cast<VKPipeline>(pipeline);
-    for (auto &commandBuffer : mCommandBuffers)
+    for(auto &commandBuffer : mCommandBuffers)
     {
-        uint32_t numDynamicDescriptorSets = 0;
-        uint32_t numDescriptorSets = 0;
-        VkDescriptorSet currentDescriptorSet;
-
-        if (descriptorSet != nullptr)
-        {
-            auto vkDesSet = std::static_pointer_cast<VKDescriptorSet>(descriptorSet);
-            if (vkDesSet->GetDynamic())
-                numDynamicDescriptorSets++;
-
-            currentDescriptorSet = vkDesSet->GetHandle(frameIndex);
-            // NRE_ASSERT(vkDesSet->GetHasUpdated(frameIndex), "Descriptor Set has not been updated before");
-            numDescriptorSets++;
-        }
-        else
-        {
-            PLog<PError>("Descriptor null");
-        }
-
-        vkCmdBindDescriptorSets(commandBuffer->GetHandle(), pPipeline->IsComputePipeline() ? VK_PIPELINE_BIND_POINT_COMPUTE : VK_PIPELINE_BIND_POINT_GRAPHICS,
-                                pPipeline->GetPipelineLayout(), 0, numDescriptorSets, &currentDescriptorSet, numDynamicDescriptorSets, &dynamicOffset);
+       commandBuffer->BindDescriptorSet(pipeline, dynamicOffset, descriptorSet);
     }
 }
 
 void VKRenderCommand::BindDescriptorSets(const SharedPtr<Pipeline> &pipeline, uint32_t dynamicOffset, std::vector<SharedPtr<DescriptorSet>> &descriptorSets)
 {
-    auto frameIndex = 0;
-    auto pPipeline = std::static_pointer_cast<VKPipeline>(pipeline);
-    for (auto &commandBuffer : mCommandBuffers)
+    for(auto &commandBuffer : mCommandBuffers)
     {
-        uint32_t numDynamicDescriptorSets = 0;
-        uint32_t numDescriptorSets = 0;
-        VkDescriptorSet lCurrentDescriptorSets[16] = {};
-
-        for (auto &descSet : descriptorSets)
-        {
-            if (descSet != nullptr)
-            {
-                auto vkDesSet = std::static_pointer_cast<VKDescriptorSet>(descSet);
-                if (vkDesSet->GetDynamic())
-                    numDynamicDescriptorSets++;
-
-                lCurrentDescriptorSets[numDescriptorSets] = vkDesSet->GetHandle(frameIndex);
-                // NRE_ASSERT(vkDesSet->GetHasUpdated(frameIndex), "Descriptor Set has not been updated before");
-                numDescriptorSets++;
-            }
-            else
-            {
-                PLog<PError>("Descriptor null");
-            }
-        }
-
-        vkCmdBindDescriptorSets(commandBuffer->GetHandle(), pPipeline->IsComputePipeline() ? VK_PIPELINE_BIND_POINT_COMPUTE : VK_PIPELINE_BIND_POINT_GRAPHICS,
-                                pPipeline->GetPipelineLayout(), 0, numDescriptorSets, lCurrentDescriptorSets, numDynamicDescriptorSets, &dynamicOffset);
-        frameIndex++;
+       commandBuffer->BindDescriptorSets(pipeline, dynamicOffset, descriptorSets);
     }
 }
 

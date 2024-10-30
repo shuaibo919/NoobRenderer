@@ -57,7 +57,7 @@ namespace pluto::Graphics
                 std::vector<VkExtensionProperties> extensions(extCount);
                 if (vkEnumerateDeviceExtensionProperties(mHandle, nullptr, &extCount, &extensions.front()) == VK_SUCCESS)
                 {
-                    log<Info>("Found {%d} device extensions", extensions.size());
+                    log<Info>("Found %d device extensions", extensions.size());
                     for (const auto &ext : extensions)
                     {
                         mSupportedExtensions[ext.extensionName] = true;

@@ -31,8 +31,8 @@ namespace pluto
             Buffer *GetUniformBufferLocalData(const std::string &name) override { return nullptr; }
 
         public:
-            VkDescriptorSet GetHandle(uint32_t frameIndex) const { return mDescriptorSet[frameIndex]; }
-            bool GetHasUpdated(uint32_t frame) const { return mDescriptorUpdated[frame]; }
+            VkDescriptorSet GetHandle() const { return mDescriptorSet; }
+            bool GetHasUpdated() const { return mDescriptorUpdated; }
             bool GetDynamic() const { return mDynamic; }
             uint32_t GetDynamicOffset() const { return mDynamicOffset; }
 
@@ -44,19 +44,20 @@ namespace pluto
                 std::vector<BufferMemberInfo> mMembers;
                 uint8_t *data{nullptr};
                 uint32_t size{0};
-                bool HasUpdated[SwapChain::MaxFlightFrames];
+                bool dirty{true};
             };
             void AllocateUboInfoData(UniformBufferInfo &info, uint32_t size);
             void ReleaseUboInfoData(UniformBufferInfo &info);
             void WrtieUboInfoData(UniformBufferInfo &info, void *data, uint32_t size, uint32_t offset = 0);
             void TransitionImageLayoutByHints(const SharedPtr<Texture> &texture, const SharedPtr<CommandBuffer> &cmdBuffer);
-            uint32_t mFlightFrameCount;
-            VkDescriptorPool mDescriptorPool[SwapChain::MaxFlightFrames];
-            VkDescriptorSet mDescriptorSet[SwapChain::MaxFlightFrames];
-            bool mDescriptorDirty[SwapChain::MaxFlightFrames];
-            bool mDescriptorUpdated[SwapChain::MaxFlightFrames];
+            VkDescriptorPool mDescriptorPool;
+            VkDescriptorSet mDescriptorSet;
+            bool mDescriptorDirty;
+            bool mDescriptorUpdated;
             std::map<std::string, UniformBufferInfo> mUniformBuffersData;
-            std::map<std::string, SharedPtr<UniformBuffer>> mUniformBuffers[SwapChain::MaxFlightFrames];
+            std::map<std::string, SharedPtr<UniformBuffer>> mUniformBuffers;
         };
+    
+
     }
 }

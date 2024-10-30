@@ -20,7 +20,6 @@ VKDescriptorSet::VKDescriptorSet(RenderContext *ctx, VKDescriptorSet::Properties
 {
     auto vkshader = std::static_pointer_cast<VKShader>(mProperties->shader);
     auto info = vkshader->GetProperties().reflectInfo;
-    mFlightFrameCount = uint32_t(VKObjectManageByContext::Context->GetSwapChain()->GetSwapChainBufferCount());
     mProperties->descriptorInfo.descriptors = info[mProperties->layoutIndex].descriptors;
 
     for (auto &descriptor : mProperties->descriptorInfo.descriptors)
@@ -28,16 +27,12 @@ VKDescriptorSet::VKDescriptorSet(RenderContext *ctx, VKDescriptorSet::Properties
         if (descriptor.descType == DescriptorType::UniformBuffer)
         {
             UniformBufferInfo info;
-            for (uint32_t frame = 0; frame < mFlightFrameCount; frame++)
-            {
-                // Uniform Buffer per frame in flight
-                auto buffer_desc = new UniformBuffer::Properties();
-                buffer_desc->data = nullptr;
-                buffer_desc->size = descriptor.size;
-                descriptor.ubo = Vulkan::CreateUniformBuffer(VKObjectManageByContext::Context, std::move(buffer_desc));
-                mUniformBuffers[frame][descriptor.name] = descriptor.ubo;
-                info.HasUpdated[frame] = false;
-            }
+            auto buffer_desc = new UniformBuffer::Properties();
+            buffer_desc->data = nullptr;
+            buffer_desc->size = descriptor.size;
+            descriptor.ubo = Vulkan::CreateUniformBuffer(VKObjectManageByContext::Context, std::move(buffer_desc));
+            mUniformBuffers[descriptor.name] = descriptor.ubo;
+            info.dirty = false;
 
             info.mMembers = descriptor.mMembers;
             this->AllocateUboInfoData(info, descriptor.size);
@@ -45,14 +40,12 @@ VKDescriptorSet::VKDescriptorSet(RenderContext *ctx, VKDescriptorSet::Properties
         }
     }
 
-    for (uint32_t frame = 0; frame < mFlightFrameCount; frame++)
-    {
-        mDescriptorDirty[frame] = true;
-        mDescriptorUpdated[frame] = false;
-        mDescriptorSet[frame] = VK_NULL_HANDLE;
-        auto layout = std::static_pointer_cast<VKShader>(mProperties->shader)->GetDescriptorSetLayout(mProperties->layoutIndex);
-        mDescriptorPool[frame] = VKObjectManageByContext::Context->AllocateDescriptorSet(&mDescriptorSet[frame], layout, 1);
-    }
+    auto layout = std::static_pointer_cast<VKShader>(mProperties->shader)->GetDescriptorSetLayout(mProperties->layoutIndex);
+
+    mDescriptorDirty = true;
+    mDescriptorUpdated = false;
+    mDescriptorSet = VK_NULL_HANDLE;
+    mDescriptorPool = VKObjectManageByContext::Context->AllocateDescriptorSet(&mDescriptorSet, layout, 1);
 }
 
 VKDescriptorSet::~VKDescriptorSet()
@@ -69,11 +62,9 @@ void VKDescriptorSet::DestroyImplementation()
         this->ReleaseUboInfoData(it->second);
     }
 
-    for (uint32_t frame = 0; frame < mFlightFrameCount; frame++)
-    {
-        vkFreeDescriptorSets(pBasedDevice->GetDevice(), mDescriptorPool[frame], 1, &mDescriptorSet[frame]);
-    }
+    vkFreeDescriptorSets(pBasedDevice->GetDevice(), mDescriptorPool, 1, &mDescriptorSet);
 }
+
 void VKDescriptorSet::Update(SharedPtr<CommandBuffer> buffer)
 {
     int descriptorWritesCount = 0;
@@ -81,16 +72,16 @@ void VKDescriptorSet::Update(SharedPtr<CommandBuffer> buffer)
 
     for (auto &bufferInfo : mUniformBuffersData)
     {
-        if (bufferInfo.second.HasUpdated[currentFrame])
+        if (bufferInfo.second.dirty)
         {
-            mUniformBuffers[currentFrame][bufferInfo.first]->SetData(bufferInfo.second.size, bufferInfo.second.data);
-            bufferInfo.second.HasUpdated[currentFrame] = false;
+            mUniformBuffers[bufferInfo.first]->SetData(bufferInfo.second.size, bufferInfo.second.data);
+            bufferInfo.second.dirty = false;
         }
     }
 
-    if (mDescriptorDirty[currentFrame] || !mDescriptorUpdated[currentFrame])
+    if (mDescriptorDirty || !mDescriptorUpdated)
     {
-        mDescriptorDirty[currentFrame] = false;
+        mDescriptorDirty = false;
         uint32_t imageIndex = 0;
         uint32_t index = 0;
 
@@ -117,7 +108,7 @@ void VKDescriptorSet::Update(SharedPtr<CommandBuffer> buffer)
 
                 VkWriteDescriptorSet writeDescriptorSet = {};
                 writeDescriptorSet.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-                writeDescriptorSet.dstSet = mDescriptorSet[currentFrame];
+                writeDescriptorSet.dstSet = mDescriptorSet;
                 writeDescriptorSet.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
                 writeDescriptorSet.dstBinding = descInfo.binding;
                 writeDescriptorSet.pImageInfo = &imageInfos[imageIndex];
@@ -142,7 +133,7 @@ void VKDescriptorSet::Update(SharedPtr<CommandBuffer> buffer)
 
                 VkWriteDescriptorSet writeDescriptorSet = {};
                 writeDescriptorSet.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-                writeDescriptorSet.dstSet = mDescriptorSet[currentFrame];
+                writeDescriptorSet.dstSet = mDescriptorSet;
                 writeDescriptorSet.descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_IMAGE;
                 writeDescriptorSet.dstBinding = descInfo.binding;
                 writeDescriptorSet.pImageInfo = &imageInfos[imageIndex];
@@ -154,14 +145,14 @@ void VKDescriptorSet::Update(SharedPtr<CommandBuffer> buffer)
             }
             else if (descInfo.descType == DescriptorType::UniformBuffer)
             {
-                auto vkUniformBuffer = std::static_pointer_cast<VKUniformBuffer>(mUniformBuffers[currentFrame][descInfo.name]);
+                auto vkUniformBuffer = std::static_pointer_cast<VKUniformBuffer>(mUniformBuffers[descInfo.name]);
                 bufferInfos[index].buffer = vkUniformBuffer->GetBuffer()->GetBuffer();
                 bufferInfos[index].offset = descInfo.offset;
                 bufferInfos[index].range = descInfo.size;
 
                 VkWriteDescriptorSet writeDescriptorSet = {};
                 writeDescriptorSet.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-                writeDescriptorSet.dstSet = mDescriptorSet[currentFrame];
+                writeDescriptorSet.dstSet = mDescriptorSet;
                 writeDescriptorSet.descriptorType = VKUtilities::GetDescriptorType(descInfo.descType);
                 writeDescriptorSet.dstBinding = descInfo.binding;
                 writeDescriptorSet.pBufferInfo = &bufferInfos[index];
@@ -181,7 +172,7 @@ void VKDescriptorSet::Update(SharedPtr<CommandBuffer> buffer)
         vkUpdateDescriptorSets(VKObjectManageByContext::Context->GetBasedDevice()->GetDevice(), descriptorWritesCount,
                                writeDescriptorSets.data(), 0, nullptr);
 
-        mDescriptorUpdated[currentFrame] = true;
+        mDescriptorUpdated = true;
     }
 }
 
@@ -194,8 +185,7 @@ void VKDescriptorSet::SetTexture(const std::string &name, const SharedPtr<Textur
             descriptor.texture = texture;
             descriptor.attachmentType = textureType;
             descriptor.mipLevel = mipIndex;
-            for (uint32_t frame = 0; frame < mFlightFrameCount; frame++)
-                mDescriptorDirty[frame] = true;
+            mDescriptorDirty = true;
         }
     }
 }
@@ -210,10 +200,7 @@ void VKDescriptorSet::SetUniform(const std::string &bufferName, const std::strin
             if (member.name == uniformName)
             {
                 this->WrtieUboInfoData(itr->second, data, member.size, member.offset);
-                for (uint32_t frame = 0; frame < mFlightFrameCount; frame++)
-                {
-                    itr->second.HasUpdated[frame] = true;
-                }
+                itr->second.dirty = true;
                 return;
             }
         }
@@ -230,10 +217,7 @@ void VKDescriptorSet::SetUniform(const std::string &bufferName, const std::strin
             if (member.name == uniformName)
             {
                 this->WrtieUboInfoData(itr->second, data, size, member.offset);
-                for (uint32_t frame = 0; frame < mFlightFrameCount; frame++)
-                {
-                    itr->second.HasUpdated[frame] = true;
-                }
+                itr->second.dirty = true;
                 return;
             }
         }
@@ -246,10 +230,7 @@ void VKDescriptorSet::SetUniformBufferData(const std::string &bufferName, void *
     if (itr != mUniformBuffersData.end())
     {
         this->WrtieUboInfoData(itr->second, data, itr->second.size, 0);
-        for (uint32_t frame = 0; frame < mFlightFrameCount; frame++)
-        {
-            itr->second.HasUpdated[frame] = true;
-        }
+        itr->second.dirty = true;
         return;
     }
 }
@@ -257,6 +238,7 @@ void VKDescriptorSet::SetUniformBufferData(const std::string &bufferName, void *
 void VKDescriptorSet::SetBuffer(const std::string &name, const SharedPtr<UniformBuffer> &buffer)
 {
     PLog<PCritical>("SetBuffer is a Empty Implementation!");
+    NRE_ASSERT(false, "SetBuffer is a Empty Implementation!");
 }
 
 SharedPtr<UniformBuffer> VKDescriptorSet::GetUniformBuffer(const std::string &name)
@@ -264,6 +246,7 @@ SharedPtr<UniformBuffer> VKDescriptorSet::GetUniformBuffer(const std::string &na
     uint32_t currentFrame = VKObjectManageByContext::Context->GetSwapChain()->GetCurrentBufferIndex();
 
     PLog<PCritical>("GetUniformBuffer is a Empty Implementation!");
+    NRE_ASSERT(false, "GetUniformBuffer is a Empty Implementation!");
     return nullptr;
 }
 

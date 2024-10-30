@@ -256,10 +256,9 @@ void VKCommandBuffer::BindDescriptorSet(const SharedPtr<Pipeline> &pipeline, uin
         if (vkDesSet->GetDynamic())
             numDynamicDescriptorSets++;
 
-        uint32_t currentFrame = VKObjectManageByContext::Context->GetSwapChain()->GetCurrentBufferIndex();
-        currentDescriptorSet = vkDesSet->GetHandle(currentFrame);
+        currentDescriptorSet = vkDesSet->GetHandle();
 
-        // NRE_ASSERT(vkDesSet->GetHasUpdated(currentFrame), "Descriptor Set has not been updated before");
+        NRE_ASSERT(vkDesSet->GetHasUpdated(), "Descriptor Set has not been updated before");
         numDescriptorSets++;
     }
     else
@@ -286,10 +285,9 @@ void VKCommandBuffer::BindDescriptorSets(const SharedPtr<Pipeline> &pipeline, ui
             if (vkDesSet->GetDynamic())
                 numDynamicDescriptorSets++;
 
-            uint32_t currentFrame = VKObjectManageByContext::Context->GetSwapChain()->GetCurrentBufferIndex();
-            lCurrentDescriptorSets[numDescriptorSets] = vkDesSet->GetHandle(currentFrame);
+            lCurrentDescriptorSets[numDescriptorSets] = vkDesSet->GetHandle();
 
-            NRE_ASSERT(vkDesSet->GetHasUpdated(currentFrame), "Descriptor Set has not been updated before");
+            NRE_ASSERT(vkDesSet->GetHasUpdated(), "Descriptor Set has not been updated before");
             numDescriptorSets++;
         }
         else
