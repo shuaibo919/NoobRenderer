@@ -28,7 +28,7 @@ int main()
     using namespace pluto::Graphics;
     RenderDevice::Init();
     auto ctx = GraphicsContext::Create(PLATFORM_API);
-    auto window = Window::Create(ctx, 600, 600, "Test_01_Triangle");
+    auto window = Window::Create(ctx, 600, 600, "02_Texture");
     ctx->Init();
     ctx->BindToDevice();
     ctx->SetMainSwapChain(window->GetSwapChainProperties());
