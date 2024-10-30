@@ -69,8 +69,8 @@ void VKSwapChain::EndFrame()
         mFrames[mCurrentBuffer].CachedCommandBuffer = nullptr;
     }
 
-    uint32_t cnt = std::count_if(mFrames, mFrames + mSwapChainBufferCount, [](const FrameData &frame)
-                                 { return frame.CachedCommandBuffer == nullptr; });
+    auto cnt = static_cast<uint32_t>(std::count_if(mFrames, mFrames + mSwapChainBufferCount, [](const FrameData &frame)
+                                 { return frame.CachedCommandBuffer == nullptr; }));
 
     if (cnt == mSwapChainBufferCount)
         mCurrentRenderCommand = nullptr;

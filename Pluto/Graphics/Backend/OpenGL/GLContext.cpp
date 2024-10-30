@@ -12,6 +12,7 @@
 #include "Graphics/Backend/OpenGL/GLRenderDevice.h"
 #include "Graphics/Backend/OpenGL/GLVertexBuffer.h"
 #include "Graphics/Backend/OpenGL/GLCommandBuffer.h"
+#include "Graphics/Backend/OpenGL/GLRenderCommand.h"
 #include "Graphics/Backend/OpenGL/GLUniformBuffer.h"
 #include "Graphics/Backend/OpenGL/GLDescriptorSet.h"
 /* Common */
@@ -51,6 +52,11 @@ namespace pluto::Graphics::OpenGL
     CommandBuffer::Ptr CreateCommandBuffer(RenderContext *ctx, void *&&pPropeties)
     {
         return std::make_shared<GLCommandBuffer>(ctx, std::move((CommandBuffer::Properties *)pPropeties));
+    }
+
+    RenderCommand::Ptr CreateRenderCommand(RenderContext *ctx, void *&&pPropeties)
+    {
+        return std::make_shared<GLRenderCommand>(ctx, std::move((RenderCommand::Properties *)pPropeties));
     }
 
     UniformBuffer::Ptr CreateUniformBuffer(RenderContext *ctx, void *&&pPropeties)
@@ -204,6 +210,11 @@ Framebuffer::Ptr GLContext::CreateFrameBuffer(void *&&pPropeties)
 SharedPtr<CommandBuffer> GLContext::CreateCommandBuffer(void *&&pPropeties)
 {
     return OpenGL::CreateCommandBuffer(mRenderContext, std::forward<void *>(pPropeties));
+}
+
+SharedPtr<RenderCommand> GLContext::CreateRenderCommand(void *&&pPropeties)
+{
+    return OpenGL::CreateRenderCommand(mRenderContext, std::forward<void *>(pPropeties));
 }
 
 SharedPtr<SwapChain> GLContext::CreateSwapChain(void *&&pPropeties)

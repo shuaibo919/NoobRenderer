@@ -20,6 +20,7 @@ using namespace pluto::Graphics;
 GLRenderCommand::GLRenderCommand(RenderContext *ctx, Properties *&&pProperties)
     : RenderCommand(ctx, std::move(pProperties))
 {
+    NRE_ASSERT(false,"NOT IMPLEMENTED!");
 }
 
 GLRenderCommand::~GLRenderCommand()
@@ -43,7 +44,7 @@ void GLRenderCommand::EndRecording()
 {
 }
 
-void GLRenderCommand::BindVetexBuffer(const SharedPtr<Pipeline> &pipeline, const SharedPtr<VertexBuffer> &vbo, uint8_t binding = 0)
+void GLRenderCommand::BindVetexBuffer(const SharedPtr<Pipeline> &pipeline, const SharedPtr<VertexBuffer> &vbo, uint8_t binding)
 {
 }
 
@@ -55,7 +56,7 @@ void GLRenderCommand::BindDescriptorSets(const SharedPtr<Pipeline> &pipeline, ui
 {
 }
 
-void GLRenderCommand::UpdateViewport(uint32_t width, uint32_t height, bool flipViewport = false)
+void GLRenderCommand::UpdateViewport(uint32_t width, uint32_t height, bool flipViewport)
 {
 }
 
