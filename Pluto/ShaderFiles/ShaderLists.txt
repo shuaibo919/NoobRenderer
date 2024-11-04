@@ -1,4 +1,5 @@
 ShaderListBegin
     shader("TestTriangle", "TestTriangle.vert", "TestTriangle.frag", "", "");
     shader("TestTexture", "TestTexture.vert", "TestTexture.frag", "", "");
+    shader("TestLight", "TestLight.vert", "TestLight.frag", "", "");
 ShaderListEnd
