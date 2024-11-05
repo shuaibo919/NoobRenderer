@@ -32,6 +32,7 @@ namespace pluto
 
         private:
             SharedPtr<Pipeline> mBoundPipeline{nullptr};
+            std::vector<std::function<void(void)>> mRenderOperations;
         };
     }
 }
