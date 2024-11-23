@@ -42,7 +42,7 @@ int main()
     pRenderCommand->BindPipeline(pPipeline);
     pRenderCommand->BindDescriptorSet(pPipeline, 0, pDescriptorSet);
     pRenderCommand->BindVetexBuffer(pPipeline, pVertexBuffer);
-    pRenderCommand->Draw(DrawType::Triangle, 3);
+    pRenderCommand->Draw(DrawType::Triangle, 6);
     pRenderCommand->UnBindPipeline();
     pRenderCommand->EndRecording();
 
@@ -70,10 +70,19 @@ int main()
     return 0;
 }
 
-float vertices[] = {
+float planeVertices[] = {
+    // positions         // normals        // texcoords
+    // 10.0f, -0.5f, 10.0f, 0.0f, 1.0f, 0.0f, 10.0f, 0.0f,
+    // -10.0f, -0.5f, 10.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f,
+    // -10.0f, -0.5f, -10.0f, 0.0f, 1.0f, 0.0f, 0.0f, 10.0f,
     -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
     0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f,
-    0.0f, 0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 0.5f, 1.0f};
+    0.0f, 0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 0.5f, 1.0f,
+
+    10.0f, -0.5f, 10.0f, 0.0f, 1.0f, 0.0f, 10.0f, 0.0f,
+    -10.0f, -0.5f, -10.0f, 0.0f, 1.0f, 0.0f, 0.0f, 10.0f,
+    10.0f, -0.5f, -10.0f, 0.0f, 1.0f, 0.0f, 10.0f, 10.0f
+};
 
 struct UniformDataMat4
 {
@@ -81,7 +90,6 @@ struct UniformDataMat4
     std::string blockname;
     glm::mat4 data;
 };
-
 
 namespace test
 {
@@ -93,12 +101,12 @@ namespace test
         {
         }
 
-        glm::mat4 GetViewMatrix() 
+        glm::mat4 GetViewMatrix()
         {
             return glm::lookAt(position, position + forward, up);
         }
 
-        glm::mat4 GetProjectionMatrix(float aspectRatio) 
+        glm::mat4 GetProjectionMatrix(float aspectRatio)
         {
             return glm::perspective(glm::radians(zoom), aspectRatio, near, far);
         }
@@ -106,22 +114,21 @@ namespace test
         glm::vec3 position;
         glm::vec3 forward;
         glm::vec3 up;
-        float zoom = 90.0f;
+        float zoom = 45.0f;
         float near = 0.1f;
         float far = 100.0f;
     };
 }
 
 UniformDataMat4 model, view, projection;
-test::Camera camera(glm::vec3(0.0f, 0.0f, 3.0f));
-glm::vec3 lightPos(1.2f, 1.0f, 2.0f);
+test::Camera camera(glm::vec3(0.0f, 3.0f, 3.0f));
+glm::vec3 lightPos(0.0f, 0.0f, 0.0f);
 
 void PrepareRenderData(const SharedPtr<pluto::Graphics::GraphicsContext> &context)
 {
     pVertexBuffer = VertexBuffer::Builder()
-                        .SetVertexData(vertices, 3, sizeof(vertices))
+                        .SetVertexData(planeVertices, 6, sizeof(planeVertices))
                         .SetUsage(BufferUsage::Static)
-                        .SetAttribute(VertexAttributeType::Position, 0, ElementType::Float3, 0, 3 * sizeof(float))
                         .Create(context);
 
     pShader = Shader::Builder()
@@ -166,7 +173,8 @@ void PrepareRenderData(const SharedPtr<pluto::Graphics::GraphicsContext> &contex
     pDescriptorSet->SetUniform(projection.blockname, projection.name, &projection.data);
     pDescriptorSet->SetUniform(model.blockname, model.name, &model.data);
     pDescriptorSet->SetUniform(view.blockname, view.name, &view.data);
-    pDescriptorSet->SetUniform("LightInfo","pos", &lightPos);
+    pDescriptorSet->SetUniform("LightInfo", "pos", glm::value_ptr(lightPos));
+    pDescriptorSet->SetUniform("LightInfo", "viewPos", glm::value_ptr(camera.position));
     pDescriptorSet->SetTexture("texSampler", pTexture);
     pDescriptorSet->Update();
 }
@@ -182,4 +190,3 @@ void UpdateUniform()
     pDescriptorSet->SetUniform(model.blockname, model.name, &model.data);
     pDescriptorSet->Update();
 }
-

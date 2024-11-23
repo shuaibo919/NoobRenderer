@@ -278,13 +278,13 @@ namespace pluto
 
         enum class VertexAttributeType : uint8_t
         {
-            Position = 0,    //!< XYZ position (float3)
-            Tangents = 1,    //!< tangent, bitangent and normal, encoded as a quaternion (float4)
-            Color = 2,       //!< vertex color (float4)
-            Uv0 = 3,         //!< texture coordinates (float2)
-            Uv1 = 4,         //!< texture coordinates (float2)
-            BoneIndices = 5, //!< indices of 4 bones, as unsigned integers (uvec4)
-            BoneWeights = 6, //!< weights of the 4 bones (normalized float4)
+            Position = 0,    
+            Normal = 1,
+            Uv = 2,
+            Tangents = 3,   
+            Color = 4,            
+            BoneIndices = 5, 
+            BoneWeights = 6, 
             Custom0 = 8,
             Custom1 = 9,
             Custom2 = 10,

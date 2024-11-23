@@ -27,12 +27,13 @@ VKDescriptorSet::VKDescriptorSet(RenderContext *ctx, VKDescriptorSet::Properties
         if (descriptor.descType == DescriptorType::UniformBuffer)
         {
             UniformBufferInfo info;
+            info.data = nullptr;
+            info.dirty = false;
             auto buffer_desc = new UniformBuffer::Properties();
             buffer_desc->data = nullptr;
             buffer_desc->size = descriptor.size;
             descriptor.ubo = Vulkan::CreateUniformBuffer(VKObjectManageByContext::Context, std::move(buffer_desc));
             mUniformBuffers[descriptor.name] = descriptor.ubo;
-            info.dirty = false;
 
             info.mMembers = descriptor.mMembers;
             this->AllocateUboInfoData(info, descriptor.size);
@@ -254,14 +255,15 @@ void VKDescriptorSet::AllocateUboInfoData(UniformBufferInfo &info, uint32_t size
 {
     if (info.data != nullptr)
         this->ReleaseUboInfoData(info);
-    info.data = new uint8_t[size];
+    info.data = new uint8_t[(size /4) * 4  + 4];
     info.size = size;
 }
 
 void VKDescriptorSet::ReleaseUboInfoData(UniformBufferInfo &info)
 {
-    if (info.data != nullptr)
-        delete[] info.data;
+    if (info.data != nullptr) {
+        delete [] info.data;
+    }
 }
 
 void VKDescriptorSet::WrtieUboInfoData(UniformBufferInfo &info, void *data, uint32_t size, uint32_t offset)

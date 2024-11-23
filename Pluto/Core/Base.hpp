@@ -12,6 +12,12 @@
 #include <unordered_map>
 #include <functional>
 #include <type_traits>
+
+#ifdef VULKAN_BACKEND
+#define GLM_FORCE_RADIANS
+#define GLM_FORCE_DEPTH_ZERO_TO_ONE
+#endif
+
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 // Third
