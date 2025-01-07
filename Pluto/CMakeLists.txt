@@ -64,65 +64,57 @@ endif()
 FetchContent_Declare(
     glfw
     GIT_REPOSITORY https://github.com/glfw/glfw
-    GIT_TAG "b35641f4a3c62aa86a0b3c983d163bc0fe36026d" # 3.4
+    GIT_TAG "3.4" # 3.4
     GIT_PROGRESS TRUE
+    GIT_SHALLOW     TRUE
+    CMAKE_ARGS
+        -DGLFW_BUILD_EXAMPLES=OFF
+        -DGLFW_BUILD_TESTS=OFF
+        -DGLFW_BUILD_DOCS=OFF
+        -DGLFW_INSTALL=OFF
+        -Wno-dev 
+        -Wno-deprecated
 )
-
-FetchContent_GetProperties(glfw)
-
-if(NOT glfw_POPULATED)
-    FetchContent_Populate(glfw)
-
-    set(GLFW_BUILD_EXAMPLES OFF CACHE INTERNAL "Build the GLFW example programs")
-    set(GLFW_BUILD_TESTS OFF CACHE INTERNAL "Build the GLFW test programs")
-    set(GLFW_BUILD_DOCS OFF CACHE INTERNAL "Build the GLFW documentation")
-    set(GLFW_INSTALL OFF CACHE INTERNAL "Generate installation target")
-
-    add_subdirectory(${glfw_SOURCE_DIR} ${glfw_BINARY_DIR})
-endif()
+FetchContent_MakeAvailable(glfw)
 
 # # Third-Dependencies: GLM
 FetchContent_Declare(
     glm
-    GIT_REPOSITORY https://github.com/icaven/glm
-    GIT_TAG "dca38025fba63bb9284023e6de55f756b9e37cec"
+    GIT_REPOSITORY https://github.com/g-truc/glm
+    GIT_TAG "18feaec455f8ee1f256d91f515fb02d66268ba14" # bump to cmake 3.10
     GIT_PROGRESS TRUE
+    GIT_SHALLOW  TRUE
+    CMAKE_ARGS
+        -Wno-dev 
 )
-
 FetchContent_GetProperties(glm)
-
-if(NOT glm_POPULATED)
-    FetchContent_Populate(glm)
-    target_include_directories(${TARGET_NAME} PUBLIC ${glm_SOURCE_DIR}/)
-endif()
+FetchContent_MakeAvailable(glm)
+target_include_directories(${TARGET_NAME} PUBLIC ${glm_SOURCE_DIR}/)
 
 # # Third-Dependencies: VMA
 if(${BUILD_WITH_VULKAN_BACKEND})
     FetchContent_Declare(
         vma
         GIT_REPOSITORY https://github.com/GPUOpen-LibrariesAndSDKs/VulkanMemoryAllocator
-        GIT_TAG "009ecd192c1289c7529bff248a16cfe896254816" # 3.10
+        GIT_TAG "v3.1.0" # 3.10
         GIT_PROGRESS TRUE
+        CMAKE_ARGS
+            -DVMA_BUILD_SAMPLES=OFF
+            -DVMA_BUILD_DOCUMENTATION=OFF
+            -Wno-dev 
+            -Wno-deprecated
     )
-    FetchContent_GetProperties(vma)
-
-    if(NOT vma_POPULATED)
-        FetchContent_Populate(vma)
-        add_subdirectory(${vma_SOURCE_DIR} ${vma_BINARY_DIR})
-        target_link_libraries(${TARGET_NAME} PRIVATE GPUOpen::VulkanMemoryAllocator)
-
-        if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-            target_compile_options(${TARGET_NAME} PRIVATE -Wno-nullability-completeness)
-        endif()
-    endif()
+    FetchContent_MakeAvailable(vma)
+    target_link_libraries(${TARGET_NAME} PRIVATE GPUOpen::VulkanMemoryAllocator)
 endif()
+
 
 # # Third-Dependencies: Source Code or Header Integration
 target_include_directories(${TARGET_NAME} PUBLIC ${PLUTO_ENGINE_THIRD_LIB_PATH}/json)
 target_include_directories(${TARGET_NAME} PRIVATE ${PLUTO_ENGINE_THIRD_LIB_PATH}/stb_image/include)
 
 # # Third-Dependencies: Lib Linking
-target_link_libraries(${TARGET_NAME} PRIVATE glfw)
+target_link_libraries(${TARGET_NAME} PRIVATE glfw glm::glm)
 
 # Shader Preprocess ---------------------------------------
 add_subdirectory(ShaderFiles)
